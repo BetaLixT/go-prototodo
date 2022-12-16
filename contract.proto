@@ -2,7 +2,7 @@
 syntax = 'proto3';
 package relay;
 
-import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
 // [END declaration]
 
 // [START csharp_declaration]
@@ -32,28 +32,34 @@ enum Status {
 
 // -- Commands
 message CreateTaskCommand {
-  string title = 1;
-  string description = 2;
+  UserContext user_context = 1;
+  string title = 2;
+  string description = 3;
 }
 message DeleteTaskCommand {
-  string id = 1;
+  UserContext user_context = 1;
+  string id = 2;
 }
 message UpdateTaskCommand {
-  string id = 1;
-  optional string title = 2;
-  optional string description =3;
+  UserContext user_context = 1;
+  string id = 2;
+  optional string title = 3;
+  optional string description = 4;
 }
 message ProgressTaskCommand {
-  string id = 1;
+  UserContext user_context = 1;
+  string id = 2;
 }
 message CompleteTaskCommand {
-  string id = 1;
+  UserContext user_context = 1;
+  string id = 2;
 }
 
 // -- Queries
 message ListTasksQuery {
-  uint32 page_number = 1;
-  uint32 count_per_page = 2;
+  UserContext user_context = 1;
+  uint32 page_number = 2;
+  uint32 count_per_page = 3;
 }
 
 // -- Data
@@ -70,7 +76,7 @@ message TaskEvent {
   string stream_id = 4;
   uint64 version = 5;
   string event = 6;
-  Timestamp event_time = 7;
+  google.protobuf.Timestamp event_time = 7;
   TaskData data = 8;
 }
 
@@ -80,22 +86,22 @@ message TaskEntity {
   string title = 3;
   string description = 4;
   Status status = 5;
-  Timestamp created_date_time = 6;
-  Timestamp updated_date_time = 7; 
+  google.protobuf.Timestamp created_date_time = 6;
+  google.protobuf.Timestamp updated_date_time = 7; 
 }
 
 // -- Service
 service TaskService {
 
   // --- Commands
-  rpc Create(UserContext, CreateTaskCommand) returns (TaskEvent);
-  rpc Delete(UserContext, DeleteTaskCommand) returns (TaskEvent);
-  rpc Update(UserContext, UpdateTaskCommand) returns (TaskEvent);
-  rpc Progress(UserContext, ProgressTaskCommand) returns (TaskEvent);
-  rpc Complete(UserContext, CompleteTaskCommand) returns (TaskEvent);
+  rpc Create(CreateTaskCommand) returns (TaskEvent) {};
+  rpc Delete(DeleteTaskCommand) returns (TaskEvent) {};
+  rpc Update(UpdateTaskCommand) returns (TaskEvent) {};
+  rpc Progress(ProgressTaskCommand) returns (TaskEvent) {};
+  rpc Complete(CompleteTaskCommand) returns (TaskEvent) {};
 
   // --- Queries
-  rpc ListQuery(UserContext, ListTasksQuery) returns {TaskEntity};
+  rpc ListQuery(ListTasksQuery) returns (TaskEntity) {};
 }
 
 // [END tasks domain]

@@ -2,10 +2,10 @@
 
 package prototodo
 
-//go:generate protoc -I=pkg/infra/db --go_out=. pkg/infra/db/data.proto
+//go:generate protoc -I=. --go_out=./pkg/app contract.proto
 
-//go:generate easyjson -all --lower_camel_case ./pkg/app/rest/dto/res/
-//go:generate easyjson -all --lower_camel_case ./pkg/app/rest/dto/req/
+//easyjson -all --lower_camel_case ./pkg/app/rest/dto/res/
+//easyjson -all --lower_camel_case ./pkg/app/rest/dto/req/
 
-//go:generate swag init -g cmd/server/main.go
-//go:generate wire ./pkg/app/rest
+//swag init -g cmd/server/main.go
+//wire ./pkg/app/rest

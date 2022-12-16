@@ -1,4 +1,3 @@
-
 // [START declaration]
 syntax = 'proto3';
 package relay;
@@ -14,22 +13,46 @@ option csharp_namespace = "Google.Protobuf.Examples.AddressBook";
 option go_package = "pkg/app/grpc/contracts";
 // [END go_declaration]
 
+// [START common]
+message UserContext {
+  string userTypea = 1;
+  string id = 2;
+  repeated string role = 3;
+  repeated string features = 4;
+}
+// [END common]
+
+// [START tasks domain]
+
 enum Status {
   PENDING = 0;
   PROGRESS = 1;
   COMPLETED = 2;
 }
 
-// - Commands
-message CreateTask {
+// -- Commands
+message CreateTaskCommand {
   string title = 1;
   string description = 2;
-  string stream = 3;
-  int32  stream_version = 4;
-  Status status = 5;
-  string created_date_time = 7;
+}
+message DeleteTaskCommand {
+  string id = 1;
+}
+message UpdateTaskCommand {
+  string id = 1;
+  optional string title = 2;
+  optional string description =3;
+}
+message ProgressTaskCommand {
+  string id = 1;
+}
+message CompleteTaskCommand {
+  string id = 1;
 }
 
+// -- Queries
+
+// -- Data
 message TaskData {
   optional string title = 1;
   optional string description = 2;
@@ -46,6 +69,18 @@ message TaskEvent {
   TaskData data = 7;
 }
 
+// -- Service
 service TaskService {
-  rpc CreateTodo(EventNotification) returns (Task); 
+
+  // --- Commands
+  rpc Create(UserContext, CreateTaskCommand) returns (TaskEvent);
+  rpc Delete(UserContext, DeleteTaskCommand) returns (TaskEvent);
+  rpc Update(UserContext, UpdateTaskCommand) returns (TaskEvent);
+  rpc Progress(UserContext, ProgressTaskCommand) returns (TaskEvent);
+  rpc Complete(UserContext, CompleteTaskCommand) returns (TaskEvent);
+
+  // --- Queries
 }
+
+// [END tasks domain]
+

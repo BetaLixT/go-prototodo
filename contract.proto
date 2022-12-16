@@ -51,6 +51,10 @@ message CompleteTaskCommand {
 }
 
 // -- Queries
+message ListTasksQuery {
+  uint32 page_number = 1;
+  uint32 count_per_page = 2;
+}
 
 // -- Data
 message TaskData {
@@ -64,9 +68,20 @@ message TaskEvent {
   optional string saga_id = 2;
   string stream = 3;
   string stream_id = 4;
-  string event = 5;
-  Timestamp event_time = 6;
-  TaskData data = 7;
+  uint64 version = 5;
+  string event = 6;
+  Timestamp event_time = 7;
+  TaskData data = 8;
+}
+
+message TaskEntity {
+  string id = 1;
+  uint64 version = 2;
+  string title = 3;
+  string description = 4;
+  Status status = 5;
+  Timestamp created_date_time = 6;
+  Timestamp updated_date_time = 7; 
 }
 
 // -- Service
@@ -80,6 +95,7 @@ service TaskService {
   rpc Complete(UserContext, CompleteTaskCommand) returns (TaskEvent);
 
   // --- Queries
+  rpc ListQuery(UserContext, ListTasksQuery) returns {TaskEntity};
 }
 
 // [END tasks domain]

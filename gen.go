@@ -1,11 +1,11 @@
 //go:build ignore
 
-package prototodo
+package main
 
-//go:generate protoc -I=. --go_out=./pkg/app contract.proto
+//go:generate protoc --go_out=. --go-grpc_out=. contract.proto
 
-//easyjson -all --lower_camel_case ./pkg/app/rest/dto/res/
-//easyjson -all --lower_camel_case ./pkg/app/rest/dto/req/
+//go:generate easyjson -all --lower_camel_case ./pkg/app/rest/dto/res/
+//go:generate easyjson -all --lower_camel_case ./pkg/app/rest/dto/req/
 
-//swag init -g cmd/server/main.go
-//wire ./pkg/app/rest
+//go:generate swag init -g cmd/server/main.go
+//go:generate wire ./pkg/app/rest

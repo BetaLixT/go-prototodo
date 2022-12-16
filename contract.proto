@@ -1,0 +1,51 @@
+
+// [START declaration]
+syntax = 'proto3';
+package relay;
+
+import "google/protobuf/struct.proto";
+// [END declaration]
+
+// [START csharp_declaration]
+option csharp_namespace = "Google.Protobuf.Examples.AddressBook";
+// [END csharp_declaration]
+
+// [START go_declaration]
+option go_package = "pkg/app/grpc/contracts";
+// [END go_declaration]
+
+enum Status {
+  PENDING = 0;
+  PROGRESS = 1;
+  COMPLETED = 2;
+}
+
+// - Commands
+message CreateTask {
+  string title = 1;
+  string description = 2;
+  string stream = 3;
+  int32  stream_version = 4;
+  Status status = 5;
+  string created_date_time = 7;
+}
+
+message TaskData {
+  optional string title = 1;
+  optional string description = 2;
+  optional Status status = 3;
+}
+
+message TaskEvent {
+  uint64 id = 1;
+  optional string saga_id = 2;
+  string stream = 3;
+  string stream_id = 4;
+  string event = 5;
+  Timestamp event_time = 6;
+  TaskData data = 7;
+}
+
+service TaskService {
+  rpc CreateTodo(EventNotification) returns (Task); 
+}

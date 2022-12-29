@@ -2,7 +2,7 @@
 
 package main
 
-//go:generate protoc --go_out=. --go-grpc_out=. contract.proto
+//go:generate protoc --go_out=. --go-grpc_out=. --gen-gohttp=. contract.proto
 
 //go:generate easyjson -all --lower_camel_case ./pkg/app/rest/dto/res/
 //go:generate easyjson -all --lower_camel_case ./pkg/app/rest/dto/req/

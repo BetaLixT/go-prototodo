@@ -3,4 +3,59 @@
 
 package contracts
 
+import (
+	"context"
+	"github.com/gin-gonic/gin"
+)
+
 // TaskService
+type TaskServiceHTTPServer interface {
+	// --- Commands
+	Create(context.Context, *CreateTaskCommand) (*TaskEvent, error)
+	Delete(context.Context, *DeleteTaskCommand) (*TaskEvent, error)
+	Update(context.Context, *UpdateTaskCommand) (*TaskEvent, error)
+	Progress(context.Context, *ProgressTaskCommand) (*TaskEvent, error)
+	Complete(context.Context, *CompleteTaskCommand) (*TaskEvent, error)
+	// --- Queries
+	ListQuery(context.Context, *ListTasksQuery) (*TaskEntity, error)
+}
+type taskService struct {
+	app TaskServiceHTTPServer
+}
+
+func (p *taskService) create(ctx *gin.Context) {
+	p.app.Create(
+		ctx,
+		&CreateTaskCommand{},
+	)
+}
+func (p *taskService) delete(ctx *gin.Context) {
+	p.app.Delete(
+		ctx,
+		&DeleteTaskCommand{},
+	)
+}
+func (p *taskService) update(ctx *gin.Context) {
+	p.app.Update(
+		ctx,
+		&UpdateTaskCommand{},
+	)
+}
+func (p *taskService) progress(ctx *gin.Context) {
+	p.app.Progress(
+		ctx,
+		&ProgressTaskCommand{},
+	)
+}
+func (p *taskService) complete(ctx *gin.Context) {
+	p.app.Complete(
+		ctx,
+		&CompleteTaskCommand{},
+	)
+}
+func (p *taskService) listQuery(ctx *gin.Context) {
+	p.app.ListQuery(
+		ctx,
+		&ListTasksQuery{},
+	)
+}

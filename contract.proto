@@ -16,7 +16,7 @@ option go_package = "pkg/app/server/contracts";
 
 // [START common]
 message UserContext {
-  string userTypea = 1;
+  string userType = 1;
   string id = 2;
   repeated string role = 3;
   repeated string features = 4;
@@ -96,24 +96,24 @@ service TaskService {
 
   // --- Commands
   rpc Create(CreateTaskCommand) returns (TaskEvent) {
-    option (google.api.http).post = "/v1/tasks";
+    option (google.api.http).post = "/commands/createTask";
   };
   rpc Delete(DeleteTaskCommand) returns (TaskEvent) {
-    option (google.api.http).delete = "/v1/tasks/{id}";
+    option (google.api.http).post = "/commands/deleteTask";
   };
   rpc Update(UpdateTaskCommand) returns (TaskEvent) {
-    option (google.api.http).patch = "/v1/tasks/{id}";
+    option (google.api.http).post = "/commands/updateTask";
   };
   rpc Progress(ProgressTaskCommand) returns (TaskEvent) {
-    option (google.api.http).post = "/v1/tasks/{id}/progress";
+    option (google.api.http).post = "/commands/progressTask";
   };
   rpc Complete(CompleteTaskCommand) returns (TaskEvent) {
-    option (google.api.http).post = "/v1/tasks/{id}/complete";
+    option (google.api.http).post = "/commands/completeTask";
   };
 
   // --- Queries
   rpc ListQuery(ListTasksQuery) returns (TaskEntity) {
-    option (google.api.http).get = "/v1/tasks";
+    option (google.api.http).post = "/queries/queryTasks";
   };
 }
 

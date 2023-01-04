@@ -5,7 +5,8 @@ package contracts
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
+	"encoding/json"
+	"github.com/valyala/fasthttp"
 )
 
 // TaskService
@@ -19,43 +20,56 @@ type TaskServiceHTTPServer interface {
 	// --- Queries
 	ListQuery(context.Context, *ListTasksQuery) (*TaskEntity, error)
 }
-type taskService struct {
-	app TaskServiceHTTPServer
+type handler struct {
+	svc0 TaskServiceHTTPServer
 }
 
-func (p *taskService) create(ctx *gin.Context) {
-	p.app.Create(
-		ctx,
-		&CreateTaskCommand{},
-	)
-}
-func (p *taskService) delete(ctx *gin.Context) {
-	p.app.Delete(
-		ctx,
-		&DeleteTaskCommand{},
-	)
-}
-func (p *taskService) update(ctx *gin.Context) {
-	p.app.Update(
-		ctx,
-		&UpdateTaskCommand{},
-	)
-}
-func (p *taskService) progress(ctx *gin.Context) {
-	p.app.Progress(
-		ctx,
-		&ProgressTaskCommand{},
-	)
-}
-func (p *taskService) complete(ctx *gin.Context) {
-	p.app.Complete(
-		ctx,
-		&CompleteTaskCommand{},
-	)
-}
-func (p *taskService) listQuery(ctx *gin.Context) {
-	p.app.ListQuery(
-		ctx,
-		&ListTasksQuery{},
-	)
+func (h *handler) handle(ctx *fasthttp.RequestCtx) {
+	path := string(ctx.Path())
+	switch path {
+	// --- Commands
+	case "/commands/createTask":
+		body := CreateTaskCommand{}
+		json.Unmarshal(ctx.PostBody(), &body)
+		h.svc0.Create(
+			ctx,
+			&body,
+		)
+	case "/commands/deleteTask":
+		body := DeleteTaskCommand{}
+		json.Unmarshal(ctx.PostBody(), &body)
+		h.svc0.Delete(
+			ctx,
+			&body,
+		)
+	case "/commands/updateTask":
+		body := UpdateTaskCommand{}
+		json.Unmarshal(ctx.PostBody(), &body)
+		h.svc0.Update(
+			ctx,
+			&body,
+		)
+	case "/commands/progressTask":
+		body := ProgressTaskCommand{}
+		json.Unmarshal(ctx.PostBody(), &body)
+		h.svc0.Progress(
+			ctx,
+			&body,
+		)
+	case "/commands/completeTask":
+		body := CompleteTaskCommand{}
+		json.Unmarshal(ctx.PostBody(), &body)
+		h.svc0.Complete(
+			ctx,
+			&body,
+		)
+	// --- Queries
+	case "/queries/listTasks":
+		body := ListTasksQuery{}
+		json.Unmarshal(ctx.PostBody(), &body)
+		h.svc0.ListQuery(
+			ctx,
+			&body,
+		)
+	}
 }

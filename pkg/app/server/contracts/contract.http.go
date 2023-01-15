@@ -5,8 +5,8 @@ package contracts
 
 import (
 	"context"
-	"encoding/json"
-	"github.com/valyala/fasthttp"
+	"github.com/gin-gonic/gin"
+	"github.com/mailru/easyjson"
 )
 
 // TaskService
@@ -20,56 +20,92 @@ type TaskServiceHTTPServer interface {
 	// --- Queries
 	ListQuery(context.Context, *ListTasksQuery) (*TaskEntity, error)
 }
-type handler struct {
-	svc0 TaskServiceHTTPServer
+type taskService struct {
+	app TaskServiceHTTPServer
 }
 
-func (h *handler) handle(ctx *fasthttp.RequestCtx) {
-	path := string(ctx.Path())
-	switch path {
-	// --- Commands
-	case "/commands/createTask":
-		body := CreateTaskCommand{}
-		json.Unmarshal(ctx.PostBody(), &body)
-		h.svc0.Create(
-			ctx,
-			&body,
-		)
-	case "/commands/deleteTask":
-		body := DeleteTaskCommand{}
-		json.Unmarshal(ctx.PostBody(), &body)
-		h.svc0.Delete(
-			ctx,
-			&body,
-		)
-	case "/commands/updateTask":
-		body := UpdateTaskCommand{}
-		json.Unmarshal(ctx.PostBody(), &body)
-		h.svc0.Update(
-			ctx,
-			&body,
-		)
-	case "/commands/progressTask":
-		body := ProgressTaskCommand{}
-		json.Unmarshal(ctx.PostBody(), &body)
-		h.svc0.Progress(
-			ctx,
-			&body,
-		)
-	case "/commands/completeTask":
-		body := CompleteTaskCommand{}
-		json.Unmarshal(ctx.PostBody(), &body)
-		h.svc0.Complete(
-			ctx,
-			&body,
-		)
+func (p *taskService) create(ctx *gin.Context) {
+	body := CreateTaskCommand{}
+	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	p.app.Create(
+		ctx,
+		&body,
+	)
+}
+func (p *taskService) delete(ctx *gin.Context) {
+	body := DeleteTaskCommand{}
+	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	p.app.Delete(
+		ctx,
+		&body,
+	)
+}
+func (p *taskService) update(ctx *gin.Context) {
+	body := UpdateTaskCommand{}
+	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	p.app.Update(
+		ctx,
+		&body,
+	)
+}
+func (p *taskService) progress(ctx *gin.Context) {
+	body := ProgressTaskCommand{}
+	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	p.app.Progress(
+		ctx,
+		&body,
+	)
+}
+func (p *taskService) complete(ctx *gin.Context) {
+	body := CompleteTaskCommand{}
+	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	p.app.Complete(
+		ctx,
+		&body,
+	)
+}
+func (p *taskService) listQuery(ctx *gin.Context) {
+	body := ListTasksQuery{}
+	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	p.app.ListQuery(
+		ctx,
+		&body,
+	)
+}
+func RegisterTaskServiceHTTPServer(
+	grp *gin.RouterGroup,
+	srv TaskServiceHTTPServer,
+) {
+	ctrl := taskService{app: srv}
+	grp.POST("/commands/createTask", ctrl.create)
+	grp.POST("/commands/deleteTask", ctrl.delete)
+	grp.POST("/commands/updateTask", ctrl.update)
+	grp.POST("/commands/progressTask", ctrl.progress)
+	grp.POST("/commands/completeTask", ctrl.complete)
+	grp.POST("/queries/listTasks", ctrl.listQuery)
+}
+
+// QuoteService
+type QuoteServiceHTTPServer interface {
 	// --- Queries
-	case "/queries/listTasks":
-		body := ListTasksQuery{}
-		json.Unmarshal(ctx.PostBody(), &body)
-		h.svc0.ListQuery(
-			ctx,
-			&body,
-		)
-	}
+	Get(context.Context, *GetQuoteQuery) (*QuoteData, error)
+}
+type quoteService struct {
+	app QuoteServiceHTTPServer
+}
+
+func (p *quoteService) get(ctx *gin.Context) {
+	body := GetQuoteQuery{}
+	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	p.app.Get(
+		ctx,
+		&body,
+	)
+}
+func RegisterQuoteServiceHTTPServer(
+	grp *gin.RouterGroup,
+	srv QuoteServiceHTTPServer,
+) {
+	ctrl := quoteService{app: srv}
+	grp.POST("/queries/getQuote", ctrl.get)
 }

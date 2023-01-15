@@ -287,3 +287,91 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "contract.proto",
 }
+
+// QuoteServiceClient is the client API for QuoteService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type QuoteServiceClient interface {
+	// --- Queries
+	Get(ctx context.Context, in *GetQuoteQuery, opts ...grpc.CallOption) (*QuoteData, error)
+}
+
+type quoteServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewQuoteServiceClient(cc grpc.ClientConnInterface) QuoteServiceClient {
+	return &quoteServiceClient{cc}
+}
+
+func (c *quoteServiceClient) Get(ctx context.Context, in *GetQuoteQuery, opts ...grpc.CallOption) (*QuoteData, error) {
+	out := new(QuoteData)
+	err := c.cc.Invoke(ctx, "/relay.QuoteService/Get", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// QuoteServiceServer is the server API for QuoteService service.
+// All implementations must embed UnimplementedQuoteServiceServer
+// for forward compatibility
+type QuoteServiceServer interface {
+	// --- Queries
+	Get(context.Context, *GetQuoteQuery) (*QuoteData, error)
+	mustEmbedUnimplementedQuoteServiceServer()
+}
+
+// UnimplementedQuoteServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedQuoteServiceServer struct {
+}
+
+func (UnimplementedQuoteServiceServer) Get(context.Context, *GetQuoteQuery) (*QuoteData, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedQuoteServiceServer) mustEmbedUnimplementedQuoteServiceServer() {}
+
+// UnsafeQuoteServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to QuoteServiceServer will
+// result in compilation errors.
+type UnsafeQuoteServiceServer interface {
+	mustEmbedUnimplementedQuoteServiceServer()
+}
+
+func RegisterQuoteServiceServer(s grpc.ServiceRegistrar, srv QuoteServiceServer) {
+	s.RegisterService(&QuoteService_ServiceDesc, srv)
+}
+
+func _QuoteService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetQuoteQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QuoteServiceServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/relay.QuoteService/Get",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QuoteServiceServer).Get(ctx, req.(*GetQuoteQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// QuoteService_ServiceDesc is the grpc.ServiceDesc for QuoteService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var QuoteService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "relay.QuoteService",
+	HandlerType: (*QuoteServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Get",
+			Handler:    _QuoteService_Get_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "contract.proto",
+}

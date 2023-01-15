@@ -24,7 +24,6 @@ message UserContext {
 // [END common]
 
 // [START tasks domain]
-
 enum Status {
   PENDING = 0;
   PROGRESS = 1;
@@ -63,6 +62,8 @@ message ListTasksQuery {
   uint32 count_per_page = 3;
 }
 
+
+
 // -- Data
 message TaskData {
   optional string title = 1;
@@ -90,6 +91,19 @@ message TaskEntity {
   google.protobuf.Timestamp created_date_time = 6;
   google.protobuf.Timestamp updated_date_time = 7; 
 }
+// [END tasks domain]
+
+// [START quote domain]
+// -- Queries
+message GetQuoteQuery {
+  UserContext user_context = 1;
+}
+
+// -- Data
+message QuoteData {
+  optional string quote = 1;
+}
+// [END quote domain]
 
 // -- Service
 service TaskService {
@@ -103,6 +117,12 @@ service TaskService {
 
   // --- Queries
   rpc ListQuery(ListTasksQuery) returns (TaskEntity) {};
+}
+
+service QuoteService {
+  
+  // --- Queries
+  rpc Get(GetQuoteQuery) returns (QuoteData) {};
 }
 
 // [END tasks domain]

@@ -1,9 +1,9 @@
 // [START declaration]
 syntax = 'proto3';
-package relay;
+package tasks;
 
 import "google/protobuf/timestamp.proto";
-import "google/api/annotations.proto";
+import "custom/annotations.proto";
 // [END declaration]
 
 // [START csharp_declaration]
@@ -108,20 +108,40 @@ message QuoteData {
 // -- Service
 service TaskService {
 
-  // --- Commands
-  rpc Create(CreateTaskCommand) returns (TaskEvent) {};
-  rpc Delete(DeleteTaskCommand) returns (TaskEvent) {};
+  // - Commands
+  rpc Create(CreateTaskCommand) returns (TaskEvent) {
+    option (custom.documentation) = {
+      description: "creates a new task",
+      summary: "create new task",
+      tags: ["public", "tasks"]
+    };
+  };
+  
+  // Summary: Delete existing task
+  rpc Delete(DeleteTaskCommand) returns (TaskEvent) {
+    option (custom.documentation) = {
+      description: "deletes an existing task",
+      summary: "delete task",
+      tags: ["private", "tasks"]
+    };
+  };
+  
+  // Summary: Update existing task
   rpc Update(UpdateTaskCommand) returns (TaskEvent) {};
+  
+  // Update existing task state to progress
   rpc Progress(ProgressTaskCommand) returns (TaskEvent) {};
+  
+  // Update existing task to complete
   rpc Complete(CompleteTaskCommand) returns (TaskEvent) {};
 
-  // --- Queries
+  // Query for existing tasks
   rpc ListQuery(ListTasksQuery) returns (TaskEntity) {};
 }
 
 service QuoteService {
   
-  // --- Queries
+  // Get a quote
   rpc Get(GetQuoteQuery) returns (QuoteData) {};
 }
 

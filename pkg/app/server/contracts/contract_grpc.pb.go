@@ -22,13 +22,17 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskServiceClient interface {
-	// --- Commands
+	// Summary: Create new task
 	Create(ctx context.Context, in *CreateTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
+	// Summary: Delete existing task
 	Delete(ctx context.Context, in *DeleteTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
+	// Summary: Update existing task
 	Update(ctx context.Context, in *UpdateTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
+	// Update existing task state to progress
 	Progress(ctx context.Context, in *ProgressTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
+	// Update existing task to complete
 	Complete(ctx context.Context, in *CompleteTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
-	// --- Queries
+	// Query for existing tasks
 	ListQuery(ctx context.Context, in *ListTasksQuery, opts ...grpc.CallOption) (*TaskEntity, error)
 }
 
@@ -42,7 +46,7 @@ func NewTaskServiceClient(cc grpc.ClientConnInterface) TaskServiceClient {
 
 func (c *taskServiceClient) Create(ctx context.Context, in *CreateTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error) {
 	out := new(TaskEvent)
-	err := c.cc.Invoke(ctx, "/relay.TaskService/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.TaskService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +55,7 @@ func (c *taskServiceClient) Create(ctx context.Context, in *CreateTaskCommand, o
 
 func (c *taskServiceClient) Delete(ctx context.Context, in *DeleteTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error) {
 	out := new(TaskEvent)
-	err := c.cc.Invoke(ctx, "/relay.TaskService/Delete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.TaskService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +64,7 @@ func (c *taskServiceClient) Delete(ctx context.Context, in *DeleteTaskCommand, o
 
 func (c *taskServiceClient) Update(ctx context.Context, in *UpdateTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error) {
 	out := new(TaskEvent)
-	err := c.cc.Invoke(ctx, "/relay.TaskService/Update", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.TaskService/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +73,7 @@ func (c *taskServiceClient) Update(ctx context.Context, in *UpdateTaskCommand, o
 
 func (c *taskServiceClient) Progress(ctx context.Context, in *ProgressTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error) {
 	out := new(TaskEvent)
-	err := c.cc.Invoke(ctx, "/relay.TaskService/Progress", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.TaskService/Progress", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +82,7 @@ func (c *taskServiceClient) Progress(ctx context.Context, in *ProgressTaskComman
 
 func (c *taskServiceClient) Complete(ctx context.Context, in *CompleteTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error) {
 	out := new(TaskEvent)
-	err := c.cc.Invoke(ctx, "/relay.TaskService/Complete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.TaskService/Complete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +91,7 @@ func (c *taskServiceClient) Complete(ctx context.Context, in *CompleteTaskComman
 
 func (c *taskServiceClient) ListQuery(ctx context.Context, in *ListTasksQuery, opts ...grpc.CallOption) (*TaskEntity, error) {
 	out := new(TaskEntity)
-	err := c.cc.Invoke(ctx, "/relay.TaskService/ListQuery", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.TaskService/ListQuery", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -98,13 +102,17 @@ func (c *taskServiceClient) ListQuery(ctx context.Context, in *ListTasksQuery, o
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility
 type TaskServiceServer interface {
-	// --- Commands
+	// Summary: Create new task
 	Create(context.Context, *CreateTaskCommand) (*TaskEvent, error)
+	// Summary: Delete existing task
 	Delete(context.Context, *DeleteTaskCommand) (*TaskEvent, error)
+	// Summary: Update existing task
 	Update(context.Context, *UpdateTaskCommand) (*TaskEvent, error)
+	// Update existing task state to progress
 	Progress(context.Context, *ProgressTaskCommand) (*TaskEvent, error)
+	// Update existing task to complete
 	Complete(context.Context, *CompleteTaskCommand) (*TaskEvent, error)
-	// --- Queries
+	// Query for existing tasks
 	ListQuery(context.Context, *ListTasksQuery) (*TaskEntity, error)
 	mustEmbedUnimplementedTaskServiceServer()
 }
@@ -154,7 +162,7 @@ func _TaskService_Create_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/relay.TaskService/Create",
+		FullMethod: "/tasks.TaskService/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TaskServiceServer).Create(ctx, req.(*CreateTaskCommand))
@@ -172,7 +180,7 @@ func _TaskService_Delete_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/relay.TaskService/Delete",
+		FullMethod: "/tasks.TaskService/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TaskServiceServer).Delete(ctx, req.(*DeleteTaskCommand))
@@ -190,7 +198,7 @@ func _TaskService_Update_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/relay.TaskService/Update",
+		FullMethod: "/tasks.TaskService/Update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TaskServiceServer).Update(ctx, req.(*UpdateTaskCommand))
@@ -208,7 +216,7 @@ func _TaskService_Progress_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/relay.TaskService/Progress",
+		FullMethod: "/tasks.TaskService/Progress",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TaskServiceServer).Progress(ctx, req.(*ProgressTaskCommand))
@@ -226,7 +234,7 @@ func _TaskService_Complete_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/relay.TaskService/Complete",
+		FullMethod: "/tasks.TaskService/Complete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TaskServiceServer).Complete(ctx, req.(*CompleteTaskCommand))
@@ -244,7 +252,7 @@ func _TaskService_ListQuery_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/relay.TaskService/ListQuery",
+		FullMethod: "/tasks.TaskService/ListQuery",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TaskServiceServer).ListQuery(ctx, req.(*ListTasksQuery))
@@ -256,7 +264,7 @@ func _TaskService_ListQuery_Handler(srv interface{}, ctx context.Context, dec fu
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var TaskService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "relay.TaskService",
+	ServiceName: "tasks.TaskService",
 	HandlerType: (*TaskServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -292,7 +300,7 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QuoteServiceClient interface {
-	// --- Queries
+	// Get a quote
 	Get(ctx context.Context, in *GetQuoteQuery, opts ...grpc.CallOption) (*QuoteData, error)
 }
 
@@ -306,7 +314,7 @@ func NewQuoteServiceClient(cc grpc.ClientConnInterface) QuoteServiceClient {
 
 func (c *quoteServiceClient) Get(ctx context.Context, in *GetQuoteQuery, opts ...grpc.CallOption) (*QuoteData, error) {
 	out := new(QuoteData)
-	err := c.cc.Invoke(ctx, "/relay.QuoteService/Get", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.QuoteService/Get", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -317,7 +325,7 @@ func (c *quoteServiceClient) Get(ctx context.Context, in *GetQuoteQuery, opts ..
 // All implementations must embed UnimplementedQuoteServiceServer
 // for forward compatibility
 type QuoteServiceServer interface {
-	// --- Queries
+	// Get a quote
 	Get(context.Context, *GetQuoteQuery) (*QuoteData, error)
 	mustEmbedUnimplementedQuoteServiceServer()
 }
@@ -352,7 +360,7 @@ func _QuoteService_Get_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/relay.QuoteService/Get",
+		FullMethod: "/tasks.QuoteService/Get",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QuoteServiceServer).Get(ctx, req.(*GetQuoteQuery))
@@ -364,7 +372,7 @@ func _QuoteService_Get_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var QuoteService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "relay.QuoteService",
+	ServiceName: "tasks.QuoteService",
 	HandlerType: (*QuoteServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

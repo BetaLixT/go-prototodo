@@ -4,15 +4,10 @@ package tasks;
 
 import "google/protobuf/timestamp.proto";
 import "custom/annotations.proto";
-// [END declaration]
 
-// [START csharp_declaration]
 option csharp_namespace = "Google.Protobuf.Examples.AddressBook";
-// [END csharp_declaration]
-
-// [START go_declaration]
 option go_package = "pkg/app/server/contracts";
-// [END go_declaration]
+
 
 // [START common]
 message UserContext {
@@ -62,8 +57,6 @@ message ListTasksQuery {
   uint32 count_per_page = 3;
 }
 
-
-
 // -- Data
 message TaskData {
   optional string title = 1;
@@ -91,19 +84,6 @@ message TaskEntity {
   google.protobuf.Timestamp created_date_time = 6;
   google.protobuf.Timestamp updated_date_time = 7; 
 }
-// [END tasks domain]
-
-// [START quote domain]
-// -- Queries
-message GetQuoteQuery {
-  UserContext user_context = 1;
-}
-
-// -- Data
-message QuoteData {
-  optional string quote = 1;
-}
-// [END quote domain]
 
 // -- Service
 service TaskService {
@@ -117,7 +97,6 @@ service TaskService {
     };
   };
   
-  // Summary: Delete existing task
   rpc Delete(DeleteTaskCommand) returns (TaskEvent) {
     option (custom.documentation) = {
       description: "deletes an existing task",
@@ -126,24 +105,63 @@ service TaskService {
     };
   };
   
-  // Summary: Update existing task
-  rpc Update(UpdateTaskCommand) returns (TaskEvent) {};
+  rpc Update(UpdateTaskCommand) returns (TaskEvent) {
+    option (custom.documentation) = {
+      description: "updates an existing task",
+      summary: "update task",
+      tags: ["public", "tasks"]
+    };
+  };
   
   // Update existing task state to progress
-  rpc Progress(ProgressTaskCommand) returns (TaskEvent) {};
+  rpc Progress(ProgressTaskCommand) returns (TaskEvent) {
+    option (custom.documentation) = {
+      description: "update state of existing task to progress",
+      summary: "progress task",
+      tags: ["public", "tasks"]
+    };
+  };
   
   // Update existing task to complete
-  rpc Complete(CompleteTaskCommand) returns (TaskEvent) {};
+  rpc Complete(CompleteTaskCommand) returns (TaskEvent) {
+    option (custom.documentation) = {
+      description: "update state of existing task to complete",
+      summary: "complete task",
+      tags: ["public", "tasks"]
+    };
+  };
 
   // Query for existing tasks
-  rpc ListQuery(ListTasksQuery) returns (TaskEntity) {};
+  rpc ListQuery(ListTasksQuery) returns (TaskEntity) {
+    option (custom.documentation) = {
+      description: "query all existing tasks",
+      summary: "query tasks",
+      tags: ["public", "tasks"]
+    };
+  };
+}
+// [END tasks domain]
+
+// [START quote domain]
+// -- Queries
+message GetQuoteQuery {
+  UserContext user_context = 1;
+}
+
+// -- Data
+message QuoteData {
+  optional string quote = 1;
 }
 
 service QuoteService {
   
   // Get a quote
-  rpc Get(GetQuoteQuery) returns (QuoteData) {};
+  rpc Get(GetQuoteQuery) returns (QuoteData) {
+    option (custom.documentation) = {
+      description: "get a random quote",
+      summary: "get quote",
+      tags: ["public", "quote"]
+    };
+  };
 }
-
-// [END tasks domain]
-
+// [END quote domain]

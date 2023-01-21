@@ -22,11 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskServiceClient interface {
-	// Summary: Create new task
+	// - Commands
 	Create(ctx context.Context, in *CreateTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
-	// Summary: Delete existing task
 	Delete(ctx context.Context, in *DeleteTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
-	// Summary: Update existing task
 	Update(ctx context.Context, in *UpdateTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
 	// Update existing task state to progress
 	Progress(ctx context.Context, in *ProgressTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
@@ -102,11 +100,9 @@ func (c *taskServiceClient) ListQuery(ctx context.Context, in *ListTasksQuery, o
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility
 type TaskServiceServer interface {
-	// Summary: Create new task
+	// - Commands
 	Create(context.Context, *CreateTaskCommand) (*TaskEvent, error)
-	// Summary: Delete existing task
 	Delete(context.Context, *DeleteTaskCommand) (*TaskEvent, error)
-	// Summary: Update existing task
 	Update(context.Context, *UpdateTaskCommand) (*TaskEvent, error)
 	// Update existing task state to progress
 	Progress(context.Context, *ProgressTaskCommand) (*TaskEvent, error)

@@ -11,11 +11,9 @@ import (
 
 // TaskService
 type TaskServiceHTTPServer interface {
-	// Summary: Create new task
+	// - Commands
 	Create(context.Context, *CreateTaskCommand) (*TaskEvent, error)
-	// Summary: Delete existing task
 	Delete(context.Context, *DeleteTaskCommand) (*TaskEvent, error)
-	// Summary: Update existing task
 	Update(context.Context, *UpdateTaskCommand) (*TaskEvent, error)
 	// Update existing task state to progress
 	Progress(context.Context, *ProgressTaskCommand) (*TaskEvent, error)
@@ -28,8 +26,7 @@ type taskService struct {
 	app TaskServiceHTTPServer
 }
 
-//  Summary: Create new task
-
+// creates a new task
 func (p *taskService) create(ctx *gin.Context) {
 	body := CreateTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
@@ -39,8 +36,7 @@ func (p *taskService) create(ctx *gin.Context) {
 	)
 }
 
-//  Summary: Delete existing task
-
+// deletes an existing task
 func (p *taskService) delete(ctx *gin.Context) {
 	body := DeleteTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
@@ -50,8 +46,7 @@ func (p *taskService) delete(ctx *gin.Context) {
 	)
 }
 
-//  Summary: Update existing task
-
+// updates an existing task
 func (p *taskService) update(ctx *gin.Context) {
 	body := UpdateTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
@@ -61,8 +56,7 @@ func (p *taskService) update(ctx *gin.Context) {
 	)
 }
 
-//  Update existing task state to progress
-
+// update state of existing task to progress
 func (p *taskService) progress(ctx *gin.Context) {
 	body := ProgressTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
@@ -72,8 +66,7 @@ func (p *taskService) progress(ctx *gin.Context) {
 	)
 }
 
-//  Update existing task to complete
-
+// update state of existing task to complete
 func (p *taskService) complete(ctx *gin.Context) {
 	body := CompleteTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
@@ -83,8 +76,7 @@ func (p *taskService) complete(ctx *gin.Context) {
 	)
 }
 
-//  Query for existing tasks
-
+// query all existing tasks
 func (p *taskService) listQuery(ctx *gin.Context) {
 	body := ListTasksQuery{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
@@ -115,8 +107,7 @@ type quoteService struct {
 	app QuoteServiceHTTPServer
 }
 
-//  Get a quote
-
+// get a random quote
 func (p *quoteService) get(ctx *gin.Context) {
 	body := GetQuoteQuery{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)

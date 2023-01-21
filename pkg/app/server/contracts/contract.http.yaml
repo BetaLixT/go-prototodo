@@ -3,3 +3,258 @@
 openapi: 3.0.3
 info:
   title: tasks
+paths:
+  /commands/createTask:
+    post:
+      tags:
+        - public
+        - tasks
+      summary: create new task
+      description: creates a new task
+      responses:
+        '200':
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEvent'
+  /commands/deleteTask:
+    post:
+      tags:
+        - private
+        - tasks
+      summary: delete task
+      description: deletes an existing task
+      responses:
+        '200':
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEvent'
+  /commands/updateTask:
+    post:
+      tags:
+        - public
+        - tasks
+      summary: update task
+      description: updates an existing task
+      responses:
+        '200':
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEvent'
+  /commands/progressTask:
+    post:
+      tags:
+        - public
+        - tasks
+      summary: progress task
+      description: update state of existing task to progress
+      responses:
+        '200':
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEvent'
+  /commands/completeTask:
+    post:
+      tags:
+        - public
+        - tasks
+      summary: complete task
+      description: update state of existing task to complete
+      responses:
+        '200':
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEvent'
+  /queries/listTasks:
+    post:
+      tags:
+        - public
+        - tasks
+      summary: query tasks
+      description: query all existing tasks
+      responses:
+        '200':
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskEntity'
+  /queries/getQuote:
+    post:
+      tags:
+        - public
+        - quote
+      summary: get quote
+      description: get a random quote
+      responses:
+        '200':
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteData'
+components:
+  schemas:
+    TaskEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        sagaId:
+          type: string
+          example: sample
+        stream:
+          type: string
+          example: sample
+        streamId:
+          type: string
+          example: sample
+        version:
+          type: integer
+          format: int64
+          example: 1
+        event:
+          type: string
+          example: sample
+        eventTime:
+          $ref: '#/components/schemas/Timestamp'
+        data:
+          $ref: '#/components/schemas/TaskData'
+    Timestamp:
+      type: object
+      properties:
+        seconds:
+          type: integer
+          format: int64
+          example: 1
+        nanos:
+          type: integer
+          format: int32
+          example: 1
+    TaskData:
+      type: object
+      properties:
+        title:
+          type: string
+          example: sample
+        description:
+          type: string
+          example: sample
+        status:
+    CreateTaskCommand:
+      type: object
+      properties:
+        userContext:
+          $ref: '#/components/schemas/UserContext'
+        title:
+          type: string
+          example: sample
+        description:
+          type: string
+          example: sample
+    UserContext:
+      type: object
+      properties:
+        userType:
+          type: string
+          example: sample
+        id:
+          type: string
+          example: sample
+        role:
+          type: array
+          items:
+            type: string
+            example: sample
+        features:
+          type: array
+          items:
+            type: string
+            example: sample
+    DeleteTaskCommand:
+      type: object
+      properties:
+        userContext:
+          $ref: '#/components/schemas/UserContext'
+        id:
+          type: string
+          example: sample
+    UpdateTaskCommand:
+      type: object
+      properties:
+        userContext:
+          $ref: '#/components/schemas/UserContext'
+        id:
+          type: string
+          example: sample
+        title:
+          type: string
+          example: sample
+        description:
+          type: string
+          example: sample
+    ProgressTaskCommand:
+      type: object
+      properties:
+        userContext:
+          $ref: '#/components/schemas/UserContext'
+        id:
+          type: string
+          example: sample
+    CompleteTaskCommand:
+      type: object
+      properties:
+        userContext:
+          $ref: '#/components/schemas/UserContext'
+        id:
+          type: string
+          example: sample
+    TaskEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          example: sample
+        version:
+          type: integer
+          format: int64
+          example: 1
+        title:
+          type: string
+          example: sample
+        description:
+          type: string
+          example: sample
+        status:
+        createdDateTime:
+          $ref: '#/components/schemas/Timestamp'
+        updatedDateTime:
+          $ref: '#/components/schemas/Timestamp'
+    ListTasksQuery:
+      type: object
+      properties:
+        userContext:
+          $ref: '#/components/schemas/UserContext'
+        pageNumber:
+          type: integer
+          format: int32
+          example: 1
+        countPerPage:
+          type: integer
+          format: int32
+          example: 1
+    QuoteData:
+      type: object
+      properties:
+        quote:
+          type: string
+          example: sample
+    GetQuoteQuery:
+      type: object
+      properties:
+        userContext:
+          $ref: '#/components/schemas/UserContext'

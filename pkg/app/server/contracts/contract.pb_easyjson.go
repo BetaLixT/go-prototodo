@@ -7,6 +7,7 @@ import (
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
+	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -742,6 +743,38 @@ func easyjsonBabe3b30DecodePrototodoPkgAppServerContracts4(in *jlexer.Lexer, out
 				}
 				*out.Status = Status(in.Int32())
 			}
+		case "random_map":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				in.Delim('{')
+				if !in.IsDelim('}') {
+					out.RandomMap = make(map[string]string)
+				} else {
+					out.RandomMap = nil
+				}
+				for !in.IsDelim('}') {
+					key := string(in.String())
+					in.WantColon()
+					var v7 string
+					v7 = string(in.String())
+					(out.RandomMap)[key] = v7
+					in.WantComma()
+				}
+				in.Delim('}')
+			}
+		case "metadata":
+			if in.IsNull() {
+				in.Skip()
+				out.Metadata = nil
+			} else {
+				if out.Metadata == nil {
+					out.Metadata = new(structpb.Struct)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.Metadata).UnmarshalJSON(data))
+				}
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -781,6 +814,40 @@ func easyjsonBabe3b30EncodePrototodoPkgAppServerContracts4(out *jwriter.Writer, 
 			out.RawString(prefix)
 		}
 		out.Int32(int32(*in.Status))
+	}
+	if len(in.RandomMap) != 0 {
+		const prefix string = ",\"random_map\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		{
+			out.RawByte('{')
+			v8First := true
+			for v8Name, v8Value := range in.RandomMap {
+				if v8First {
+					v8First = false
+				} else {
+					out.RawByte(',')
+				}
+				out.String(string(v8Name))
+				out.RawByte(':')
+				out.String(string(v8Value))
+			}
+			out.RawByte('}')
+		}
+	}
+	if in.Metadata != nil {
+		const prefix string = ",\"metadata\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Raw((*in.Metadata).MarshalJSON())
 	}
 	out.RawByte('}')
 }

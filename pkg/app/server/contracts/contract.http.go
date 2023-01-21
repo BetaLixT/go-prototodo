@@ -30,9 +30,17 @@ type taskService struct {
 func (p *taskService) create(ctx *gin.Context) {
 	body := CreateTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
-	p.app.Create(
+	res, err := p.app.Create(
 		ctx,
 		&body,
+	)
+	if err != nil {
+		return
+	}
+	ctx.Status(200)
+	easyjson.MarshalToHTTPResponseWriter(
+		res,
+		ctx.Writer,
 	)
 }
 
@@ -40,9 +48,17 @@ func (p *taskService) create(ctx *gin.Context) {
 func (p *taskService) delete(ctx *gin.Context) {
 	body := DeleteTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
-	p.app.Delete(
+	res, err := p.app.Delete(
 		ctx,
 		&body,
+	)
+	if err != nil {
+		return
+	}
+	ctx.Status(200)
+	easyjson.MarshalToHTTPResponseWriter(
+		res,
+		ctx.Writer,
 	)
 }
 
@@ -50,9 +66,17 @@ func (p *taskService) delete(ctx *gin.Context) {
 func (p *taskService) update(ctx *gin.Context) {
 	body := UpdateTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
-	p.app.Update(
+	res, err := p.app.Update(
 		ctx,
 		&body,
+	)
+	if err != nil {
+		return
+	}
+	ctx.Status(200)
+	easyjson.MarshalToHTTPResponseWriter(
+		res,
+		ctx.Writer,
 	)
 }
 
@@ -60,9 +84,17 @@ func (p *taskService) update(ctx *gin.Context) {
 func (p *taskService) progress(ctx *gin.Context) {
 	body := ProgressTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
-	p.app.Progress(
+	res, err := p.app.Progress(
 		ctx,
 		&body,
+	)
+	if err != nil {
+		return
+	}
+	ctx.Status(200)
+	easyjson.MarshalToHTTPResponseWriter(
+		res,
+		ctx.Writer,
 	)
 }
 
@@ -70,9 +102,17 @@ func (p *taskService) progress(ctx *gin.Context) {
 func (p *taskService) complete(ctx *gin.Context) {
 	body := CompleteTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
-	p.app.Complete(
+	res, err := p.app.Complete(
 		ctx,
 		&body,
+	)
+	if err != nil {
+		return
+	}
+	ctx.Status(200)
+	easyjson.MarshalToHTTPResponseWriter(
+		res,
+		ctx.Writer,
 	)
 }
 
@@ -80,9 +120,17 @@ func (p *taskService) complete(ctx *gin.Context) {
 func (p *taskService) listQuery(ctx *gin.Context) {
 	body := ListTasksQuery{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
-	p.app.ListQuery(
+	res, err := p.app.ListQuery(
 		ctx,
 		&body,
+	)
+	if err != nil {
+		return
+	}
+	ctx.Status(200)
+	easyjson.MarshalToHTTPResponseWriter(
+		res,
+		ctx.Writer,
 	)
 }
 func RegisterTaskServiceHTTPServer(
@@ -111,9 +159,17 @@ type quoteService struct {
 func (p *quoteService) get(ctx *gin.Context) {
 	body := GetQuoteQuery{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
-	p.app.Get(
+	res, err := p.app.Get(
 		ctx,
 		&body,
+	)
+	if err != nil {
+		return
+	}
+	ctx.Status(200)
+	easyjson.MarshalToHTTPResponseWriter(
+		res,
+		ctx.Writer,
 	)
 }
 func RegisterQuoteServiceHTTPServer(

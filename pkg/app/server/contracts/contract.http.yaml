@@ -3,6 +3,7 @@
 openapi: 3.0.3
 info:
   title: tasks
+  version: '1.0'
 paths:
   /commands/createTask:
     post:
@@ -11,8 +12,16 @@ paths:
         - tasks
       summary: create new task
       description: creates a new task
+      requestBody:
+        description: CreateTaskCommand
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskCommand'
+        required: true
       responses:
         '200':
+          description: TaskEvent
           content: 
             application/json:
               schema:
@@ -24,8 +33,16 @@ paths:
         - tasks
       summary: delete task
       description: deletes an existing task
+      requestBody:
+        description: DeleteTaskCommand
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteTaskCommand'
+        required: true
       responses:
         '200':
+          description: TaskEvent
           content: 
             application/json:
               schema:
@@ -37,8 +54,16 @@ paths:
         - tasks
       summary: update task
       description: updates an existing task
+      requestBody:
+        description: UpdateTaskCommand
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskCommand'
+        required: true
       responses:
         '200':
+          description: TaskEvent
           content: 
             application/json:
               schema:
@@ -50,8 +75,16 @@ paths:
         - tasks
       summary: progress task
       description: update state of existing task to progress
+      requestBody:
+        description: ProgressTaskCommand
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgressTaskCommand'
+        required: true
       responses:
         '200':
+          description: TaskEvent
           content: 
             application/json:
               schema:
@@ -63,8 +96,16 @@ paths:
         - tasks
       summary: complete task
       description: update state of existing task to complete
+      requestBody:
+        description: CompleteTaskCommand
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteTaskCommand'
+        required: true
       responses:
         '200':
+          description: TaskEvent
           content: 
             application/json:
               schema:
@@ -76,8 +117,16 @@ paths:
         - tasks
       summary: query tasks
       description: query all existing tasks
+      requestBody:
+        description: ListTasksQuery
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListTasksQuery'
+        required: true
       responses:
         '200':
+          description: TaskEntity
           content: 
             application/json:
               schema:
@@ -89,8 +138,16 @@ paths:
         - quote
       summary: get quote
       description: get a random quote
+      requestBody:
+        description: GetQuoteQuery
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetQuoteQuery'
+        required: true
       responses:
         '200':
+          description: QuoteData
           content: 
             application/json:
               schema:
@@ -121,20 +178,11 @@ components:
           type: string
           example: sample
         eventTime:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
+          example: '2017-07-21T17:32:28Z'
         data:
           $ref: '#/components/schemas/TaskData'
-    Timestamp:
-      type: object
-      properties:
-        seconds:
-          type: integer
-          format: int64
-          example: 1
-        nanos:
-          type: integer
-          format: int32
-          example: 1
     TaskData:
       type: object
       properties:
@@ -145,6 +193,15 @@ components:
           type: string
           example: sample
         status:
+          type: string
+          enum: [PENDING, PROGRESS, COMPLETED]
+        randomMap:
+          type: object
+          additionalProperties:
+            type: string
+            example: sample
+        metadata:
+          type: object
     CreateTaskCommand:
       type: object
       properties:
@@ -230,10 +287,16 @@ components:
           type: string
           example: sample
         status:
+          type: string
+          enum: [PENDING, PROGRESS, COMPLETED]
         createdDateTime:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
+          example: '2017-07-21T17:32:28Z'
         updatedDateTime:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
+          example: '2017-07-21T17:32:28Z'
     ListTasksQuery:
       type: object
       properties:

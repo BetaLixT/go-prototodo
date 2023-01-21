@@ -3,6 +3,7 @@ syntax = 'proto3';
 package tasks;
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
 import "custom/annotations.proto";
 
 option csharp_namespace = "Google.Protobuf.Examples.AddressBook";
@@ -62,6 +63,8 @@ message TaskData {
   optional string title = 1;
   optional string description = 2;
   optional Status status = 3;
+  map<string, string> random_map = 4;
+  optional google.protobuf.Struct metadata = 5;
 }
 
 message TaskEvent {

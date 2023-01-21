@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.6
-// source: contract.proto
+// source: contracts/service.proto
 
 package contracts
 
@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	contracts "prototodo/pkg/domain/contracts"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -23,15 +24,15 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskServiceClient interface {
 	// - Commands
-	Create(ctx context.Context, in *CreateTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
-	Delete(ctx context.Context, in *DeleteTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
-	Update(ctx context.Context, in *UpdateTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
+	Create(ctx context.Context, in *contracts.CreateTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error)
+	Delete(ctx context.Context, in *contracts.DeleteTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error)
+	Update(ctx context.Context, in *contracts.UpdateTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error)
 	// Update existing task state to progress
-	Progress(ctx context.Context, in *ProgressTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
+	Progress(ctx context.Context, in *contracts.ProgressTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error)
 	// Update existing task to complete
-	Complete(ctx context.Context, in *CompleteTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error)
+	Complete(ctx context.Context, in *contracts.CompleteTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error)
 	// Query for existing tasks
-	ListQuery(ctx context.Context, in *ListTasksQuery, opts ...grpc.CallOption) (*TaskEntity, error)
+	ListQuery(ctx context.Context, in *contracts.ListTasksQuery, opts ...grpc.CallOption) (*contracts.TaskEntity, error)
 }
 
 type taskServiceClient struct {
@@ -42,8 +43,8 @@ func NewTaskServiceClient(cc grpc.ClientConnInterface) TaskServiceClient {
 	return &taskServiceClient{cc}
 }
 
-func (c *taskServiceClient) Create(ctx context.Context, in *CreateTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error) {
-	out := new(TaskEvent)
+func (c *taskServiceClient) Create(ctx context.Context, in *contracts.CreateTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
+	out := new(contracts.TaskEvent)
 	err := c.cc.Invoke(ctx, "/tasks.TaskService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -51,8 +52,8 @@ func (c *taskServiceClient) Create(ctx context.Context, in *CreateTaskCommand, o
 	return out, nil
 }
 
-func (c *taskServiceClient) Delete(ctx context.Context, in *DeleteTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error) {
-	out := new(TaskEvent)
+func (c *taskServiceClient) Delete(ctx context.Context, in *contracts.DeleteTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
+	out := new(contracts.TaskEvent)
 	err := c.cc.Invoke(ctx, "/tasks.TaskService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -60,8 +61,8 @@ func (c *taskServiceClient) Delete(ctx context.Context, in *DeleteTaskCommand, o
 	return out, nil
 }
 
-func (c *taskServiceClient) Update(ctx context.Context, in *UpdateTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error) {
-	out := new(TaskEvent)
+func (c *taskServiceClient) Update(ctx context.Context, in *contracts.UpdateTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
+	out := new(contracts.TaskEvent)
 	err := c.cc.Invoke(ctx, "/tasks.TaskService/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -69,8 +70,8 @@ func (c *taskServiceClient) Update(ctx context.Context, in *UpdateTaskCommand, o
 	return out, nil
 }
 
-func (c *taskServiceClient) Progress(ctx context.Context, in *ProgressTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error) {
-	out := new(TaskEvent)
+func (c *taskServiceClient) Progress(ctx context.Context, in *contracts.ProgressTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
+	out := new(contracts.TaskEvent)
 	err := c.cc.Invoke(ctx, "/tasks.TaskService/Progress", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -78,8 +79,8 @@ func (c *taskServiceClient) Progress(ctx context.Context, in *ProgressTaskComman
 	return out, nil
 }
 
-func (c *taskServiceClient) Complete(ctx context.Context, in *CompleteTaskCommand, opts ...grpc.CallOption) (*TaskEvent, error) {
-	out := new(TaskEvent)
+func (c *taskServiceClient) Complete(ctx context.Context, in *contracts.CompleteTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
+	out := new(contracts.TaskEvent)
 	err := c.cc.Invoke(ctx, "/tasks.TaskService/Complete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -87,8 +88,8 @@ func (c *taskServiceClient) Complete(ctx context.Context, in *CompleteTaskComman
 	return out, nil
 }
 
-func (c *taskServiceClient) ListQuery(ctx context.Context, in *ListTasksQuery, opts ...grpc.CallOption) (*TaskEntity, error) {
-	out := new(TaskEntity)
+func (c *taskServiceClient) ListQuery(ctx context.Context, in *contracts.ListTasksQuery, opts ...grpc.CallOption) (*contracts.TaskEntity, error) {
+	out := new(contracts.TaskEntity)
 	err := c.cc.Invoke(ctx, "/tasks.TaskService/ListQuery", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -101,15 +102,15 @@ func (c *taskServiceClient) ListQuery(ctx context.Context, in *ListTasksQuery, o
 // for forward compatibility
 type TaskServiceServer interface {
 	// - Commands
-	Create(context.Context, *CreateTaskCommand) (*TaskEvent, error)
-	Delete(context.Context, *DeleteTaskCommand) (*TaskEvent, error)
-	Update(context.Context, *UpdateTaskCommand) (*TaskEvent, error)
+	Create(context.Context, *contracts.CreateTaskCommand) (*contracts.TaskEvent, error)
+	Delete(context.Context, *contracts.DeleteTaskCommand) (*contracts.TaskEvent, error)
+	Update(context.Context, *contracts.UpdateTaskCommand) (*contracts.TaskEvent, error)
 	// Update existing task state to progress
-	Progress(context.Context, *ProgressTaskCommand) (*TaskEvent, error)
+	Progress(context.Context, *contracts.ProgressTaskCommand) (*contracts.TaskEvent, error)
 	// Update existing task to complete
-	Complete(context.Context, *CompleteTaskCommand) (*TaskEvent, error)
+	Complete(context.Context, *contracts.CompleteTaskCommand) (*contracts.TaskEvent, error)
 	// Query for existing tasks
-	ListQuery(context.Context, *ListTasksQuery) (*TaskEntity, error)
+	ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntity, error)
 	mustEmbedUnimplementedTaskServiceServer()
 }
 
@@ -117,22 +118,22 @@ type TaskServiceServer interface {
 type UnimplementedTaskServiceServer struct {
 }
 
-func (UnimplementedTaskServiceServer) Create(context.Context, *CreateTaskCommand) (*TaskEvent, error) {
+func (UnimplementedTaskServiceServer) Create(context.Context, *contracts.CreateTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedTaskServiceServer) Delete(context.Context, *DeleteTaskCommand) (*TaskEvent, error) {
+func (UnimplementedTaskServiceServer) Delete(context.Context, *contracts.DeleteTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedTaskServiceServer) Update(context.Context, *UpdateTaskCommand) (*TaskEvent, error) {
+func (UnimplementedTaskServiceServer) Update(context.Context, *contracts.UpdateTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedTaskServiceServer) Progress(context.Context, *ProgressTaskCommand) (*TaskEvent, error) {
+func (UnimplementedTaskServiceServer) Progress(context.Context, *contracts.ProgressTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Progress not implemented")
 }
-func (UnimplementedTaskServiceServer) Complete(context.Context, *CompleteTaskCommand) (*TaskEvent, error) {
+func (UnimplementedTaskServiceServer) Complete(context.Context, *contracts.CompleteTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Complete not implemented")
 }
-func (UnimplementedTaskServiceServer) ListQuery(context.Context, *ListTasksQuery) (*TaskEntity, error) {
+func (UnimplementedTaskServiceServer) ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntity, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListQuery not implemented")
 }
 func (UnimplementedTaskServiceServer) mustEmbedUnimplementedTaskServiceServer() {}
@@ -149,7 +150,7 @@ func RegisterTaskServiceServer(s grpc.ServiceRegistrar, srv TaskServiceServer) {
 }
 
 func _TaskService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateTaskCommand)
+	in := new(contracts.CreateTaskCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -161,13 +162,13 @@ func _TaskService_Create_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/tasks.TaskService/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).Create(ctx, req.(*CreateTaskCommand))
+		return srv.(TaskServiceServer).Create(ctx, req.(*contracts.CreateTaskCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteTaskCommand)
+	in := new(contracts.DeleteTaskCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -179,13 +180,13 @@ func _TaskService_Delete_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/tasks.TaskService/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).Delete(ctx, req.(*DeleteTaskCommand))
+		return srv.(TaskServiceServer).Delete(ctx, req.(*contracts.DeleteTaskCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateTaskCommand)
+	in := new(contracts.UpdateTaskCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -197,13 +198,13 @@ func _TaskService_Update_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/tasks.TaskService/Update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).Update(ctx, req.(*UpdateTaskCommand))
+		return srv.(TaskServiceServer).Update(ctx, req.(*contracts.UpdateTaskCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_Progress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProgressTaskCommand)
+	in := new(contracts.ProgressTaskCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -215,13 +216,13 @@ func _TaskService_Progress_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/tasks.TaskService/Progress",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).Progress(ctx, req.(*ProgressTaskCommand))
+		return srv.(TaskServiceServer).Progress(ctx, req.(*contracts.ProgressTaskCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_Complete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CompleteTaskCommand)
+	in := new(contracts.CompleteTaskCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -233,13 +234,13 @@ func _TaskService_Complete_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/tasks.TaskService/Complete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).Complete(ctx, req.(*CompleteTaskCommand))
+		return srv.(TaskServiceServer).Complete(ctx, req.(*contracts.CompleteTaskCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_ListQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListTasksQuery)
+	in := new(contracts.ListTasksQuery)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -251,7 +252,7 @@ func _TaskService_ListQuery_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/tasks.TaskService/ListQuery",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).ListQuery(ctx, req.(*ListTasksQuery))
+		return srv.(TaskServiceServer).ListQuery(ctx, req.(*contracts.ListTasksQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -289,7 +290,7 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "contract.proto",
+	Metadata: "contracts/service.proto",
 }
 
 // QuoteServiceClient is the client API for QuoteService service.
@@ -297,7 +298,7 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QuoteServiceClient interface {
 	// Get a quote
-	Get(ctx context.Context, in *GetQuoteQuery, opts ...grpc.CallOption) (*QuoteData, error)
+	Get(ctx context.Context, in *contracts.GetQuoteQuery, opts ...grpc.CallOption) (*contracts.QuoteData, error)
 }
 
 type quoteServiceClient struct {
@@ -308,8 +309,8 @@ func NewQuoteServiceClient(cc grpc.ClientConnInterface) QuoteServiceClient {
 	return &quoteServiceClient{cc}
 }
 
-func (c *quoteServiceClient) Get(ctx context.Context, in *GetQuoteQuery, opts ...grpc.CallOption) (*QuoteData, error) {
-	out := new(QuoteData)
+func (c *quoteServiceClient) Get(ctx context.Context, in *contracts.GetQuoteQuery, opts ...grpc.CallOption) (*contracts.QuoteData, error) {
+	out := new(contracts.QuoteData)
 	err := c.cc.Invoke(ctx, "/tasks.QuoteService/Get", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -322,7 +323,7 @@ func (c *quoteServiceClient) Get(ctx context.Context, in *GetQuoteQuery, opts ..
 // for forward compatibility
 type QuoteServiceServer interface {
 	// Get a quote
-	Get(context.Context, *GetQuoteQuery) (*QuoteData, error)
+	Get(context.Context, *contracts.GetQuoteQuery) (*contracts.QuoteData, error)
 	mustEmbedUnimplementedQuoteServiceServer()
 }
 
@@ -330,7 +331,7 @@ type QuoteServiceServer interface {
 type UnimplementedQuoteServiceServer struct {
 }
 
-func (UnimplementedQuoteServiceServer) Get(context.Context, *GetQuoteQuery) (*QuoteData, error) {
+func (UnimplementedQuoteServiceServer) Get(context.Context, *contracts.GetQuoteQuery) (*contracts.QuoteData, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
 func (UnimplementedQuoteServiceServer) mustEmbedUnimplementedQuoteServiceServer() {}
@@ -347,7 +348,7 @@ func RegisterQuoteServiceServer(s grpc.ServiceRegistrar, srv QuoteServiceServer)
 }
 
 func _QuoteService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetQuoteQuery)
+	in := new(contracts.GetQuoteQuery)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -359,7 +360,7 @@ func _QuoteService_Get_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/tasks.QuoteService/Get",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QuoteServiceServer).Get(ctx, req.(*GetQuoteQuery))
+		return srv.(QuoteServiceServer).Get(ctx, req.(*contracts.GetQuoteQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -377,5 +378,5 @@ var QuoteService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "contract.proto",
+	Metadata: "contracts/service.proto",
 }

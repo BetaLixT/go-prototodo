@@ -1,0 +1,100 @@
+// [START declaration]
+syntax = 'proto3';
+package tasks;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "custom/annotations.proto";
+
+option go_package = "prototodo/pkg/domain/contracts";
+
+// [START common]
+message UserContext {
+  string userType = 1;
+  string id = 2;
+  repeated string role = 3;
+  repeated string features = 4;
+}
+// [END common]
+
+// [START tasks domain]
+enum Status {
+  PENDING = 0;
+  PROGRESS = 1;
+  COMPLETED = 2;
+}
+
+// -- Commands
+message CreateTaskCommand {
+  UserContext user_context = 1;
+  string title = 2;
+  string description = 3;
+}
+message DeleteTaskCommand {
+  UserContext user_context = 1;
+  string id = 2;
+}
+message UpdateTaskCommand {
+  UserContext user_context = 1;
+  string id = 2;
+  optional string title = 3;
+  optional string description = 4;
+}
+message ProgressTaskCommand {
+  UserContext user_context = 1;
+  string id = 2;
+}
+message CompleteTaskCommand {
+  UserContext user_context = 1;
+  string id = 2;
+}
+
+// -- Queries
+message ListTasksQuery {
+  UserContext user_context = 1;
+  uint32 page_number = 2;
+  uint32 count_per_page = 3;
+}
+
+// -- Data
+message TaskData {
+  optional string title = 1;
+  optional string description = 2;
+  optional Status status = 3;
+  map<string, string> random_map = 4;
+  optional google.protobuf.Struct metadata = 5;
+}
+
+message TaskEvent {
+  uint64 id = 1;
+  optional string saga_id = 2;
+  string stream = 3;
+  string stream_id = 4;
+  uint64 version = 5;
+  string event = 6;
+  google.protobuf.Timestamp event_time = 7;
+  TaskData data = 8;
+}
+
+message TaskEntity {
+  string id = 1;
+  uint64 version = 2;
+  string title = 3;
+  string description = 4;
+  Status status = 5;
+  google.protobuf.Timestamp created_date_time = 6;
+  google.protobuf.Timestamp updated_date_time = 7; 
+}
+// [END tasks domain]
+
+// [START quote domain]
+// -- Queries
+message GetQuoteQuery {
+  UserContext user_context = 1;
+}
+
+// -- Data
+message QuoteData {
+  optional string quote = 1;
+}
+// [END quote domain]

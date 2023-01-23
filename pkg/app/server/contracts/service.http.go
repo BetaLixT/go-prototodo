@@ -4,37 +4,39 @@
 package contracts
 
 import (
-	"context"
-	"github.com/gin-gonic/gin"
-	"github.com/mailru/easyjson"
+	context "context"
+	gin "github.com/gin-gonic/gin"
+	easyjson "github.com/mailru/easyjson"
+	contracts "prototodo/pkg/domain/contracts"
 )
 
-// TaskService
-type TaskServiceHTTPServer interface {
+// Tasks
+type TasksHTTPServer interface {
 	// - Commands
-	Create(context.Context, *CreateTaskCommand) (*TaskEvent, error)
-	Delete(context.Context, *DeleteTaskCommand) (*TaskEvent, error)
-	Update(context.Context, *UpdateTaskCommand) (*TaskEvent, error)
+	Create(context.Context, *contracts.CreateTaskCommand) (*contracts.TaskEvent, error)
+	Delete(context.Context, *contracts.DeleteTaskCommand) (*contracts.TaskEvent, error)
+	Update(context.Context, *contracts.UpdateTaskCommand) (*contracts.TaskEvent, error)
 	// Update existing task state to progress
-	Progress(context.Context, *ProgressTaskCommand) (*TaskEvent, error)
+	Progress(context.Context, *contracts.ProgressTaskCommand) (*contracts.TaskEvent, error)
 	// Update existing task to complete
-	Complete(context.Context, *CompleteTaskCommand) (*TaskEvent, error)
+	Complete(context.Context, *contracts.CompleteTaskCommand) (*contracts.TaskEvent, error)
 	// Query for existing tasks
-	ListQuery(context.Context, *ListTasksQuery) (*TaskEntity, error)
+	ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntity, error)
 }
-type taskService struct {
-	app TaskServiceHTTPServer
+type tasks struct {
+	app TasksHTTPServer
 }
 
 // creates a new task
-func (p *taskService) create(ctx *gin.Context) {
-	body := CreateTaskCommand{}
+func (p *tasks) create(ctx *gin.Context) {
+	body := contracts.CreateTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
 	res, err := p.app.Create(
 		ctx,
 		&body,
 	)
 	if err != nil {
+		ctx.Error(err)
 		return
 	}
 	ctx.Status(200)
@@ -45,14 +47,15 @@ func (p *taskService) create(ctx *gin.Context) {
 }
 
 // deletes an existing task
-func (p *taskService) delete(ctx *gin.Context) {
-	body := DeleteTaskCommand{}
+func (p *tasks) delete(ctx *gin.Context) {
+	body := contracts.DeleteTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
 	res, err := p.app.Delete(
 		ctx,
 		&body,
 	)
 	if err != nil {
+		ctx.Error(err)
 		return
 	}
 	ctx.Status(200)
@@ -63,14 +66,15 @@ func (p *taskService) delete(ctx *gin.Context) {
 }
 
 // updates an existing task
-func (p *taskService) update(ctx *gin.Context) {
-	body := UpdateTaskCommand{}
+func (p *tasks) update(ctx *gin.Context) {
+	body := contracts.UpdateTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
 	res, err := p.app.Update(
 		ctx,
 		&body,
 	)
 	if err != nil {
+		ctx.Error(err)
 		return
 	}
 	ctx.Status(200)
@@ -81,14 +85,15 @@ func (p *taskService) update(ctx *gin.Context) {
 }
 
 // update state of existing task to progress
-func (p *taskService) progress(ctx *gin.Context) {
-	body := ProgressTaskCommand{}
+func (p *tasks) progress(ctx *gin.Context) {
+	body := contracts.ProgressTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
 	res, err := p.app.Progress(
 		ctx,
 		&body,
 	)
 	if err != nil {
+		ctx.Error(err)
 		return
 	}
 	ctx.Status(200)
@@ -99,14 +104,15 @@ func (p *taskService) progress(ctx *gin.Context) {
 }
 
 // update state of existing task to complete
-func (p *taskService) complete(ctx *gin.Context) {
-	body := CompleteTaskCommand{}
+func (p *tasks) complete(ctx *gin.Context) {
+	body := contracts.CompleteTaskCommand{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
 	res, err := p.app.Complete(
 		ctx,
 		&body,
 	)
 	if err != nil {
+		ctx.Error(err)
 		return
 	}
 	ctx.Status(200)
@@ -117,14 +123,15 @@ func (p *taskService) complete(ctx *gin.Context) {
 }
 
 // query all existing tasks
-func (p *taskService) listQuery(ctx *gin.Context) {
-	body := ListTasksQuery{}
+func (p *tasks) listQuery(ctx *gin.Context) {
+	body := contracts.ListTasksQuery{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
 	res, err := p.app.ListQuery(
 		ctx,
 		&body,
 	)
 	if err != nil {
+		ctx.Error(err)
 		return
 	}
 	ctx.Status(200)
@@ -133,11 +140,11 @@ func (p *taskService) listQuery(ctx *gin.Context) {
 		ctx.Writer,
 	)
 }
-func RegisterTaskServiceHTTPServer(
+func RegisterTasksHTTPServer(
 	grp *gin.RouterGroup,
-	srv TaskServiceHTTPServer,
+	srv TasksHTTPServer,
 ) {
-	ctrl := taskService{app: srv}
+	ctrl := tasks{app: srv}
 	grp.POST("/commands/createTask", ctrl.create)
 	grp.POST("/commands/deleteTask", ctrl.delete)
 	grp.POST("/commands/updateTask", ctrl.update)
@@ -146,24 +153,25 @@ func RegisterTaskServiceHTTPServer(
 	grp.POST("/queries/listTasks", ctrl.listQuery)
 }
 
-// QuoteService
-type QuoteServiceHTTPServer interface {
+// Quotes
+type QuotesHTTPServer interface {
 	// Get a quote
-	Get(context.Context, *GetQuoteQuery) (*QuoteData, error)
+	Get(context.Context, *contracts.GetQuoteQuery) (*contracts.QuoteData, error)
 }
-type quoteService struct {
-	app QuoteServiceHTTPServer
+type quotes struct {
+	app QuotesHTTPServer
 }
 
 // get a random quote
-func (p *quoteService) get(ctx *gin.Context) {
-	body := GetQuoteQuery{}
+func (p *quotes) get(ctx *gin.Context) {
+	body := contracts.GetQuoteQuery{}
 	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
 	res, err := p.app.Get(
 		ctx,
 		&body,
 	)
 	if err != nil {
+		ctx.Error(err)
 		return
 	}
 	ctx.Status(200)
@@ -172,10 +180,10 @@ func (p *quoteService) get(ctx *gin.Context) {
 		ctx.Writer,
 	)
 }
-func RegisterQuoteServiceHTTPServer(
+func RegisterQuotesHTTPServer(
 	grp *gin.RouterGroup,
-	srv QuoteServiceHTTPServer,
+	srv QuotesHTTPServer,
 ) {
-	ctrl := quoteService{app: srv}
+	ctrl := quotes{app: srv}
 	grp.POST("/queries/getQuote", ctrl.get)
 }

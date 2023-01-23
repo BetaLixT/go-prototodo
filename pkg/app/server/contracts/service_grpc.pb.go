@@ -19,10 +19,10 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// TaskServiceClient is the client API for TaskService service.
+// TasksClient is the client API for Tasks service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type TaskServiceClient interface {
+type TasksClient interface {
 	// - Commands
 	Create(ctx context.Context, in *contracts.CreateTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error)
 	Delete(ctx context.Context, in *contracts.DeleteTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error)
@@ -35,72 +35,72 @@ type TaskServiceClient interface {
 	ListQuery(ctx context.Context, in *contracts.ListTasksQuery, opts ...grpc.CallOption) (*contracts.TaskEntity, error)
 }
 
-type taskServiceClient struct {
+type tasksClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewTaskServiceClient(cc grpc.ClientConnInterface) TaskServiceClient {
-	return &taskServiceClient{cc}
+func NewTasksClient(cc grpc.ClientConnInterface) TasksClient {
+	return &tasksClient{cc}
 }
 
-func (c *taskServiceClient) Create(ctx context.Context, in *contracts.CreateTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
+func (c *tasksClient) Create(ctx context.Context, in *contracts.CreateTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
 	out := new(contracts.TaskEvent)
-	err := c.cc.Invoke(ctx, "/tasks.TaskService/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *taskServiceClient) Delete(ctx context.Context, in *contracts.DeleteTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
+func (c *tasksClient) Delete(ctx context.Context, in *contracts.DeleteTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
 	out := new(contracts.TaskEvent)
-	err := c.cc.Invoke(ctx, "/tasks.TaskService/Delete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *taskServiceClient) Update(ctx context.Context, in *contracts.UpdateTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
+func (c *tasksClient) Update(ctx context.Context, in *contracts.UpdateTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
 	out := new(contracts.TaskEvent)
-	err := c.cc.Invoke(ctx, "/tasks.TaskService/Update", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *taskServiceClient) Progress(ctx context.Context, in *contracts.ProgressTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
+func (c *tasksClient) Progress(ctx context.Context, in *contracts.ProgressTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
 	out := new(contracts.TaskEvent)
-	err := c.cc.Invoke(ctx, "/tasks.TaskService/Progress", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/Progress", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *taskServiceClient) Complete(ctx context.Context, in *contracts.CompleteTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
+func (c *tasksClient) Complete(ctx context.Context, in *contracts.CompleteTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error) {
 	out := new(contracts.TaskEvent)
-	err := c.cc.Invoke(ctx, "/tasks.TaskService/Complete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/Complete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *taskServiceClient) ListQuery(ctx context.Context, in *contracts.ListTasksQuery, opts ...grpc.CallOption) (*contracts.TaskEntity, error) {
+func (c *tasksClient) ListQuery(ctx context.Context, in *contracts.ListTasksQuery, opts ...grpc.CallOption) (*contracts.TaskEntity, error) {
 	out := new(contracts.TaskEntity)
-	err := c.cc.Invoke(ctx, "/tasks.TaskService/ListQuery", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/ListQuery", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// TaskServiceServer is the server API for TaskService service.
-// All implementations must embed UnimplementedTaskServiceServer
+// TasksServer is the server API for Tasks service.
+// All implementations must embed UnimplementedTasksServer
 // for forward compatibility
-type TaskServiceServer interface {
+type TasksServer interface {
 	// - Commands
 	Create(context.Context, *contracts.CreateTaskCommand) (*contracts.TaskEvent, error)
 	Delete(context.Context, *contracts.DeleteTaskCommand) (*contracts.TaskEvent, error)
@@ -111,270 +111,270 @@ type TaskServiceServer interface {
 	Complete(context.Context, *contracts.CompleteTaskCommand) (*contracts.TaskEvent, error)
 	// Query for existing tasks
 	ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntity, error)
-	mustEmbedUnimplementedTaskServiceServer()
+	mustEmbedUnimplementedTasksServer()
 }
 
-// UnimplementedTaskServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedTaskServiceServer struct {
+// UnimplementedTasksServer must be embedded to have forward compatible implementations.
+type UnimplementedTasksServer struct {
 }
 
-func (UnimplementedTaskServiceServer) Create(context.Context, *contracts.CreateTaskCommand) (*contracts.TaskEvent, error) {
+func (UnimplementedTasksServer) Create(context.Context, *contracts.CreateTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedTaskServiceServer) Delete(context.Context, *contracts.DeleteTaskCommand) (*contracts.TaskEvent, error) {
+func (UnimplementedTasksServer) Delete(context.Context, *contracts.DeleteTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedTaskServiceServer) Update(context.Context, *contracts.UpdateTaskCommand) (*contracts.TaskEvent, error) {
+func (UnimplementedTasksServer) Update(context.Context, *contracts.UpdateTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedTaskServiceServer) Progress(context.Context, *contracts.ProgressTaskCommand) (*contracts.TaskEvent, error) {
+func (UnimplementedTasksServer) Progress(context.Context, *contracts.ProgressTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Progress not implemented")
 }
-func (UnimplementedTaskServiceServer) Complete(context.Context, *contracts.CompleteTaskCommand) (*contracts.TaskEvent, error) {
+func (UnimplementedTasksServer) Complete(context.Context, *contracts.CompleteTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Complete not implemented")
 }
-func (UnimplementedTaskServiceServer) ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntity, error) {
+func (UnimplementedTasksServer) ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntity, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListQuery not implemented")
 }
-func (UnimplementedTaskServiceServer) mustEmbedUnimplementedTaskServiceServer() {}
+func (UnimplementedTasksServer) mustEmbedUnimplementedTasksServer() {}
 
-// UnsafeTaskServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to TaskServiceServer will
+// UnsafeTasksServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TasksServer will
 // result in compilation errors.
-type UnsafeTaskServiceServer interface {
-	mustEmbedUnimplementedTaskServiceServer()
+type UnsafeTasksServer interface {
+	mustEmbedUnimplementedTasksServer()
 }
 
-func RegisterTaskServiceServer(s grpc.ServiceRegistrar, srv TaskServiceServer) {
-	s.RegisterService(&TaskService_ServiceDesc, srv)
+func RegisterTasksServer(s grpc.ServiceRegistrar, srv TasksServer) {
+	s.RegisterService(&Tasks_ServiceDesc, srv)
 }
 
-func _TaskService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Tasks_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(contracts.CreateTaskCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TaskServiceServer).Create(ctx, in)
+		return srv.(TasksServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tasks.TaskService/Create",
+		FullMethod: "/tasks.Tasks/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).Create(ctx, req.(*contracts.CreateTaskCommand))
+		return srv.(TasksServer).Create(ctx, req.(*contracts.CreateTaskCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TaskService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Tasks_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(contracts.DeleteTaskCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TaskServiceServer).Delete(ctx, in)
+		return srv.(TasksServer).Delete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tasks.TaskService/Delete",
+		FullMethod: "/tasks.Tasks/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).Delete(ctx, req.(*contracts.DeleteTaskCommand))
+		return srv.(TasksServer).Delete(ctx, req.(*contracts.DeleteTaskCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TaskService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Tasks_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(contracts.UpdateTaskCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TaskServiceServer).Update(ctx, in)
+		return srv.(TasksServer).Update(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tasks.TaskService/Update",
+		FullMethod: "/tasks.Tasks/Update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).Update(ctx, req.(*contracts.UpdateTaskCommand))
+		return srv.(TasksServer).Update(ctx, req.(*contracts.UpdateTaskCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TaskService_Progress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Tasks_Progress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(contracts.ProgressTaskCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TaskServiceServer).Progress(ctx, in)
+		return srv.(TasksServer).Progress(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tasks.TaskService/Progress",
+		FullMethod: "/tasks.Tasks/Progress",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).Progress(ctx, req.(*contracts.ProgressTaskCommand))
+		return srv.(TasksServer).Progress(ctx, req.(*contracts.ProgressTaskCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TaskService_Complete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Tasks_Complete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(contracts.CompleteTaskCommand)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TaskServiceServer).Complete(ctx, in)
+		return srv.(TasksServer).Complete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tasks.TaskService/Complete",
+		FullMethod: "/tasks.Tasks/Complete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).Complete(ctx, req.(*contracts.CompleteTaskCommand))
+		return srv.(TasksServer).Complete(ctx, req.(*contracts.CompleteTaskCommand))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TaskService_ListQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Tasks_ListQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(contracts.ListTasksQuery)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TaskServiceServer).ListQuery(ctx, in)
+		return srv.(TasksServer).ListQuery(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tasks.TaskService/ListQuery",
+		FullMethod: "/tasks.Tasks/ListQuery",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskServiceServer).ListQuery(ctx, req.(*contracts.ListTasksQuery))
+		return srv.(TasksServer).ListQuery(ctx, req.(*contracts.ListTasksQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// TaskService_ServiceDesc is the grpc.ServiceDesc for TaskService service.
+// Tasks_ServiceDesc is the grpc.ServiceDesc for Tasks service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var TaskService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "tasks.TaskService",
-	HandlerType: (*TaskServiceServer)(nil),
+var Tasks_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "tasks.Tasks",
+	HandlerType: (*TasksServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Create",
-			Handler:    _TaskService_Create_Handler,
+			Handler:    _Tasks_Create_Handler,
 		},
 		{
 			MethodName: "Delete",
-			Handler:    _TaskService_Delete_Handler,
+			Handler:    _Tasks_Delete_Handler,
 		},
 		{
 			MethodName: "Update",
-			Handler:    _TaskService_Update_Handler,
+			Handler:    _Tasks_Update_Handler,
 		},
 		{
 			MethodName: "Progress",
-			Handler:    _TaskService_Progress_Handler,
+			Handler:    _Tasks_Progress_Handler,
 		},
 		{
 			MethodName: "Complete",
-			Handler:    _TaskService_Complete_Handler,
+			Handler:    _Tasks_Complete_Handler,
 		},
 		{
 			MethodName: "ListQuery",
-			Handler:    _TaskService_ListQuery_Handler,
+			Handler:    _Tasks_ListQuery_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "contracts/service.proto",
 }
 
-// QuoteServiceClient is the client API for QuoteService service.
+// QuotesClient is the client API for Quotes service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type QuoteServiceClient interface {
+type QuotesClient interface {
 	// Get a quote
 	Get(ctx context.Context, in *contracts.GetQuoteQuery, opts ...grpc.CallOption) (*contracts.QuoteData, error)
 }
 
-type quoteServiceClient struct {
+type quotesClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewQuoteServiceClient(cc grpc.ClientConnInterface) QuoteServiceClient {
-	return &quoteServiceClient{cc}
+func NewQuotesClient(cc grpc.ClientConnInterface) QuotesClient {
+	return &quotesClient{cc}
 }
 
-func (c *quoteServiceClient) Get(ctx context.Context, in *contracts.GetQuoteQuery, opts ...grpc.CallOption) (*contracts.QuoteData, error) {
+func (c *quotesClient) Get(ctx context.Context, in *contracts.GetQuoteQuery, opts ...grpc.CallOption) (*contracts.QuoteData, error) {
 	out := new(contracts.QuoteData)
-	err := c.cc.Invoke(ctx, "/tasks.QuoteService/Get", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tasks.Quotes/Get", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// QuoteServiceServer is the server API for QuoteService service.
-// All implementations must embed UnimplementedQuoteServiceServer
+// QuotesServer is the server API for Quotes service.
+// All implementations must embed UnimplementedQuotesServer
 // for forward compatibility
-type QuoteServiceServer interface {
+type QuotesServer interface {
 	// Get a quote
 	Get(context.Context, *contracts.GetQuoteQuery) (*contracts.QuoteData, error)
-	mustEmbedUnimplementedQuoteServiceServer()
+	mustEmbedUnimplementedQuotesServer()
 }
 
-// UnimplementedQuoteServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedQuoteServiceServer struct {
+// UnimplementedQuotesServer must be embedded to have forward compatible implementations.
+type UnimplementedQuotesServer struct {
 }
 
-func (UnimplementedQuoteServiceServer) Get(context.Context, *contracts.GetQuoteQuery) (*contracts.QuoteData, error) {
+func (UnimplementedQuotesServer) Get(context.Context, *contracts.GetQuoteQuery) (*contracts.QuoteData, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedQuoteServiceServer) mustEmbedUnimplementedQuoteServiceServer() {}
+func (UnimplementedQuotesServer) mustEmbedUnimplementedQuotesServer() {}
 
-// UnsafeQuoteServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to QuoteServiceServer will
+// UnsafeQuotesServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to QuotesServer will
 // result in compilation errors.
-type UnsafeQuoteServiceServer interface {
-	mustEmbedUnimplementedQuoteServiceServer()
+type UnsafeQuotesServer interface {
+	mustEmbedUnimplementedQuotesServer()
 }
 
-func RegisterQuoteServiceServer(s grpc.ServiceRegistrar, srv QuoteServiceServer) {
-	s.RegisterService(&QuoteService_ServiceDesc, srv)
+func RegisterQuotesServer(s grpc.ServiceRegistrar, srv QuotesServer) {
+	s.RegisterService(&Quotes_ServiceDesc, srv)
 }
 
-func _QuoteService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Quotes_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(contracts.GetQuoteQuery)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QuoteServiceServer).Get(ctx, in)
+		return srv.(QuotesServer).Get(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tasks.QuoteService/Get",
+		FullMethod: "/tasks.Quotes/Get",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QuoteServiceServer).Get(ctx, req.(*contracts.GetQuoteQuery))
+		return srv.(QuotesServer).Get(ctx, req.(*contracts.GetQuoteQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// QuoteService_ServiceDesc is the grpc.ServiceDesc for QuoteService service.
+// Quotes_ServiceDesc is the grpc.ServiceDesc for Quotes service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var QuoteService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "tasks.QuoteService",
-	HandlerType: (*QuoteServiceServer)(nil),
+var Quotes_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "tasks.Quotes",
+	HandlerType: (*QuotesServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Get",
-			Handler:    _QuoteService_Get_Handler,
+			Handler:    _Quotes_Get_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

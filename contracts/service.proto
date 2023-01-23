@@ -9,7 +9,7 @@ option go_package = "pkg/app/server/contracts";
 
 
 // [START tasks domain]
-service TaskService {
+service Tasks {
 
   // - Commands
   rpc Create(CreateTaskCommand) returns (TaskEvent) {
@@ -66,7 +66,7 @@ service TaskService {
 // [END tasks domain]
 
 // [START quote domain]
-service QuoteService {
+service Quotes {
   
   // Get a quote
   rpc Get(GetQuoteQuery) returns (QuoteData) {

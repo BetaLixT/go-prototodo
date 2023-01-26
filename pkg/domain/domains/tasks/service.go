@@ -381,13 +381,13 @@ func (s *TaskService) Complete(
 		return nil, err
 	}
 
-	progress := contracts.Status(contracts.Status_COMPLETED).String()
+	completed := contracts.Status(contracts.Status_COMPLETED).String()
 	evnt, err := s.repo.Update(
 		ctx,
 		cmd.Id,
 		task.Version+1,
 		TaskData{
-			Status: &progress,
+			Status: &completed,
 		},
 	)
 	if err != nil {

@@ -63,7 +63,7 @@ func NewNotPendingTaskError() *gorr.Error {
 			Code:    NotPendingTaskErrorCode,
 			Message: NotPendingTaskErrorMessage,
 		},
-		500,
+		400,
 		"only users are allowed to create task",
 	)
 }
@@ -74,7 +74,7 @@ func NewNotProgressTaskError() *gorr.Error {
 			Code:    NotProgressTaskErrorCode,
 			Message: NotProgressTaskErrorMessage,
 		},
-		500,
+		400,
 		"only users are allowed to create task",
 	)
 }

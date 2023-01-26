@@ -1,0 +1,80 @@
+package tasks
+
+import (
+	"prototodo/pkg/domain/base"
+	"prototodo/pkg/domain/common"
+	"prototodo/pkg/domain/contracts"
+
+	"go.uber.org/zap"
+)
+
+type TaskService struct {
+	repo IRepository
+	lgrf base.ILoggerFactory
+}
+
+func (s *TaskService) CreateTask(
+	ctx base.IContext,
+	cmd *contracts.CreateTaskCommand,
+) (*contracts.TaskEvent, error) {
+	lgr := s.lgrf.Create(ctx)
+
+	lgr.Info("creating task")
+	err := ctx.BeginTransaction()
+	if err != nil {
+		lgr.Error(
+			"failed to begin transaction",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	// business logic validations happen here
+	if cmd.UserContext.UserType != common.USER_TYPE_USER {
+		lgr.Error("only users allowed to create task")
+		return nil, common.NewInvalidUserTypeForTaskError()
+	}
+
+	res, err := s.repo.Create(
+		ctx,
+		cmd.Title,
+		cmd.Description,
+		cmd.UserContext.Id,
+	)
+	if err == nil {
+		err = ctx.CommitTransaction()
+	}
+	if err != nil {
+		lgr.Error("error while creating task", zap.Error(err))
+		ctx.RollbackTransaction()
+	}
+
+	return res, err
+}
+
+func (s *TaskService) DeleteTask(
+	ctx base.IContext,
+	cmd *contracts.DeleteTaskCommand,
+) (*contracts.TaskEvent, error) {
+
+  lgr := s.lgrf.Create(ctx)
+	lgr.Info("deleting task")
+	err := ctx.BeginTransaction()
+	if err != nil {
+		lgr.Error(
+			"failed to begin transaction",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	if err == nil {
+		err = ctx.CommitTransaction()
+	}
+	if err != nil {
+		lgr.Error("error while creating task", zap.Error(err))
+		ctx.RollbackTransaction()
+	}
+
+	return res, err
+}

@@ -4,7 +4,10 @@ import (
 	"context"
 	appcontr "prototodo/pkg/app/server/contracts"
 	"prototodo/pkg/domain/base"
+	"prototodo/pkg/domain/base/cntxt"
+	"prototodo/pkg/domain/base/logger"
 	"prototodo/pkg/domain/contracts"
+	"prototodo/pkg/domain/entities/tasks"
 	"time"
 
 	"go.uber.org/zap"
@@ -13,8 +16,10 @@ import (
 var _ appcontr.TasksServer = (*TasksHandler)(nil)
 
 type TasksHandler struct {
-	ctxf base.IContextFactory
-	lgrf base.ILoggerFactory
+	appcontr.UnimplementedTasksServer
+	ctxf cntxt.IFactory
+	lgrf logger.IFactory
+	tsrv tasks.TaskService
 }
 
 func (a *TasksHandler) Create(
@@ -30,7 +35,7 @@ func (a *TasksHandler) Create(
 		"handling command",
 		zap.Any("cmd", cmd),
 	)
-	out, err = TODOReplaceWithServiceFunction(
+	out, err = a.tsrv.CreateTask(
 		ctx,
 		cmd,
 	)
@@ -42,6 +47,7 @@ func (a *TasksHandler) Create(
 	}
 	return
 }
+
 func (h *TasksHandler) Delete(
 	c context.Context,
 	cmd *contracts.DeleteTaskCommand,

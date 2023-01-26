@@ -13,6 +13,15 @@ const (
 
 	TaskMissingErrorCode = 2_00_001
 	TaskMissingErrorMessage = "TaskMissingError"
+
+	InvalidTaskStatusErrorCode = 2_00_002
+	InvalidTaskStatusErrorMessage = "InvalidTaskStatusError"
+
+	NotPendingTaskErrorCode = 2_00_003
+	NotPendingTaskErrorMessage = "NotPendingTaskError"
+
+	NotProgressTaskErrorCode = 2_00_004
+	NotProgressTaskErrorMessage = "NotPendingTaskError"
 )
 
 func NewInvalidUserTypeForTaskError() *gorr.Error {
@@ -33,6 +42,39 @@ func NewTaskMissingError() *gorr.Error {
 			Message: TaskMissingErrorMessage,
 		},
 		403,
+		"only users are allowed to create task",
+	)
+}
+
+func NewInvalidTaskStatusError() *gorr.Error {
+	return gorr.NewError(
+		gorr.ErrorCode{
+			Code:    InvalidTaskStatusErrorCode,
+			Message: InvalidTaskStatusErrorMessage,
+		},
+		500,
+		"only users are allowed to create task",
+	)
+}
+
+func NewNotPendingTaskError() *gorr.Error {
+	return gorr.NewError(
+		gorr.ErrorCode{
+			Code:    NotPendingTaskErrorCode,
+			Message: NotPendingTaskErrorMessage,
+		},
+		500,
+		"only users are allowed to create task",
+	)
+}
+
+func NewNotProgressTaskError() *gorr.Error {
+	return gorr.NewError(
+		gorr.ErrorCode{
+			Code:    NotProgressTaskErrorCode,
+			Message: NotProgressTaskErrorMessage,
+		},
+		500,
 		"only users are allowed to create task",
 	)
 }

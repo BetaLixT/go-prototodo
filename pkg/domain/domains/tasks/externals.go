@@ -2,7 +2,6 @@ package tasks
 
 import (
 	"context"
-	"prototodo/pkg/domain/contracts"
 )
 
 type IRepository interface {
@@ -10,14 +9,20 @@ type IRepository interface {
 		ctx context.Context,
 		id string,
 		data TaskData,
-	) (*contracts.TaskEvent, error)
+	) (*TaskEvent, error)
 	Get(
 		ctx context.Context,
 		id string,
-	) (Task, error)
+	) (*Task, error)
 	Delete(
 		ctx context.Context,
 		id string,
 		version int,
-	) (*contracts.TaskEvent, error)
+	) (*TaskEvent, error)
+	Update(
+		ctx context.Context,
+		id string,
+		version int,
+		data TaskData,
+	) (*TaskEvent, error)
 }

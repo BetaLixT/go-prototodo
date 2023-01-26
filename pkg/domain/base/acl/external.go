@@ -11,19 +11,28 @@ type IRepository interface {
 		userId string,
 		permissions int,
 	) error
-	DeleteACLEntry(ctx context.Context,
+	DeleteACLEntry(
+		ctx context.Context,
 		stream string,
 		streamId string,
 		userType string,
 		userId string,
 	) error
-	CanRead(ctx context.Context,
+	DeleteACLEntries(
+		ctx context.Context,
+		stream string,
+		streamId string,
+	) error
+
+	CanRead(
+		ctx context.Context,
 		stream string,
 		streamId string,
 		userType string,
 		userId string,
 	) error
-	CanWrite(ctx context.Context,
+	CanWrite(
+		ctx context.Context,
 		stream string,
 		streamId string,
 		userType string,

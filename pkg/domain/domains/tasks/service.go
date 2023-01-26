@@ -53,7 +53,7 @@ func (s *TaskService) CreateTask(
 		return nil, err
 	}
 
-	res, err := s.repo.Create(
+	evnt, err := s.repo.Create(
 		ctx,
 		id,
 		TaskData{
@@ -71,20 +71,32 @@ func (s *TaskService) CreateTask(
 		return nil, err
 	}
 
+	res, err := evnt.ToContract()
+	if err != nil {
+		lgr.Error("failed to map to contract", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
+	}
+
 	err = s.aclr.CreateACLEntry(
 		ctx,
 		common.TaskStreamName,
 		id,
 		cmd.UserContext.UserType,
 		cmd.UserContext.Id,
-		acl.Read | acl.Write,
+		acl.Read|acl.Write,
 	)
-	if err == nil {
-		err = ctx.CommitTransaction()
-	}
 	if err != nil {
-		lgr.Error("error while creating task", zap.Error(err))
+		lgr.Error("failed to create acl entry", zap.Error(err))
 		ctx.RollbackTransaction()
+		return nil, err
+	}
+
+	err = ctx.CommitTransaction()
+	if err != nil {
+		lgr.Error("failed to commit transaction", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
 	}
 
 	return res, err
@@ -97,7 +109,32 @@ func (s *TaskService) DeleteTask(
 
 	lgr := s.lgrf.Create(ctx)
 	lgr.Info("deleting task")
-	err := ctx.BeginTransaction()
+
+	err := s.aclr.CanWrite(
+		ctx,
+		common.TaskStreamName,
+		cmd.Id,
+		cmd.UserContext.UserType,
+		cmd.UserContext.Id,
+	)
+	if err != nil {
+		lgr.Error(
+			"failure while checking acl",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	task, err := s.repo.Get(ctx, cmd.Id)
+	if err != nil {
+		lgr.Error(
+			"failed to fetch task",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	err = ctx.BeginTransaction()
 	if err != nil {
 		lgr.Error(
 			"failed to begin transaction",
@@ -106,11 +143,269 @@ func (s *TaskService) DeleteTask(
 		return nil, err
 	}
 
-	if err == nil {
-		err = ctx.CommitTransaction()
-	}
+	evnt, err := s.repo.Delete(
+		ctx,
+		cmd.Id,
+		task.Version+1,
+	)
 	if err != nil {
-		lgr.Error("error while creating task", zap.Error(err))
+		lgr.Error("failed to delete task", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
+	}
+
+	res, err := evnt.ToContract()
+	if err != nil {
+		lgr.Error("failed to map to contract", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
+	}
+
+	err = s.aclr.DeleteACLEntries(
+		ctx,
+		common.TaskStreamName,
+		cmd.Id,
+	)
+	if err != nil {
+		lgr.Error("failed to delete acl entries", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
+	}
+
+	err = ctx.CommitTransaction()
+	if err != nil {
+		lgr.Error("failed to commit transaction", zap.Error(err))
+		ctx.RollbackTransaction()
+	}
+
+	return res, err
+}
+
+func (s *TaskService) UpdateTask(
+	ctx cntxt.IContext,
+	cmd *contracts.UpdateTaskCommand,
+) (*contracts.TaskEvent, error) {
+
+	lgr := s.lgrf.Create(ctx)
+	lgr.Info("updating task")
+
+	err := s.aclr.CanWrite(
+		ctx,
+		common.TaskStreamName,
+		cmd.Id,
+		cmd.UserContext.UserType,
+		cmd.UserContext.Id,
+	)
+	if err != nil {
+		lgr.Error(
+			"failure while checking acl",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	task, err := s.repo.Get(ctx, cmd.Id)
+	if err != nil {
+		lgr.Error(
+			"failed to fetch task",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	err = ctx.BeginTransaction()
+	if err != nil {
+		lgr.Error(
+			"failed to begin transaction",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	evnt, err := s.repo.Update(
+		ctx,
+		cmd.Id,
+		task.Version+1,
+		TaskData{
+			Title:       cmd.Title,
+			Description: cmd.Description,
+		},
+	)
+	if err != nil {
+		lgr.Error("failed to update task", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
+	}
+
+	res, err := evnt.ToContract()
+	if err != nil {
+		lgr.Error("failed to map to contract", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
+	}
+
+	err = ctx.CommitTransaction()
+	if err != nil {
+		lgr.Error("failed to commit transaction", zap.Error(err))
+		ctx.RollbackTransaction()
+	}
+
+	return res, err
+}
+
+func (s *TaskService) ProgressTask(
+	ctx cntxt.IContext,
+	cmd *contracts.ProgressTaskCommand,
+) (*contracts.TaskEvent, error) {
+
+	lgr := s.lgrf.Create(ctx)
+	lgr.Info("progressing task")
+
+	err := s.aclr.CanWrite(
+		ctx,
+		common.TaskStreamName,
+		cmd.Id,
+		cmd.UserContext.UserType,
+		cmd.UserContext.Id,
+	)
+	if err != nil {
+		lgr.Error(
+			"failure while checking acl",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	task, err := s.repo.Get(ctx, cmd.Id)
+	if err != nil {
+		lgr.Error(
+			"failed to fetch task",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	if task.Status != contracts.Status_PENDING.String() {
+		lgr.Error(
+			"can't progress task that isn't pending",
+		)
+		return nil, common.NewNotPendingTaskError()
+	}
+
+	err = ctx.BeginTransaction()
+	if err != nil {
+		lgr.Error(
+			"failed to begin transaction",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	progress := contracts.Status(contracts.Status_PROGRESS).String()
+	evnt, err := s.repo.Update(
+		ctx,
+		cmd.Id,
+		task.Version+1,
+		TaskData{
+			Status: &progress,
+		},
+	)
+	if err != nil {
+		lgr.Error("failed to update task", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
+	}
+
+	res, err := evnt.ToContract()
+	if err != nil {
+		lgr.Error("failed to map to contract", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
+	}
+
+	err = ctx.CommitTransaction()
+	if err != nil {
+		lgr.Error("failed to commit transaction", zap.Error(err))
+		ctx.RollbackTransaction()
+	}
+
+	return res, err
+}
+
+
+func (s *TaskService) Complete(
+	ctx cntxt.IContext,
+	cmd *contracts.ProgressTaskCommand,
+) (*contracts.TaskEvent, error) {
+
+	lgr := s.lgrf.Create(ctx)
+	lgr.Info("completing task")
+
+	err := s.aclr.CanWrite(
+		ctx,
+		common.TaskStreamName,
+		cmd.Id,
+		cmd.UserContext.UserType,
+		cmd.UserContext.Id,
+	)
+	if err != nil {
+		lgr.Error(
+			"failure while checking acl",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	task, err := s.repo.Get(ctx, cmd.Id)
+	if err != nil {
+		lgr.Error(
+			"failed to fetch task",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	if task.Status != contracts.Status_PROGRESS.String() {
+		lgr.Error(
+			"can't complete task that isn't in progress",
+		)
+		return nil, common.NewNotProgressTaskError()
+	}
+
+	err = ctx.BeginTransaction()
+	if err != nil {
+		lgr.Error(
+			"failed to begin transaction",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+
+	progress := contracts.Status(contracts.Status_COMPLETED).String()
+	evnt, err := s.repo.Update(
+		ctx,
+		cmd.Id,
+		task.Version+1,
+		TaskData{
+			Status: &progress,
+		},
+	)
+	if err != nil {
+		lgr.Error("failed to update task", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
+	}
+
+	res, err := evnt.ToContract()
+	if err != nil {
+		lgr.Error("failed to map to contract", zap.Error(err))
+		ctx.RollbackTransaction()
+		return nil, err
+	}
+
+	err = ctx.CommitTransaction()
+	if err != nil {
+		lgr.Error("failed to commit transaction", zap.Error(err))
 		ctx.RollbackTransaction()
 	}
 

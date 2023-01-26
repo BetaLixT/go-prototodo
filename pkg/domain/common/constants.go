@@ -1,5 +1,8 @@
+// All the constants used by and known to the domain
+
 package common
 
 const (
-	USER_TYPE_USER = "user"
+	UserTypeUser = "user"
+	UserTypeApp  = "application"
 )

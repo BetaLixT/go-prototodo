@@ -30,7 +30,7 @@ func (s *TaskService) CreateTask(
 	}
 
 	// business logic validations happen here
-	if cmd.UserContext.UserType != common.USER_TYPE_USER {
+	if cmd.UserContext.UserType != common.UserTypeUser {
 		lgr.Error("only users allowed to create task")
 		return nil, common.NewInvalidUserTypeForTaskError()
 	}
@@ -57,7 +57,7 @@ func (s *TaskService) DeleteTask(
 	cmd *contracts.DeleteTaskCommand,
 ) (*contracts.TaskEvent, error) {
 
-  lgr := s.lgrf.Create(ctx)
+	lgr := s.lgrf.Create(ctx)
 	lgr.Info("deleting task")
 	err := ctx.BeginTransaction()
 	if err != nil {

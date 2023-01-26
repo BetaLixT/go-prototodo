@@ -3,11 +3,10 @@ package handlers
 import (
 	"context"
 	appcontr "prototodo/pkg/app/server/contracts"
-	"prototodo/pkg/domain/base"
 	"prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/logger"
 	"prototodo/pkg/domain/contracts"
-	"prototodo/pkg/domain/entities/tasks"
+	"prototodo/pkg/domain/domains/tasks"
 	"time"
 
 	"go.uber.org/zap"

@@ -3,7 +3,8 @@ package handlers
 import (
 	"context"
 	srvcontracts "prototodo/pkg/app/server/contracts"
-	"prototodo/pkg/domain/base"
+	"prototodo/pkg/domain/base/cntxt"
+	"prototodo/pkg/domain/base/logger"
 	"prototodo/pkg/domain/contracts"
 	"time"
 
@@ -12,15 +13,15 @@ import (
 
 type QuotesHandler struct {
 	srvcontracts.UnimplementedQuotesServer
-	ctxf base.IContextFactory
-	lgrf base.ILoggerFactory
+	ctxf cntxt.IFactory
+	lgrf logger.IFactory
 }
 
 var _ srvcontracts.QuotesServer = (*QuotesHandler)(nil)
 
 func NewQuotesHandler(
-	ctxf base.IContextFactory,
-	lgrf base.ILoggerFactory,
+	ctxf cntxt.IFactory,
+	lgrf logger.IFactory,
 ) *QuotesHandler {
 	return &QuotesHandler{
 		ctxf: ctxf,

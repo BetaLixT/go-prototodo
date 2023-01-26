@@ -6,7 +6,6 @@ type TaskData struct {
 	Title       *string
 	Description *string
 	Status      *string
-	CreatedBy   *string
 	RandomMap   map[string]string
 	Metadata    map[string]interface{}
 }

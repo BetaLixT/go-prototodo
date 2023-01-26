@@ -3,6 +3,7 @@
 package common
 
 const (
-	UserTypeUser = "user"
-	UserTypeApp  = "application"
+	TaskStreamName = "tasks"
+	UserTypeUser   = "user"
+	UserTypeApp    = "application"
 )

@@ -8,6 +8,7 @@ import (
 type IRepository interface {
 	Create(
 		ctx context.Context,
+		id string,
 		data TaskData,
 	) (*contracts.TaskEvent, error)
 	Get(

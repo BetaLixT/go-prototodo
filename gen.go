@@ -1,5 +1,8 @@
 //go:build ignore
 
+// Contains instructions for required generators, invoke by entering
+// go generate gen.go
+
 package main
 
 //go:generate protoc --go-grpc_out=. --gocqrshttp_out=. contracts/service.proto

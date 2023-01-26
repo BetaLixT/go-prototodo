@@ -32,7 +32,7 @@ type TasksClient interface {
 	// Update existing task to complete
 	Complete(ctx context.Context, in *contracts.CompleteTaskCommand, opts ...grpc.CallOption) (*contracts.TaskEvent, error)
 	// Query for existing tasks
-	ListQuery(ctx context.Context, in *contracts.ListTasksQuery, opts ...grpc.CallOption) (*contracts.TaskEntity, error)
+	ListQuery(ctx context.Context, in *contracts.ListTasksQuery, opts ...grpc.CallOption) (*contracts.TaskEntityList, error)
 }
 
 type tasksClient struct {
@@ -88,8 +88,8 @@ func (c *tasksClient) Complete(ctx context.Context, in *contracts.CompleteTaskCo
 	return out, nil
 }
 
-func (c *tasksClient) ListQuery(ctx context.Context, in *contracts.ListTasksQuery, opts ...grpc.CallOption) (*contracts.TaskEntity, error) {
-	out := new(contracts.TaskEntity)
+func (c *tasksClient) ListQuery(ctx context.Context, in *contracts.ListTasksQuery, opts ...grpc.CallOption) (*contracts.TaskEntityList, error) {
+	out := new(contracts.TaskEntityList)
 	err := c.cc.Invoke(ctx, "/tasks.Tasks/ListQuery", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ type TasksServer interface {
 	// Update existing task to complete
 	Complete(context.Context, *contracts.CompleteTaskCommand) (*contracts.TaskEvent, error)
 	// Query for existing tasks
-	ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntity, error)
+	ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntityList, error)
 	mustEmbedUnimplementedTasksServer()
 }
 
@@ -133,7 +133,7 @@ func (UnimplementedTasksServer) Progress(context.Context, *contracts.ProgressTas
 func (UnimplementedTasksServer) Complete(context.Context, *contracts.CompleteTaskCommand) (*contracts.TaskEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Complete not implemented")
 }
-func (UnimplementedTasksServer) ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntity, error) {
+func (UnimplementedTasksServer) ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntityList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListQuery not implemented")
 }
 func (UnimplementedTasksServer) mustEmbedUnimplementedTasksServer() {}

@@ -126,11 +126,11 @@ paths:
         required: true
       responses:
         '200':
-          description: TaskEntity
+          description: TaskEntityList
           content: 
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskEntity'
+                $ref: '#/components/schemas/TaskEntityList'
   /queries/getQuote:
     post:
       tags:
@@ -270,6 +270,13 @@ components:
         id:
           type: string
           example: sample
+    TaskEntityList:
+      type: object
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskEntity'
     TaskEntity:
       type: object
       properties:

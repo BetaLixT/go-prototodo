@@ -21,7 +21,7 @@ type TasksHTTPServer interface {
 	// Update existing task to complete
 	Complete(context.Context, *contracts.CompleteTaskCommand) (*contracts.TaskEvent, error)
 	// Query for existing tasks
-	ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntity, error)
+	ListQuery(context.Context, *contracts.ListTasksQuery) (*contracts.TaskEntityList, error)
 }
 type tasks struct {
 	app TasksHTTPServer

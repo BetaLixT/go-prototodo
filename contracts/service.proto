@@ -55,7 +55,7 @@ service Tasks {
   };
 
   // Query for existing tasks
-  rpc ListQuery(ListTasksQuery) returns (TaskEntity) {
+  rpc ListQuery(ListTasksQuery) returns (TaskEntityList) {
     option (custom.documentation) = {
       description: "query all existing tasks",
       summary: "query tasks",

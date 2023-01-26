@@ -539,7 +539,116 @@ func easyjson7b8cbe4EncodeGoogleGolangOrgProtobufTypesKnownTimestamppb(out *jwri
 	}
 	out.RawByte('}')
 }
-func easyjson7b8cbe4DecodePrototodoPkgDomainContracts3(in *jlexer.Lexer, out *TaskEntity) {
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts3(in *jlexer.Lexer, out *TaskEntityList) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "tasks":
+			if in.IsNull() {
+				in.Skip()
+				out.Tasks = nil
+			} else {
+				in.Delim('[')
+				if out.Tasks == nil {
+					if !in.IsDelim(']') {
+						out.Tasks = make([]*TaskEntity, 0, 8)
+					} else {
+						out.Tasks = []*TaskEntity{}
+					}
+				} else {
+					out.Tasks = (out.Tasks)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v7 *TaskEntity
+					if in.IsNull() {
+						in.Skip()
+						v7 = nil
+					} else {
+						if v7 == nil {
+							v7 = new(TaskEntity)
+						}
+						(*v7).UnmarshalEasyJSON(in)
+					}
+					out.Tasks = append(out.Tasks, v7)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts3(out *jwriter.Writer, in TaskEntityList) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if len(in.Tasks) != 0 {
+		const prefix string = ",\"tasks\":"
+		first = false
+		out.RawString(prefix[1:])
+		{
+			out.RawByte('[')
+			for v8, v9 := range in.Tasks {
+				if v8 > 0 {
+					out.RawByte(',')
+				}
+				if v9 == nil {
+					out.RawString("null")
+				} else {
+					(*v9).MarshalEasyJSON(out)
+				}
+			}
+			out.RawByte(']')
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v TaskEntityList) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts3(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v TaskEntityList) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts3(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *TaskEntityList) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts3(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *TaskEntityList) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts3(l, v)
+}
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts4(in *jlexer.Lexer, out *TaskEntity) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -598,7 +707,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts3(in *jlexer.Lexer, out *Ta
 		in.Consumed()
 	}
 }
-func easyjson7b8cbe4EncodePrototodoPkgDomainContracts3(out *jwriter.Writer, in TaskEntity) {
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts4(out *jwriter.Writer, in TaskEntity) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -674,27 +783,27 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts3(out *jwriter.Writer, in T
 // MarshalJSON supports json.Marshaler interface
 func (v TaskEntity) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts3(&w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts4(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v TaskEntity) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts3(w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts4(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *TaskEntity) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts3(&r, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts4(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *TaskEntity) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts3(l, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts4(l, v)
 }
-func easyjson7b8cbe4DecodePrototodoPkgDomainContracts4(in *jlexer.Lexer, out *TaskData) {
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts5(in *jlexer.Lexer, out *TaskData) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -756,9 +865,9 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts4(in *jlexer.Lexer, out *Ta
 				for !in.IsDelim('}') {
 					key := string(in.String())
 					in.WantColon()
-					var v7 string
-					v7 = string(in.String())
-					(out.RandomMap)[key] = v7
+					var v10 string
+					v10 = string(in.String())
+					(out.RandomMap)[key] = v10
 					in.WantComma()
 				}
 				in.Delim('}')
@@ -785,7 +894,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts4(in *jlexer.Lexer, out *Ta
 		in.Consumed()
 	}
 }
-func easyjson7b8cbe4EncodePrototodoPkgDomainContracts4(out *jwriter.Writer, in TaskData) {
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts5(out *jwriter.Writer, in TaskData) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -825,16 +934,16 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts4(out *jwriter.Writer, in T
 		}
 		{
 			out.RawByte('{')
-			v8First := true
-			for v8Name, v8Value := range in.RandomMap {
-				if v8First {
-					v8First = false
+			v11First := true
+			for v11Name, v11Value := range in.RandomMap {
+				if v11First {
+					v11First = false
 				} else {
 					out.RawByte(',')
 				}
-				out.String(string(v8Name))
+				out.String(string(v11Name))
 				out.RawByte(':')
-				out.String(string(v8Value))
+				out.String(string(v11Value))
 			}
 			out.RawByte('}')
 		}
@@ -855,27 +964,27 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts4(out *jwriter.Writer, in T
 // MarshalJSON supports json.Marshaler interface
 func (v TaskData) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts4(&w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts5(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v TaskData) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts4(w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts5(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *TaskData) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts4(&r, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts5(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *TaskData) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts4(l, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts5(l, v)
 }
-func easyjson7b8cbe4DecodePrototodoPkgDomainContracts5(in *jlexer.Lexer, out *QuoteData) {
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts6(in *jlexer.Lexer, out *QuoteData) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -914,7 +1023,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts5(in *jlexer.Lexer, out *Qu
 		in.Consumed()
 	}
 }
-func easyjson7b8cbe4EncodePrototodoPkgDomainContracts5(out *jwriter.Writer, in QuoteData) {
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts6(out *jwriter.Writer, in QuoteData) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -930,27 +1039,27 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts5(out *jwriter.Writer, in Q
 // MarshalJSON supports json.Marshaler interface
 func (v QuoteData) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts5(&w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts6(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v QuoteData) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts5(w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts6(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *QuoteData) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts5(&r, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts6(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *QuoteData) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts5(l, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts6(l, v)
 }
-func easyjson7b8cbe4DecodePrototodoPkgDomainContracts6(in *jlexer.Lexer, out *ProgressTaskCommand) {
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts7(in *jlexer.Lexer, out *ProgressTaskCommand) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -991,7 +1100,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts6(in *jlexer.Lexer, out *Pr
 		in.Consumed()
 	}
 }
-func easyjson7b8cbe4EncodePrototodoPkgDomainContracts6(out *jwriter.Writer, in ProgressTaskCommand) {
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts7(out *jwriter.Writer, in ProgressTaskCommand) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1017,27 +1126,27 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts6(out *jwriter.Writer, in P
 // MarshalJSON supports json.Marshaler interface
 func (v ProgressTaskCommand) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts6(&w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts7(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v ProgressTaskCommand) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts6(w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts7(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *ProgressTaskCommand) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts6(&r, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts7(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *ProgressTaskCommand) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts6(l, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts7(l, v)
 }
-func easyjson7b8cbe4DecodePrototodoPkgDomainContracts7(in *jlexer.Lexer, out *ListTasksQuery) {
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts8(in *jlexer.Lexer, out *ListTasksQuery) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1080,7 +1189,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts7(in *jlexer.Lexer, out *Li
 		in.Consumed()
 	}
 }
-func easyjson7b8cbe4EncodePrototodoPkgDomainContracts7(out *jwriter.Writer, in ListTasksQuery) {
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts8(out *jwriter.Writer, in ListTasksQuery) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1116,27 +1225,27 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts7(out *jwriter.Writer, in L
 // MarshalJSON supports json.Marshaler interface
 func (v ListTasksQuery) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts7(&w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts8(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v ListTasksQuery) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts7(w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts8(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *ListTasksQuery) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts7(&r, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts8(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *ListTasksQuery) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts7(l, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts8(l, v)
 }
-func easyjson7b8cbe4DecodePrototodoPkgDomainContracts8(in *jlexer.Lexer, out *GetQuoteQuery) {
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts9(in *jlexer.Lexer, out *GetQuoteQuery) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1175,7 +1284,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts8(in *jlexer.Lexer, out *Ge
 		in.Consumed()
 	}
 }
-func easyjson7b8cbe4EncodePrototodoPkgDomainContracts8(out *jwriter.Writer, in GetQuoteQuery) {
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts9(out *jwriter.Writer, in GetQuoteQuery) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1191,27 +1300,27 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts8(out *jwriter.Writer, in G
 // MarshalJSON supports json.Marshaler interface
 func (v GetQuoteQuery) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts8(&w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts9(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v GetQuoteQuery) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts8(w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts9(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *GetQuoteQuery) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts8(&r, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts9(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *GetQuoteQuery) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts8(l, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts9(l, v)
 }
-func easyjson7b8cbe4DecodePrototodoPkgDomainContracts9(in *jlexer.Lexer, out *DeleteTaskCommand) {
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts10(in *jlexer.Lexer, out *DeleteTaskCommand) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1252,7 +1361,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts9(in *jlexer.Lexer, out *De
 		in.Consumed()
 	}
 }
-func easyjson7b8cbe4EncodePrototodoPkgDomainContracts9(out *jwriter.Writer, in DeleteTaskCommand) {
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts10(out *jwriter.Writer, in DeleteTaskCommand) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1278,27 +1387,27 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts9(out *jwriter.Writer, in D
 // MarshalJSON supports json.Marshaler interface
 func (v DeleteTaskCommand) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts9(&w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts10(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v DeleteTaskCommand) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts9(w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts10(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *DeleteTaskCommand) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts9(&r, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts10(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *DeleteTaskCommand) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts9(l, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts10(l, v)
 }
-func easyjson7b8cbe4DecodePrototodoPkgDomainContracts10(in *jlexer.Lexer, out *CreateTaskCommand) {
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts11(in *jlexer.Lexer, out *CreateTaskCommand) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1341,7 +1450,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts10(in *jlexer.Lexer, out *C
 		in.Consumed()
 	}
 }
-func easyjson7b8cbe4EncodePrototodoPkgDomainContracts10(out *jwriter.Writer, in CreateTaskCommand) {
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts11(out *jwriter.Writer, in CreateTaskCommand) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1377,27 +1486,27 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts10(out *jwriter.Writer, in 
 // MarshalJSON supports json.Marshaler interface
 func (v CreateTaskCommand) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts10(&w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts11(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v CreateTaskCommand) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts10(w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts11(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *CreateTaskCommand) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts10(&r, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts11(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *CreateTaskCommand) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts10(l, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts11(l, v)
 }
-func easyjson7b8cbe4DecodePrototodoPkgDomainContracts11(in *jlexer.Lexer, out *CompleteTaskCommand) {
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(in *jlexer.Lexer, out *CompleteTaskCommand) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1438,7 +1547,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts11(in *jlexer.Lexer, out *C
 		in.Consumed()
 	}
 }
-func easyjson7b8cbe4EncodePrototodoPkgDomainContracts11(out *jwriter.Writer, in CompleteTaskCommand) {
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(out *jwriter.Writer, in CompleteTaskCommand) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1464,23 +1573,23 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts11(out *jwriter.Writer, in 
 // MarshalJSON supports json.Marshaler interface
 func (v CompleteTaskCommand) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts11(&w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v CompleteTaskCommand) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts11(w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *CompleteTaskCommand) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts11(&r, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *CompleteTaskCommand) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts11(l, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(l, v)
 }

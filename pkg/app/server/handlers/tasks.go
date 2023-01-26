@@ -60,7 +60,7 @@ func (h *TasksHandler) Delete(
 		"handling",
 		zap.Any("cmd", cmd),
 	)
-	res, err = TODOReplaceWithServiceFunction(
+	res, err = h.tsrv.DeleteTask(
 		ctx,
 		cmd,
 	)
@@ -85,7 +85,7 @@ func (h *TasksHandler) Update(
 		"handling",
 		zap.Any("cmd", cmd),
 	)
-	res, err = TODOReplaceWithServiceFunction(
+	res, err = h.tsrv.UpdateTask(
 		ctx,
 		cmd,
 	)
@@ -110,7 +110,7 @@ func (h *TasksHandler) Progress(
 		"handling",
 		zap.Any("cmd", cmd),
 	)
-	res, err = TODOReplaceWithServiceFunction(
+	res, err = h.tsrv.ProgressTask(
 		ctx,
 		cmd,
 	)
@@ -135,7 +135,7 @@ func (h *TasksHandler) Complete(
 		"handling",
 		zap.Any("cmd", cmd),
 	)
-	res, err = TODOReplaceWithServiceFunction(
+	res, err = h.tsrv.CompleteTask(
 		ctx,
 		cmd,
 	)
@@ -147,10 +147,11 @@ func (h *TasksHandler) Complete(
 	}
 	return
 }
+
 func (h *TasksHandler) ListQuery(
 	c context.Context,
 	qry *contracts.ListTasksQuery,
-) (res *contracts.TaskEntity, err error) {
+) (res *contracts.TaskEntityList, err error) {
 	ctx := h.ctxf.Create(
 		c,
 		time.Second*5,
@@ -160,7 +161,7 @@ func (h *TasksHandler) ListQuery(
 		"handling",
 		zap.Any("qry", qry),
 	)
-	res, err = TODOReplaceWithServiceFunction(
+	res, err = h.tsrv.QueryTask(
 		ctx,
 		qry,
 	)

@@ -85,6 +85,10 @@ message TaskEntity {
   google.protobuf.Timestamp created_date_time = 6;
   google.protobuf.Timestamp updated_date_time = 7; 
 }
+
+message TaskEntityList {
+  repeated TaskEntity tasks = 1;
+}
 // [END tasks domain]
 
 // [START quote domain]

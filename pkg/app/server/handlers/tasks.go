@@ -10,14 +10,14 @@ import (
 	"go.uber.org/zap"
 )
 
-var _ appcontr.TasksServer = (*TaskHandler)(nil)
+var _ appcontr.TasksServer = (*TasksHandler)(nil)
 
-type TaskHandler struct {
+type TasksHandler struct {
 	ctxf base.IContextFactory
 	lgrf base.ILoggerFactory
 }
 
-func (a *TaskHandler) Create(
+func (a *TasksHandler) Create(
 	c context.Context,
 	cmd *contracts.CreateTaskCommand,
 ) (out *contracts.TaskEvent, err error) {

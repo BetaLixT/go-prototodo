@@ -42,3 +42,128 @@ func (a *TasksHandler) Create(
 	}
 	return
 }
+func (h *TasksHandler) Delete(
+	c context.Context,
+	cmd *contracts.DeleteTaskCommand,
+) (res *contracts.TaskEvent, err error) {
+	ctx := h.ctxf.Create(
+		c,
+		time.Second*5,
+	)
+	lgr := h.lgrf.Create(ctx)
+	lgr.Info(
+		"handling",
+		zap.Any("cmd", cmd),
+	)
+	res, err = TODOReplaceWithServiceFunction(
+		ctx,
+		cmd,
+	)
+	if err != nil {
+		lgr.Error(
+			"handling failed",
+			zap.Error(err),
+		)
+	}
+	return
+}
+func (h *TasksHandler) Update(
+	c context.Context,
+	cmd *contracts.UpdateTaskCommand,
+) (res *contracts.TaskEvent, err error) {
+	ctx := h.ctxf.Create(
+		c,
+		time.Second*5,
+	)
+	lgr := h.lgrf.Create(ctx)
+	lgr.Info(
+		"handling",
+		zap.Any("cmd", cmd),
+	)
+	res, err = TODOReplaceWithServiceFunction(
+		ctx,
+		cmd,
+	)
+	if err != nil {
+		lgr.Error(
+			"handling failed",
+			zap.Error(err),
+		)
+	}
+	return
+}
+func (h *TasksHandler) Progress(
+	c context.Context,
+	cmd *contracts.ProgressTaskCommand,
+) (res *contracts.TaskEvent, err error) {
+	ctx := h.ctxf.Create(
+		c,
+		time.Second*5,
+	)
+	lgr := h.lgrf.Create(ctx)
+	lgr.Info(
+		"handling",
+		zap.Any("cmd", cmd),
+	)
+	res, err = TODOReplaceWithServiceFunction(
+		ctx,
+		cmd,
+	)
+	if err != nil {
+		lgr.Error(
+			"handling failed",
+			zap.Error(err),
+		)
+	}
+	return
+}
+func (h *TasksHandler) Complete(
+	c context.Context,
+	cmd *contracts.CompleteTaskCommand,
+) (res *contracts.TaskEvent, err error) {
+	ctx := h.ctxf.Create(
+		c,
+		time.Second*5,
+	)
+	lgr := h.lgrf.Create(ctx)
+	lgr.Info(
+		"handling",
+		zap.Any("cmd", cmd),
+	)
+	res, err = TODOReplaceWithServiceFunction(
+		ctx,
+		cmd,
+	)
+	if err != nil {
+		lgr.Error(
+			"handling failed",
+			zap.Error(err),
+		)
+	}
+	return
+}
+func (h *TasksHandler) ListQuery(
+	c context.Context,
+	qry *contracts.ListTasksQuery,
+) (res *contracts.TaskEntity, err error) {
+	ctx := h.ctxf.Create(
+		c,
+		time.Second*5,
+	)
+	lgr := h.lgrf.Create(ctx)
+	lgr.Info(
+		"handling",
+		zap.Any("qry", qry),
+	)
+	res, err = TODOReplaceWithServiceFunction(
+		ctx,
+		qry,
+	)
+	if err != nil {
+		lgr.Error(
+			"handling failed",
+			zap.Error(err),
+		)
+	}
+	return
+}

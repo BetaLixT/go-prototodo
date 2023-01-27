@@ -14,15 +14,20 @@ type IRepository interface {
 		ctx context.Context,
 		id string,
 	) (*Task, error)
+	List(
+		ctx context.Context,
+		countPerPage int,
+		pageNumber int,
+	) ([]Task, error)
 	Delete(
 		ctx context.Context,
 		id string,
-		version int,
+		version uint64,
 	) (*TaskEvent, error)
 	Update(
 		ctx context.Context,
 		id string,
-		version int,
+		version uint64,
 		data TaskData,
 	) (*TaskEvent, error)
 }

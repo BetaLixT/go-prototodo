@@ -9,8 +9,8 @@ type Action func(context.Context) error
 
 type IContext interface {
 	context.Context
-	RegisterCompensatoryAction(cmp Action)
-	RegisterCommitAction(cmp Action)
+	RegisterCompensatoryAction(...Action)
+	RegisterCommitAction(...Action)
 	RegisterEvent(
 		id uint64,
 		sagaId *string,

@@ -11,7 +11,7 @@ type IFactory interface {
 	Create(
 		ctx context.Context,
 		timeout time.Duration,
-	) IContext
+	) (IContext, context.CancelFunc)
 }
 
 // An interface to the internally used context that only exposes functionality

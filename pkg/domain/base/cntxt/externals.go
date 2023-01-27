@@ -18,7 +18,6 @@ type IFactory interface {
 // that is to be utilized in the domain layer
 type IContext interface {
 	context.Context
-	BeginTransaction() error
 	CommitTransaction() error
 	RollbackTransaction()
 }

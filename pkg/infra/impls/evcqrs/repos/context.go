@@ -47,7 +47,7 @@ func (f *ContextFactory) Create(
 	  c,
 	  timeout,
 	)
-	return ctx.(*internalContext), cancel
+	
 }
 
 var _ context.Context = (*internalContext)(nil)

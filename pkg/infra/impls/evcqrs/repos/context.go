@@ -39,6 +39,7 @@ func (f *ContextFactory) Create(
 		compensatoryActions: []implcntxt.Action{},
 		commitActions:       []implcntxt.Action{},
 		events:              []dispatchableEvent{},
+		txObjs:              map[string]interface{}{},
 		isCommited:          false,
 		isRolledback:        false,
 		txmtx:               &sync.Mutex{},

@@ -1,15 +1,14 @@
 package tasks
 
 import (
+	"context"
 	"prototodo/pkg/domain/base/acl"
-	"prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/logger"
 	"prototodo/pkg/domain/base/uid"
 	"prototodo/pkg/domain/common"
 	"prototodo/pkg/domain/contracts"
 
 	"go.uber.org/zap"
-	"golang.org/x/net/context"
 )
 
 type TaskService struct {
@@ -84,7 +83,7 @@ func (s *TaskService) CreateTask(
 }
 
 func (s *TaskService) DeleteTask(
-	ctx cntxt.IContext,
+	ctx context.Context,
 	cmd *contracts.DeleteTaskCommand,
 ) (*contracts.TaskEvent, error) {
 
@@ -115,15 +114,6 @@ func (s *TaskService) DeleteTask(
 		return nil, err
 	}
 
-	err = ctx.BeginTransaction()
-	if err != nil {
-		lgr.Error(
-			"failed to begin transaction",
-			zap.Error(err),
-		)
-		return nil, err
-	}
-
 	evnt, err := s.repo.Delete(
 		ctx,
 		cmd.Id,
@@ -131,14 +121,12 @@ func (s *TaskService) DeleteTask(
 	)
 	if err != nil {
 		lgr.Error("failed to delete task", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
 	}
 
 	res, err := evnt.ToContract()
 	if err != nil {
 		lgr.Error("failed to map to contract", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
 	}
 
@@ -149,21 +137,14 @@ func (s *TaskService) DeleteTask(
 	)
 	if err != nil {
 		lgr.Error("failed to delete acl entries", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
-	}
-
-	err = ctx.CommitTransaction()
-	if err != nil {
-		lgr.Error("failed to commit transaction", zap.Error(err))
-		ctx.RollbackTransaction()
 	}
 
 	return res, err
 }
 
 func (s *TaskService) UpdateTask(
-	ctx cntxt.IContext,
+	ctx context.Context,
 	cmd *contracts.UpdateTaskCommand,
 ) (*contracts.TaskEvent, error) {
 
@@ -194,15 +175,6 @@ func (s *TaskService) UpdateTask(
 		return nil, err
 	}
 
-	err = ctx.BeginTransaction()
-	if err != nil {
-		lgr.Error(
-			"failed to begin transaction",
-			zap.Error(err),
-		)
-		return nil, err
-	}
-
 	evnt, err := s.repo.Update(
 		ctx,
 		cmd.Id,
@@ -214,28 +186,19 @@ func (s *TaskService) UpdateTask(
 	)
 	if err != nil {
 		lgr.Error("failed to update task", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
 	}
 
 	res, err := evnt.ToContract()
 	if err != nil {
 		lgr.Error("failed to map to contract", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
 	}
-
-	err = ctx.CommitTransaction()
-	if err != nil {
-		lgr.Error("failed to commit transaction", zap.Error(err))
-		ctx.RollbackTransaction()
-	}
-
 	return res, err
 }
 
 func (s *TaskService) ProgressTask(
-	ctx cntxt.IContext,
+	ctx context.Context,
 	cmd *contracts.ProgressTaskCommand,
 ) (*contracts.TaskEvent, error) {
 
@@ -273,15 +236,6 @@ func (s *TaskService) ProgressTask(
 		return nil, common.NewNotPendingTaskError()
 	}
 
-	err = ctx.BeginTransaction()
-	if err != nil {
-		lgr.Error(
-			"failed to begin transaction",
-			zap.Error(err),
-		)
-		return nil, err
-	}
-
 	progress := contracts.Status(contracts.Status_PROGRESS).String()
 	evnt, err := s.repo.Update(
 		ctx,
@@ -293,28 +247,19 @@ func (s *TaskService) ProgressTask(
 	)
 	if err != nil {
 		lgr.Error("failed to update task", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
 	}
 
 	res, err := evnt.ToContract()
 	if err != nil {
 		lgr.Error("failed to map to contract", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
 	}
-
-	err = ctx.CommitTransaction()
-	if err != nil {
-		lgr.Error("failed to commit transaction", zap.Error(err))
-		ctx.RollbackTransaction()
-	}
-
 	return res, err
 }
 
 func (s *TaskService) CompleteTask(
-	ctx cntxt.IContext,
+	ctx context.Context,
 	cmd *contracts.CompleteTaskCommand,
 ) (*contracts.TaskEvent, error) {
 
@@ -352,15 +297,6 @@ func (s *TaskService) CompleteTask(
 		return nil, common.NewNotProgressTaskError()
 	}
 
-	err = ctx.BeginTransaction()
-	if err != nil {
-		lgr.Error(
-			"failed to begin transaction",
-			zap.Error(err),
-		)
-		return nil, err
-	}
-
 	completed := contracts.Status(contracts.Status_COMPLETED).String()
 	evnt, err := s.repo.Update(
 		ctx,
@@ -372,28 +308,20 @@ func (s *TaskService) CompleteTask(
 	)
 	if err != nil {
 		lgr.Error("failed to update task", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
 	}
 
 	res, err := evnt.ToContract()
 	if err != nil {
 		lgr.Error("failed to map to contract", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
-	}
-
-	err = ctx.CommitTransaction()
-	if err != nil {
-		lgr.Error("failed to commit transaction", zap.Error(err))
-		ctx.RollbackTransaction()
 	}
 
 	return res, err
 }
 
 func (s *TaskService) QueryTask(
-	ctx cntxt.IContext,
+	ctx context.Context,
 	qry *contracts.ListTasksQuery,
 ) (*contracts.TaskEntityList, error) {
 

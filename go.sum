@@ -1,4 +1,6 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
+github.com/BetaLixT/go-resiliency v1.2.1 h1:Ba6K6f1DSZ2zcsxM85LJHHv95SPM7IvNnIMSk1KT/BY=
+github.com/BetaLixT/go-resiliency v1.2.1/go.mod h1:D+qnxM3Z0dPZw52f1Tlsq9GVbxV9YpttM+JPYsh3zJU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/andybalholm/brotli v1.0.4 h1:V7DdXeJtZscaqfNuAdSRuRFzuiKlHSC/Zh3zl9qY3JY=
 github.com/andybalholm/brotli v1.0.4/go.mod h1:fO7iG3H7G2nSZ7m0zPUDn85XEX2GTukHGRSepvi9Eig=

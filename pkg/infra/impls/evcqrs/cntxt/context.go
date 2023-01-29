@@ -6,6 +6,7 @@ import (
 )
 
 type Action func(context.Context) error
+type Constructor func() (interface{}, error)
 
 type IContext interface {
 	context.Context
@@ -21,4 +22,8 @@ type IContext interface {
 		eventTime time.Time,
 		data interface{},
 	)
+	GetTransaction(
+		key string,
+		constr Constructor,
+	) interface{}
 }

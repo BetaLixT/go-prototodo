@@ -26,8 +26,8 @@ func (f *ContextFactory) Create(
 		lgrf: f.lgrf,
 
 		cancelmtx: &sync.Mutex{},
-		err:  nil,
-		done: make(chan struct{}, 1),
+		err:       nil,
+		done:      make(chan struct{}, 1),
 
 		rtr: *retrier.New(retrier.ExponentialBackoff(
 			5,
@@ -70,17 +70,18 @@ type internalContext struct {
 	compensatoryActions []implcntxt.Action
 	commitActions       []implcntxt.Action
 	events              []dispatchableEvent
+	txObjs              map[string]interface{}
 	isCommited          bool
 	isRolledback        bool
-	commitmtx           *sync.Mutex
+	txmtx               *sync.Mutex
 }
 
 // - Base context functions
-func (c *internalContext) cancel(err error) () {
+func (c *internalContext) cancel(err error) {
 	c.cancelmtx.Lock()
 	defer c.cancelmtx.Unlock()
 	if c.err != nil {
-	  return
+		return
 	}
 	c.err = err
 	close(c.done)
@@ -104,8 +105,8 @@ func (c *internalContext) Value(key any) any {
 
 // - Transaction functions
 func (c *internalContext) CommitTransaction() error {
-	c.commitmtx.Lock()
-	defer c.commitmtx.Unlock()
+	c.txmtx.Lock()
+	defer c.txmtx.Unlock()
 	if c.isCommited || c.isRolledback {
 		return fmt.Errorf(
 			"tried to commit transaction that has already been commited/rolled back",
@@ -140,8 +141,8 @@ func (c *internalContext) CommitTransaction() error {
 
 // TODO: better handling failed rollback transaction
 func (c *internalContext) RollbackTransaction() {
-	c.commitmtx.Lock()
-	defer c.commitmtx.Unlock()
+	c.txmtx.Lock()
+	defer c.txmtx.Unlock()
 	if c.isCommited || c.isRolledback {
 		return
 	}
@@ -169,12 +170,16 @@ func (c *internalContext) RollbackTransaction() {
 func (c *internalContext) RegisterCompensatoryAction(
 	cmp ...implcntxt.Action,
 ) {
+	c.txmtx.Lock()
+	defer c.txmtx.Unlock()
 	c.compensatoryActions = append(c.compensatoryActions, cmp...)
 }
 
 func (c *internalContext) RegisterCommitAction(
 	cmp ...implcntxt.Action,
 ) {
+	c.txmtx.Lock()
+	defer c.txmtx.Unlock()
 	c.commitActions = append(c.commitActions, cmp...)
 }
 
@@ -188,6 +193,8 @@ func (c *internalContext) RegisterEvent(
 	eventTime time.Time,
 	data interface{},
 ) {
+	c.txmtx.Lock()
+	defer c.txmtx.Unlock()
 	c.events = append(c.events, dispatchableEvent{
 		stream:    stream,
 		streamId:  streamId,
@@ -196,6 +203,24 @@ func (c *internalContext) RegisterEvent(
 		eventTime: eventTime,
 		data:      data,
 	})
+}
+
+func (c *internalContext) GetTransaction(
+	key string,
+	constr implcntxt.Constructor,
+) (interface{}, error) {
+	c.txmtx.Lock()
+	defer c.txmtx.Unlock()
+	intr, ok := c.txObjs[key]
+	if ok {
+		return intr, nil
+	}
+	intr, err := constr()
+	if err != nil {
+		return nil, err
+	}
+	c.txObjs[key] = intr
+	return intr, nil
 }
 
 func (c *internalContext) GetTraceInfo() (ver, tid, pid, rid, flg string) {

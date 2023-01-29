@@ -24,7 +24,9 @@ func (f *ContextFactory) Create(
 ) (domcntxt.IContext, context.CancelFunc) {
 	c := &internalContext{
 		lgrf: f.lgrf,
-		err: nil,
+
+		cancelmtx: &sync.Mutex{},
+		err:  nil,
 		done: make(chan struct{}, 1),
 
 		rtr: *retrier.New(retrier.ExponentialBackoff(
@@ -34,20 +36,20 @@ func (f *ContextFactory) Create(
 			retrier.DefaultClassifier{},
 		),
 		compensatoryActions: []implcntxt.Action{},
-		commitActions: []implcntxt.Action{},
-		events: []dispatchableEvent{},
-		isCommited: false,
-		isRolledback: false,
-		commitmtx: &sync.Mutex{},
+		commitActions:       []implcntxt.Action{},
+		events:              []dispatchableEvent{},
+		isCommited:          false,
+		isRolledback:        false,
+		commitmtx:           &sync.Mutex{},
 	}
 
 	// TODO: tracing values
 
 	ctx, cancel := context.WithTimeout(
-	  c,
-	  timeout,
+		c,
+		timeout,
 	)
-	
+
 }
 
 var _ context.Context = (*internalContext)(nil)
@@ -58,8 +60,10 @@ var _ implcntxt.IContext = (*internalContext)(nil)
 type internalContext struct {
 	lgrf logger.IFactory
 	// deadline time.Time
-	err  error
-	done chan struct{}
+	cancelmtx *sync.Mutex
+	err       error
+	done      chan struct{}
+	duration  time.Time
 
 	// - transaction
 	rtr                 retrier.Retrier
@@ -72,6 +76,16 @@ type internalContext struct {
 }
 
 // - Base context functions
+func (c *internalContext) cancel(err error) () {
+	c.cancelmtx.Lock()
+	defer c.cancelmtx.Unlock()
+	if c.err != nil {
+	  return
+	}
+	c.err = err
+	close(c.done)
+}
+
 func (c *internalContext) Deadline() (time.Time, bool) {
 	return time.Now(), false
 }
@@ -93,13 +107,13 @@ func (c *internalContext) CommitTransaction() error {
 	c.commitmtx.Lock()
 	defer c.commitmtx.Unlock()
 	if c.isCommited || c.isRolledback {
-	  return fmt.Errorf(
-	    "tried to commit transaction that has already been commited/rolled back",
-	  )
+		return fmt.Errorf(
+			"tried to commit transaction that has already been commited/rolled back",
+		)
 	}
 	ctx := newMinimalContext(c)
 	for range c.events {
-	  // TODO Event handling
+		// TODO Event handling
 		// err := c.ndisp.DispatchEventNotification(
 		// 	ctx,
 		// 	evnt.stream,
@@ -126,14 +140,13 @@ func (c *internalContext) CommitTransaction() error {
 
 // TODO: better handling failed rollback transaction
 func (c *internalContext) RollbackTransaction() {
-  c.commitmtx.Lock()
+	c.commitmtx.Lock()
 	defer c.commitmtx.Unlock()
 	if c.isCommited || c.isRolledback {
-	  return
+		return
 	}
 
-
-  c.isRolledback = true
+	c.isRolledback = true
 	ctx := newMinimalContext(c)
 	lgr := c.lgrf.Create(ctx)
 	for _, cmp := range c.compensatoryActions {

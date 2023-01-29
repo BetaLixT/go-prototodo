@@ -43,10 +43,17 @@ func (a *TasksHandler) Create(
 			"command handling failed",
 			zap.Error(err),
 		)
+		ctx.RollbackTransaction()
+	} else {
+		err = ctx.CommitTransaction()
+		if err != nil {
+			lgr.Error("failed to commit transaction")
+			ctx.RollbackTransaction()
+		}
 	}
+	ctx.Cancel()
 	return
 }
-
 func (h *TasksHandler) Delete(
 	c context.Context,
 	cmd *contracts.DeleteTaskCommand,
@@ -66,10 +73,21 @@ func (h *TasksHandler) Delete(
 	)
 	if err != nil {
 		lgr.Error(
-			"handling failed",
+			"command handling failed",
 			zap.Error(err),
 		)
+		ctx.RollbackTransaction()
+	} else {
+		err = ctx.CommitTransaction()
+		if err != nil {
+			lgr.Error(
+				"failed to commit transaction",
+				zap.Error(err),
+			)
+			ctx.RollbackTransaction()
+		}
 	}
+	ctx.Cancel()
 	return
 }
 func (h *TasksHandler) Update(
@@ -91,10 +109,21 @@ func (h *TasksHandler) Update(
 	)
 	if err != nil {
 		lgr.Error(
-			"handling failed",
+			"command handling failed",
 			zap.Error(err),
 		)
+		ctx.RollbackTransaction()
+	} else {
+		err = ctx.CommitTransaction()
+		if err != nil {
+			lgr.Error(
+				"failed to commit transaction",
+				zap.Error(err),
+			)
+			ctx.RollbackTransaction()
+		}
 	}
+	ctx.Cancel()
 	return
 }
 func (h *TasksHandler) Progress(
@@ -116,10 +145,21 @@ func (h *TasksHandler) Progress(
 	)
 	if err != nil {
 		lgr.Error(
-			"handling failed",
+			"command handling failed",
 			zap.Error(err),
 		)
+		ctx.RollbackTransaction()
+	} else {
+		err = ctx.CommitTransaction()
+		if err != nil {
+			lgr.Error(
+				"failed to commit transaction",
+				zap.Error(err),
+			)
+			ctx.RollbackTransaction()
+		}
 	}
+	ctx.Cancel()
 	return
 }
 func (h *TasksHandler) Complete(
@@ -141,13 +181,23 @@ func (h *TasksHandler) Complete(
 	)
 	if err != nil {
 		lgr.Error(
-			"handling failed",
+			"command handling failed",
 			zap.Error(err),
 		)
+		ctx.RollbackTransaction()
+	} else {
+		err = ctx.CommitTransaction()
+		if err != nil {
+			lgr.Error(
+				"failed to commit transaction",
+				zap.Error(err),
+			)
+			ctx.RollbackTransaction()
+		}
 	}
+	ctx.Cancel()
 	return
 }
-
 func (h *TasksHandler) ListQuery(
 	c context.Context,
 	qry *contracts.ListTasksQuery,
@@ -167,9 +217,20 @@ func (h *TasksHandler) ListQuery(
 	)
 	if err != nil {
 		lgr.Error(
-			"handling failed",
+			"command handling failed",
 			zap.Error(err),
 		)
+		ctx.RollbackTransaction()
+	} else {
+		err = ctx.CommitTransaction()
+		if err != nil {
+			lgr.Error(
+				"failed to commit transaction",
+				zap.Error(err),
+			)
+			ctx.RollbackTransaction()
+		}
 	}
+	ctx.Cancel()
 	return
 }

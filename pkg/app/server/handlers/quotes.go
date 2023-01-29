@@ -47,9 +47,20 @@ func (h *QuotesHandler) Get(
 	)
 	if err != nil {
 		lgr.Error(
-			"handling failed",
+			"command handling failed",
 			zap.Error(err),
 		)
+		ctx.RollbackTransaction()
+	} else {
+		err = ctx.CommitTransaction()
+		if err != nil {
+			lgr.Error(
+				"failed to commit transaction",
+				zap.Error(err),
+			)
+			ctx.RollbackTransaction()
+		}
 	}
+	ctx.Cancel()
 	return
 }

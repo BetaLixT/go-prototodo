@@ -9,6 +9,7 @@ import (
 	"prototodo/pkg/domain/contracts"
 
 	"go.uber.org/zap"
+	"golang.org/x/net/context"
 )
 
 type TaskService struct {
@@ -19,7 +20,7 @@ type TaskService struct {
 }
 
 func (s *TaskService) CreateTask(
-	ctx cntxt.IContext,
+	ctx context.Context,
 	cmd *contracts.CreateTaskCommand,
 ) (*contracts.TaskEvent, error) {
 	lgr := s.lgrf.Create(ctx)
@@ -34,22 +35,12 @@ func (s *TaskService) CreateTask(
 
 	pending := contracts.Status(contracts.Status_PENDING).String()
 
-	err := ctx.BeginTransaction()
-	if err != nil {
-		lgr.Error(
-			"failed to begin transaction",
-			zap.Error(err),
-		)
-		return nil, err
-	}
-
 	id, err := s.uidr.GetId(ctx)
 	if err != nil {
 		lgr.Error(
 			"failed to get unique id",
 			zap.Error(err),
 		)
-		ctx.RollbackTransaction()
 		return nil, err
 	}
 
@@ -67,14 +58,12 @@ func (s *TaskService) CreateTask(
 			"failed to create task",
 			zap.Error(err),
 		)
-		ctx.RollbackTransaction()
 		return nil, err
 	}
 
 	res, err := evnt.ToContract()
 	if err != nil {
 		lgr.Error("failed to map to contract", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
 	}
 
@@ -88,14 +77,6 @@ func (s *TaskService) CreateTask(
 	)
 	if err != nil {
 		lgr.Error("failed to create acl entry", zap.Error(err))
-		ctx.RollbackTransaction()
-		return nil, err
-	}
-
-	err = ctx.CommitTransaction()
-	if err != nil {
-		lgr.Error("failed to commit transaction", zap.Error(err))
-		ctx.RollbackTransaction()
 		return nil, err
 	}
 

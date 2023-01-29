@@ -21,13 +21,14 @@ type ContextFactory struct {
 func (f *ContextFactory) Create(
 	ctx context.Context,
 	timeout time.Duration,
-) (domcntxt.IContext, context.CancelFunc) {
+) domcntxt.IContext {
 	c := &internalContext{
 		lgrf: f.lgrf,
 
 		cancelmtx: &sync.Mutex{},
 		err:       nil,
 		done:      make(chan struct{}, 1),
+		duration:  time.Now().Add(timeout),
 
 		rtr: *retrier.New(retrier.ExponentialBackoff(
 			5,
@@ -40,16 +41,17 @@ func (f *ContextFactory) Create(
 		events:              []dispatchableEvent{},
 		isCommited:          false,
 		isRolledback:        false,
-		commitmtx:           &sync.Mutex{},
+		txmtx:               &sync.Mutex{},
 	}
 
 	// TODO: tracing values
-
-	ctx, cancel := context.WithTimeout(
-		c,
-		timeout,
+	time.AfterFunc(
+		time.Until(c.duration),
+		func() {
+			c.cancel(context.DeadlineExceeded)
+		},
 	)
-
+	return c
 }
 
 var _ context.Context = (*internalContext)(nil)
@@ -78,6 +80,7 @@ type internalContext struct {
 
 // - Base context functions
 func (c *internalContext) cancel(err error) {
+	c.RollbackTransaction()
 	c.cancelmtx.Lock()
 	defer c.cancelmtx.Unlock()
 	if c.err != nil {
@@ -85,6 +88,10 @@ func (c *internalContext) cancel(err error) {
 	}
 	c.err = err
 	close(c.done)
+}
+
+func (c *internalContext) Cancel() {
+	c.cancel(fmt.Errorf("context manually canceled"))
 }
 
 func (c *internalContext) Deadline() (time.Time, bool) {

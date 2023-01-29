@@ -25,5 +25,5 @@ type IContext interface {
 	GetTransaction(
 		key string,
 		constr Constructor,
-	) interface{}
+	) (interface{}, error)
 }

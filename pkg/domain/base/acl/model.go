@@ -1,6 +1,6 @@
 package acl
 
 const (
-	Read  = 0b1
+	Read  = 0b01
 	Write = 0b10
 )

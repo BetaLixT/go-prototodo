@@ -7,18 +7,17 @@ import (
 	"prototodo/pkg/infra/impls/evcqrs/cntxt"
 	"prototodo/pkg/infra/impls/evcqrs/common"
 
-	"github.com/BetaLixT/tsqlx"
 	"go.uber.org/zap"
 )
 
-type TasksRepostory struct {
-	dbctx tsqlx.TracedDB
+type TasksRepository struct {
+	BaseRepository
 	lgrf  logger.IFactory
 }
 
 var _ tasks.IRepository = (*TasksRepostory)(nil)
 
-func (r *TasksRepostory) Create(
+func (r *TasksRepository) Create(
 	c context.Context,
 	id string,
 	data tasks.TaskData,
@@ -38,22 +37,7 @@ func (r *TasksRepostory) Create(
 	}
 }
 
-func (r *TasksRepostory) getDBTx(
-	ctx cntxt.IContext,
-) (*tsqlx.TracedTx, error) {
-	idbtx, err := ctx.GetTransaction(
-		common.SqlTransactionObjectKey,
-		func() (interface{}, error) {
-			return r.dbctx.Beginx()
-		},
-	)
-	if err != nil {
-		return nil, err
-	}
+// - Queries
+const (
 
-	if dbtx, ok := idbtx.(*tsqlx.TracedTx); !ok {
-		return nil, common.NewFailedToAssertDatabaseCtxTypeError()
-	} else {
-		return dbtx, nil
-	}
-}
+)

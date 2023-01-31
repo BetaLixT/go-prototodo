@@ -22,8 +22,8 @@ type IContext interface {
 		eventTime time.Time,
 		data interface{},
 	)
-	GetTransaction(
+	GetTransactionObject(
 		key string,
 		constr Constructor,
-	) (interface{}, error)
+	) (obj interface{}, isnew bool, err error)
 }

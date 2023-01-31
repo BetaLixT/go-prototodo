@@ -213,22 +213,22 @@ func (c *internalContext) RegisterEvent(
 	})
 }
 
-func (c *internalContext) GetTransaction(
+func (c *internalContext) GetTransactionObject(
 	key string,
 	constr implcntxt.Constructor,
-) (interface{}, error) {
+) (interface{}, bool, error) {
 	c.txmtx.Lock()
 	defer c.txmtx.Unlock()
 	intr, ok := c.txObjs[key]
 	if ok {
-		return intr, nil
+		return intr, false, nil
 	}
 	intr, err := constr()
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 	c.txObjs[key] = intr
-	return intr, nil
+	return intr, true, nil
 }
 
 func (c *internalContext) GetTraceInfo() (ver, tid, pid, rid, flg string) {

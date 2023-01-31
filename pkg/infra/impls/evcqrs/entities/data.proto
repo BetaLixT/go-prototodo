@@ -1,0 +1,14 @@
+syntax = "proto3";
+package data;
+
+
+option go_package = "pkg/infra/impls/evcqrs/entities";
+import "google/protobuf/struct.proto";
+
+message TaskData {
+  optional string title = 1;
+  optional string description = 2;
+  optional string status = 3;
+  map<string, string> random_map = 4;
+  optional google.protobuf.Struct metadata = 5;
+}

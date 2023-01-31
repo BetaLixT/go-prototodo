@@ -198,6 +198,7 @@ func (h *TasksHandler) Complete(
 	ctx.Cancel()
 	return
 }
+
 func (h *TasksHandler) ListQuery(
 	c context.Context,
 	qry *contracts.ListTasksQuery,

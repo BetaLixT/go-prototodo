@@ -59,7 +59,6 @@ type Task struct {
 	Title           string
 	Description     string
 	Status          string
-	CreatedBy       string
 	RandomMap       map[string]string
 	Metadata        map[string]interface{}
 	Version         uint64
@@ -87,7 +86,7 @@ func (*Task) ToContractSlice(in []Task) ([]*contracts.TaskEntity, error) {
 	res := make([]*contracts.TaskEntity, len(in))
 	var err error
 	for idx, t := range in {
-		res[idx] , err = t.ToContract()
+		res[idx], err = t.ToContract()
 		if err != nil {
 			return nil, err
 		}

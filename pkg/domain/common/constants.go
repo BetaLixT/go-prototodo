@@ -6,4 +6,8 @@ const (
 	TaskStreamName = "tasks"
 	UserTypeUser   = "user"
 	UserTypeApp    = "application"
+
+	EventCreated = "created"
+	EventUpdated = "updated"
+	EventDeleted = "deleted"
 )

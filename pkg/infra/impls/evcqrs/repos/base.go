@@ -9,7 +9,31 @@ import (
 )
 
 type BaseRepository struct {
-	dbctx tsqlx.TracedDB
+	dbctx *tsqlx.TracedDB
+}
+
+func (r *BaseRepository) insertEvent(
+	ctx cntxt.IContext,
+	trctx *tsqlx.TracedTx,
+	out interface{},
+	sagaId *string,
+	stream string,
+	id string,
+	version uint64,
+	event string,
+	data interface{},
+) error {
+	return trctx.Get(
+		ctx,
+		&out,
+		InsertEventQuery,
+		sagaId,
+		stream,
+		id,
+		version,
+		event,
+		data,
+	)
 }
 
 func (r *BaseRepository) getDBTx(
@@ -39,3 +63,24 @@ func (r *BaseRepository) getDBTx(
 		return dbtx, nil
 	}
 }
+
+func GetValueOrDefault[v comparable](in *v) (out v) {
+	if in != nil {
+		out = *in
+	}
+	return out
+}
+
+const (
+	InsertEventQuery = `
+	INSERT INTO events(
+		saga_id,
+		stream,
+		stream_id,
+		version,
+		event,
+		data
+	) VALUES(
+		$1, $2, $3, $4, $5, $6
+	) RETURNING *`
+)

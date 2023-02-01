@@ -10,6 +10,7 @@ import (
 	"prototodo/pkg/infra/impls/evcqrs/common"
 	"prototodo/pkg/infra/impls/evcqrs/entities"
 
+	"github.com/BetaLixT/tsqlx"
 	"go.uber.org/zap"
 )
 
@@ -18,7 +19,19 @@ type TasksRepository struct {
 	lgrf logger.IFactory
 }
 
-var _ tasks.IRepository = (*TasksRepostory)(nil)
+func NewTasksRepository(
+	dbctx *tsqlx.TracedDB,
+	lgrf logger.IFactory,
+) *TasksRepository {
+	return &TasksRepository{
+		BaseRepository: BaseRepository{
+			dbctx: dbctx,
+		},
+		lgrf: lgrf,
+	}
+}
+
+var _ tasks.IRepository = (*TasksRepository)(nil)
 
 func (r *TasksRepository) Create(
 	c context.Context,

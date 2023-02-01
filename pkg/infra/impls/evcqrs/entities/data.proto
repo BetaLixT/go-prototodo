@@ -12,3 +12,7 @@ message TaskData {
   map<string, string> random_map = 4;
   optional google.protobuf.Struct metadata = 5;
 }
+
+message QuoteData {
+  optional string quote = 1;
+}

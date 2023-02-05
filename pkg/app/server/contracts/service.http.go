@@ -6,7 +6,8 @@ package contracts
 import (
 	context "context"
 	gin "github.com/gin-gonic/gin"
-	easyjson "github.com/mailru/easyjson"
+	protojson "google.golang.org/protobuf/encoding/protojson"
+	ioutil "io/ioutil"
 	contracts "prototodo/pkg/domain/contracts"
 )
 
@@ -30,7 +31,12 @@ type tasks struct {
 // creates a new task
 func (p *tasks) create(ctx *gin.Context) {
 	body := contracts.CreateTaskCommand{}
-	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	raw, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	protojson.Unmarshal(raw, &body)
 	res, err := p.app.Create(
 		ctx,
 		&body,
@@ -39,17 +45,29 @@ func (p *tasks) create(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
+	resraw, err := protojson.Marshal(res)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 	ctx.Status(200)
-	easyjson.MarshalToHTTPResponseWriter(
-		res,
-		ctx.Writer,
-	)
+	ctx.Header("Content-Type", "application/json")
+	_, err = ctx.Writer.Write(resraw)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 }
 
 // deletes an existing task
 func (p *tasks) delete(ctx *gin.Context) {
 	body := contracts.DeleteTaskCommand{}
-	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	raw, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	protojson.Unmarshal(raw, &body)
 	res, err := p.app.Delete(
 		ctx,
 		&body,
@@ -58,17 +76,29 @@ func (p *tasks) delete(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
+	resraw, err := protojson.Marshal(res)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 	ctx.Status(200)
-	easyjson.MarshalToHTTPResponseWriter(
-		res,
-		ctx.Writer,
-	)
+	ctx.Header("Content-Type", "application/json")
+	_, err = ctx.Writer.Write(resraw)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 }
 
 // updates an existing task
 func (p *tasks) update(ctx *gin.Context) {
 	body := contracts.UpdateTaskCommand{}
-	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	raw, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	protojson.Unmarshal(raw, &body)
 	res, err := p.app.Update(
 		ctx,
 		&body,
@@ -77,17 +107,29 @@ func (p *tasks) update(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
+	resraw, err := protojson.Marshal(res)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 	ctx.Status(200)
-	easyjson.MarshalToHTTPResponseWriter(
-		res,
-		ctx.Writer,
-	)
+	ctx.Header("Content-Type", "application/json")
+	_, err = ctx.Writer.Write(resraw)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 }
 
 // update state of existing task to progress
 func (p *tasks) progress(ctx *gin.Context) {
 	body := contracts.ProgressTaskCommand{}
-	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	raw, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	protojson.Unmarshal(raw, &body)
 	res, err := p.app.Progress(
 		ctx,
 		&body,
@@ -96,17 +138,29 @@ func (p *tasks) progress(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
+	resraw, err := protojson.Marshal(res)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 	ctx.Status(200)
-	easyjson.MarshalToHTTPResponseWriter(
-		res,
-		ctx.Writer,
-	)
+	ctx.Header("Content-Type", "application/json")
+	_, err = ctx.Writer.Write(resraw)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 }
 
 // update state of existing task to complete
 func (p *tasks) complete(ctx *gin.Context) {
 	body := contracts.CompleteTaskCommand{}
-	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	raw, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	protojson.Unmarshal(raw, &body)
 	res, err := p.app.Complete(
 		ctx,
 		&body,
@@ -115,17 +169,29 @@ func (p *tasks) complete(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
+	resraw, err := protojson.Marshal(res)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 	ctx.Status(200)
-	easyjson.MarshalToHTTPResponseWriter(
-		res,
-		ctx.Writer,
-	)
+	ctx.Header("Content-Type", "application/json")
+	_, err = ctx.Writer.Write(resraw)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 }
 
 // query all existing tasks
 func (p *tasks) listQuery(ctx *gin.Context) {
 	body := contracts.ListTasksQuery{}
-	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	raw, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	protojson.Unmarshal(raw, &body)
 	res, err := p.app.ListQuery(
 		ctx,
 		&body,
@@ -134,11 +200,18 @@ func (p *tasks) listQuery(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
+	resraw, err := protojson.Marshal(res)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 	ctx.Status(200)
-	easyjson.MarshalToHTTPResponseWriter(
-		res,
-		ctx.Writer,
-	)
+	ctx.Header("Content-Type", "application/json")
+	_, err = ctx.Writer.Write(resraw)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 }
 func RegisterTasksHTTPServer(
 	grp *gin.RouterGroup,
@@ -165,7 +238,12 @@ type quotes struct {
 // get a random quote
 func (p *quotes) get(ctx *gin.Context) {
 	body := contracts.GetQuoteQuery{}
-	easyjson.UnmarshalFromReader(ctx.Request.Body, &body)
+	raw, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	protojson.Unmarshal(raw, &body)
 	res, err := p.app.Get(
 		ctx,
 		&body,
@@ -174,11 +252,18 @@ func (p *quotes) get(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
+	resraw, err := protojson.Marshal(res)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 	ctx.Status(200)
-	easyjson.MarshalToHTTPResponseWriter(
-		res,
-		ctx.Writer,
-	)
+	ctx.Header("Content-Type", "application/json")
+	_, err = ctx.Writer.Write(resraw)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 }
 func RegisterQuotesHTTPServer(
 	grp *gin.RouterGroup,

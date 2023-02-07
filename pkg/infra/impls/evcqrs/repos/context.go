@@ -5,6 +5,7 @@ import (
 	"fmt"
 	domcntxt "prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/logger"
+	"prototodo/pkg/domain/base/trace"
 	infrcntxt "prototodo/pkg/infra/cntxt"
 	implcntxt "prototodo/pkg/infra/impls/evcqrs/cntxt"
 	"sync"
@@ -15,13 +16,25 @@ import (
 )
 
 type ContextFactory struct {
-	lgrf logger.IFactory
+	lgrf  logger.IFactory
+	trepo trace.IRepository
+}
+
+func NewContextFactory(
+	lgrf logger.IFactory,
+	trepo trace.IRepository,
+) *ContextFactory {
+	return &ContextFactory{
+		lgrf:  lgrf,
+		trepo: trepo,
+	}
 }
 
 func (f *ContextFactory) Create(
 	ctx context.Context,
 	timeout time.Duration,
 ) domcntxt.IContext {
+	tx := f.trepo.ExtractTraceParent(ctx)
 	c := &internalContext{
 		lgrf: f.lgrf,
 
@@ -43,6 +56,11 @@ func (f *ContextFactory) Create(
 		isCommited:          false,
 		isRolledback:        false,
 		txmtx:               &sync.Mutex{},
+		ver:                 tx.Ver,
+		tid:                 tx.Tid,
+		pid:                 tx.Pid,
+		rid:                 tx.Rid,
+		flg:                 tx.Flg,
 	}
 
 	// TODO: tracing values
@@ -77,6 +95,13 @@ type internalContext struct {
 	isCommited          bool
 	isRolledback        bool
 	txmtx               *sync.Mutex
+
+	// trace
+	ver string
+	tid string
+	pid string
+	rid string
+	flg string
 }
 
 // - Base context functions

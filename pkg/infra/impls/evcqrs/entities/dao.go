@@ -16,6 +16,8 @@ type BaseEvent struct {
 	Event     string    `db:"event"`
 	Version   uint64    `db:"version"`
 	EventTime time.Time `db:"event_time"`
+	TraceId   string    `db:"trace_id"`
+	RequestId string    `db:"request_id"`
 }
 
 func (dao *BaseEvent) ToDTO() (*events.EventEntity, error) {
@@ -53,6 +55,8 @@ func GetMigrationScripts() []psqldb.MigrationScript {
 					event text NOT NULL,
 					event_time timestamp with time zone NOT NULL,
 					data bytea NOT NULL,
+					trace_id text NOT NULL,
+					request_id text NOT NULL,
 					CONSTRAINT source_unique UNIQUE (stream, stream_id, version)
 				);
 
@@ -94,7 +98,8 @@ func GetMigrationScripts() []psqldb.MigrationScript {
 					stream text NOT NULL,
 					stream_id NOT NULL,
 					saga_id text,
-					PRIMARY KEY (foreign_stream, foreign_stream_id, stream, stream_id)
+					PRIMARY KEY (foreign_stream, foreign_stream_id, stream, stream_id),
+					CONSTRAINT foreign_constraints_fk FOREIGN KEY (foreign_stream, foreign_stream_id) REFERENCES foreigns (stream, stream_id)
 				);
 				`,
 			Down: `

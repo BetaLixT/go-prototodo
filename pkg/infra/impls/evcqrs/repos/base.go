@@ -23,6 +23,7 @@ func (r *BaseRepository) insertEvent(
 	event string,
 	data interface{},
 ) error {
+	_, tid, _, rid, _ := ctx.GetTraceInfo()
 	return trctx.Get(
 		ctx,
 		&out,
@@ -33,6 +34,8 @@ func (r *BaseRepository) insertEvent(
 		version,
 		event,
 		data,
+		tid,
+		rid,
 	)
 }
 
@@ -79,6 +82,8 @@ const (
 		stream_id,
 		version,
 		event,
+		trace_id,
+		request_id,
 		data
 	) VALUES(
 		$1, $2, $3, $4, $5, $6

@@ -27,14 +27,14 @@ type IRepository interface {
 	CanRead(
 		ctx context.Context,
 		stream string,
-		streamId string,
+		streamIds []string,
 		userType string,
 		userId string,
 	) error
 	CanWrite(
 		ctx context.Context,
 		stream string,
-		streamId string,
+		streamIds []string,
 		userType string,
 		userId string,
 	) error

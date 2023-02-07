@@ -26,4 +26,5 @@ type IContext interface {
 		key string,
 		constr Constructor,
 	) (obj interface{}, isnew bool, err error)
+	GetTraceInfo() (ver, tid, pid, rid, flg string)
 }

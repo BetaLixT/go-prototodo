@@ -12,4 +12,4 @@ package main
 
 //go:generate easyjson -all --lower_camel_case ./pkg/domain/contracts/models.pb.go
 
-//go:generate wire ./pkg/app/rest
+//go:generate wire ./pkg/app/server

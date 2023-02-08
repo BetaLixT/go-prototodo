@@ -8,11 +8,11 @@ import (
 	"github.com/BetaLixT/tsqlx"
 )
 
-type BaseRepository struct {
+type BaseDataRepository struct {
 	dbctx *tsqlx.TracedDB
 }
 
-func (r *BaseRepository) insertEvent(
+func (r *BaseDataRepository) insertEvent(
 	ctx cntxt.IContext,
 	trctx *tsqlx.TracedTx,
 	out interface{},
@@ -39,7 +39,7 @@ func (r *BaseRepository) insertEvent(
 	)
 }
 
-func (r *BaseRepository) getDBTx(
+func (r *BaseDataRepository) getDBTx(
 	ctx cntxt.IContext,
 ) (*tsqlx.TracedTx, error) {
 	idbtx, nw, err := ctx.GetTransactionObject(

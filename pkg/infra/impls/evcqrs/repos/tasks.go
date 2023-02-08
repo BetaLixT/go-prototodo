@@ -15,7 +15,7 @@ import (
 )
 
 type TasksRepository struct {
-	BaseRepository
+	BaseDataRepository
 	lgrf logger.IFactory
 }
 
@@ -24,7 +24,7 @@ func NewTasksRepository(
 	lgrf logger.IFactory,
 ) *TasksRepository {
 	return &TasksRepository{
-		BaseRepository: BaseRepository{
+		BaseDataRepository: BaseDataRepository{
 			dbctx: dbctx,
 		},
 		lgrf: lgrf,

@@ -9,7 +9,7 @@ import (
 )
 
 type QuotesRepository struct {
-	BaseRepository
+	BaseDataRepository
 	lgrf logger.IFactory
 }
 
@@ -18,7 +18,7 @@ func NewQuotesRepository(
 	lgrf logger.IFactory,
 ) *QuotesRepository {
 	return &QuotesRepository{
-		BaseRepository: BaseRepository{
+		BaseDataRepository: BaseDataRepository{
 			dbctx: dbctx,
 		},
 		lgrf: lgrf,

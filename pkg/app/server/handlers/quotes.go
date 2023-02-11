@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	srvcontracts "prototodo/pkg/app/server/contracts"
 	"prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/logger"
 	"prototodo/pkg/domain/contracts"
 	"time"
 
+	"github.com/betalixt/gorr"
 	"go.uber.org/zap"
 )
 
@@ -41,6 +43,32 @@ func (h *QuotesHandler) Get(
 		"handling",
 		zap.Any("qry", qry),
 	)
+	defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok = r.(error)
+			if !ok {
+				err = gorr.NewUnexpectedError(fmt.Errorf("%v", r))
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Any("panic", r),
+					zap.Stack("stack"),
+				)
+			} else {
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Error(err),
+					zap.Stack("stack"),
+				)
+			}
+			ctx.RollbackTransaction()
+			ctx.Cancel()
+		}
+		if _, ok := err.(*gorr.Error); !ok {
+			err = gorr.NewUnexpectedError(err)
+		}
+		return
+	}()
 	res, err = TODOReplaceWithServiceFunction(
 		ctx,
 		qry,

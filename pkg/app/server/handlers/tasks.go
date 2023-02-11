@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	appcontr "prototodo/pkg/app/server/contracts"
 	"prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/logger"
@@ -9,6 +10,7 @@ import (
 	"prototodo/pkg/domain/domains/tasks"
 	"time"
 
+	"github.com/betalixt/gorr"
 	"go.uber.org/zap"
 )
 
@@ -21,20 +23,46 @@ type TasksHandler struct {
 	tsrv tasks.TaskService
 }
 
-func (a *TasksHandler) Create(
+func (h *TasksHandler) Create(
 	c context.Context,
 	cmd *contracts.CreateTaskCommand,
-) (out *contracts.TaskEvent, err error) {
-	ctx := a.ctxf.Create(
+) (res *contracts.TaskEvent, err error) {
+	ctx := h.ctxf.Create(
 		c,
 		time.Second*5,
 	)
-	lgr := a.lgrf.Create(ctx)
+	lgr := h.lgrf.Create(ctx)
 	lgr.Info(
-		"handling command",
+		"handling",
 		zap.Any("cmd", cmd),
 	)
-	out, err = a.tsrv.CreateTask(
+	defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok = r.(error)
+			if !ok {
+				err = gorr.NewUnexpectedError(fmt.Errorf("%v", r))
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Any("panic", r),
+					zap.Stack("stack"),
+				)
+			} else {
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Error(err),
+					zap.Stack("stack"),
+				)
+			}
+			ctx.RollbackTransaction()
+			ctx.Cancel()
+		}
+		if _, ok := err.(*gorr.Error); !ok {
+			err = gorr.NewUnexpectedError(err)
+		}
+		return
+	}()
+	res, err = h.tsrv.CreateTask(
 		ctx,
 		cmd,
 	)
@@ -47,7 +75,10 @@ func (a *TasksHandler) Create(
 	} else {
 		err = ctx.CommitTransaction()
 		if err != nil {
-			lgr.Error("failed to commit transaction")
+			lgr.Error(
+				"failed to commit transaction",
+				zap.Error(err),
+			)
 			ctx.RollbackTransaction()
 		}
 	}
@@ -67,6 +98,32 @@ func (h *TasksHandler) Delete(
 		"handling",
 		zap.Any("cmd", cmd),
 	)
+	defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok = r.(error)
+			if !ok {
+				err = gorr.NewUnexpectedError(fmt.Errorf("%v", r))
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Any("panic", r),
+					zap.Stack("stack"),
+				)
+			} else {
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Error(err),
+					zap.Stack("stack"),
+				)
+			}
+			ctx.RollbackTransaction()
+			ctx.Cancel()
+		}
+		if _, ok := err.(*gorr.Error); !ok {
+			err = gorr.NewUnexpectedError(err)
+		}
+		return
+	}()
 	res, err = h.tsrv.DeleteTask(
 		ctx,
 		cmd,
@@ -103,6 +160,32 @@ func (h *TasksHandler) Update(
 		"handling",
 		zap.Any("cmd", cmd),
 	)
+	defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok = r.(error)
+			if !ok {
+				err = gorr.NewUnexpectedError(fmt.Errorf("%v", r))
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Any("panic", r),
+					zap.Stack("stack"),
+				)
+			} else {
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Error(err),
+					zap.Stack("stack"),
+				)
+			}
+			ctx.RollbackTransaction()
+			ctx.Cancel()
+		}
+		if _, ok := err.(*gorr.Error); !ok {
+			err = gorr.NewUnexpectedError(err)
+		}
+		return
+	}()
 	res, err = h.tsrv.UpdateTask(
 		ctx,
 		cmd,
@@ -139,6 +222,32 @@ func (h *TasksHandler) Progress(
 		"handling",
 		zap.Any("cmd", cmd),
 	)
+	defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok = r.(error)
+			if !ok {
+				err = gorr.NewUnexpectedError(fmt.Errorf("%v", r))
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Any("panic", r),
+					zap.Stack("stack"),
+				)
+			} else {
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Error(err),
+					zap.Stack("stack"),
+				)
+			}
+			ctx.RollbackTransaction()
+			ctx.Cancel()
+		}
+		if _, ok := err.(*gorr.Error); !ok {
+			err = gorr.NewUnexpectedError(err)
+		}
+		return
+	}()
 	res, err = h.tsrv.ProgressTask(
 		ctx,
 		cmd,
@@ -175,6 +284,32 @@ func (h *TasksHandler) Complete(
 		"handling",
 		zap.Any("cmd", cmd),
 	)
+	defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok = r.(error)
+			if !ok {
+				err = gorr.NewUnexpectedError(fmt.Errorf("%v", r))
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Any("panic", r),
+					zap.Stack("stack"),
+				)
+			} else {
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Error(err),
+					zap.Stack("stack"),
+				)
+			}
+			ctx.RollbackTransaction()
+			ctx.Cancel()
+		}
+		if _, ok := err.(*gorr.Error); !ok {
+			err = gorr.NewUnexpectedError(err)
+		}
+		return
+	}()
 	res, err = h.tsrv.CompleteTask(
 		ctx,
 		cmd,
@@ -198,7 +333,6 @@ func (h *TasksHandler) Complete(
 	ctx.Cancel()
 	return
 }
-
 func (h *TasksHandler) ListQuery(
 	c context.Context,
 	qry *contracts.ListTasksQuery,
@@ -212,6 +346,32 @@ func (h *TasksHandler) ListQuery(
 		"handling",
 		zap.Any("qry", qry),
 	)
+	defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok = r.(error)
+			if !ok {
+				err = gorr.NewUnexpectedError(fmt.Errorf("%v", r))
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Any("panic", r),
+					zap.Stack("stack"),
+				)
+			} else {
+				lgr.Error(
+					"root panic recovered handling request",
+					zap.Error(err),
+					zap.Stack("stack"),
+				)
+			}
+			ctx.RollbackTransaction()
+			ctx.Cancel()
+		}
+		if _, ok := err.(*gorr.Error); !ok {
+			err = gorr.NewUnexpectedError(err)
+		}
+		return
+	}()
 	res, err = h.tsrv.QueryTask(
 		ctx,
 		qry,

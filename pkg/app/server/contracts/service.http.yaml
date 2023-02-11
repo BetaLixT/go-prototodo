@@ -152,6 +152,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QuoteData'
+  /commands/createQuote:
+    post:
+      tags:
+        - public
+        - quote
+      summary: get quote
+      description: get a random quote
+      requestBody:
+        description: CreateQuoteCommand
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateQuoteCommand'
+        required: true
+      responses:
+        '200':
+          description: QuoteData
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteData'
 components:
   schemas:
     TaskEvent:
@@ -328,3 +349,11 @@ components:
       properties:
         userContext:
           $ref: '#/components/schemas/UserContext'
+    CreateQuoteCommand:
+      type: object
+      properties:
+        userContext:
+          $ref: '#/components/schemas/UserContext'
+        quote:
+          type: string
+          example: sample

@@ -26,34 +26,34 @@ enum Status {
 
 // -- Commands
 message CreateTaskCommand {
-  UserContext user_context = 1;
+  UserContext userContext = 1;
   string title = 2;
   string description = 3;
 }
 message DeleteTaskCommand {
-  UserContext user_context = 1;
+  UserContext userContext = 1;
   string id = 2;
 }
 message UpdateTaskCommand {
-  UserContext user_context = 1;
+  UserContext userContext = 1;
   string id = 2;
   optional string title = 3;
   optional string description = 4;
 }
 message ProgressTaskCommand {
-  UserContext user_context = 1;
+  UserContext userContext = 1;
   string id = 2;
 }
 message CompleteTaskCommand {
-  UserContext user_context = 1;
+  UserContext userContext = 1;
   string id = 2;
 }
 
 // -- Queries
 message ListTasksQuery {
-  UserContext user_context = 1;
-  uint32 page_number = 2;
-  uint32 count_per_page = 3;
+  UserContext userContext = 1;
+  uint32 pageNumber = 2;
+  uint32 countPerPage = 3;
 }
 
 // -- Data
@@ -61,18 +61,18 @@ message TaskData {
   optional string title = 1;
   optional string description = 2;
   optional Status status = 3;
-  map<string, string> random_map = 4;
+  map<string, string> randomMap = 4;
   optional google.protobuf.Struct metadata = 5;
 }
 
 message TaskEvent {
   uint64 id = 1;
-  optional string saga_id = 2;
+  optional string sagaId = 2;
   string stream = 3;
-  string stream_id = 4;
+  string streamId = 4;
   uint64 version = 5;
   string event = 6;
-  google.protobuf.Timestamp event_time = 7;
+  google.protobuf.Timestamp eventTime = 7;
   TaskData data = 8;
 }
 
@@ -82,8 +82,8 @@ message TaskEntity {
   string title = 3;
   string description = 4;
   Status status = 5;
-  google.protobuf.Timestamp created_date_time = 6;
-  google.protobuf.Timestamp updated_date_time = 7; 
+  google.protobuf.Timestamp createdDateTime = 6;
+  google.protobuf.Timestamp updatedDateTime = 7; 
 }
 
 message TaskEntityList {
@@ -92,9 +92,15 @@ message TaskEntityList {
 // [END tasks domain]
 
 // [START quote domain]
+// -- Commands
+message CreateQuoteCommand {
+  UserContext userContext = 1;
+  string quote = 2;
+}
+
 // -- Queries
 message GetQuoteQuery {
-  UserContext user_context = 1;
+  UserContext userContext = 1;
 }
 
 // -- Data

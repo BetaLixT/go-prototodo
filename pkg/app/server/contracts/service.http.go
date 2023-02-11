@@ -230,6 +230,7 @@ func RegisterTasksHTTPServer(
 type QuotesHTTPServer interface {
 	// Get a quote
 	Get(context.Context, *contracts.GetQuoteQuery) (*contracts.QuoteData, error)
+	Create(context.Context, *contracts.CreateQuoteCommand) (*contracts.QuoteData, error)
 }
 type quotes struct {
 	app QuotesHTTPServer
@@ -265,10 +266,42 @@ func (p *quotes) get(ctx *gin.Context) {
 		return
 	}
 }
+
+// get a random quote
+func (p *quotes) create(ctx *gin.Context) {
+	body := contracts.CreateQuoteCommand{}
+	raw, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	protojson.Unmarshal(raw, &body)
+	res, err := p.app.Create(
+		ctx,
+		&body,
+	)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	resraw, err := protojson.Marshal(res)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	ctx.Status(200)
+	ctx.Header("Content-Type", "application/json")
+	_, err = ctx.Writer.Write(resraw)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+}
 func RegisterQuotesHTTPServer(
 	grp *gin.RouterGroup,
 	srv QuotesHTTPServer,
 ) {
 	ctrl := quotes{app: srv}
 	grp.POST("/queries/getQuote", ctrl.get)
+	grp.POST("/commands/createQuote", ctrl.create)
 }

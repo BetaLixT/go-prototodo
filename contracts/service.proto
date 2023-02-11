@@ -76,5 +76,12 @@ service Quotes {
       tags: ["public", "quote"]
     };
   };
+  rpc Create(CreateQuoteCommand) returns (QuoteData) {
+    option (custom.documentation) = {
+      description: "get a random quote",
+      summary: "get quote",
+      tags: ["public", "quote"]
+    };
+  };
 }
 // [END quote domain]

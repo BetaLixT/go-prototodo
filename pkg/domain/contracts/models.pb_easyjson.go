@@ -201,7 +201,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts1(in *jlexer.Lexer, out *Up
 			continue
 		}
 		switch key {
-		case "user_context":
+		case "userContext":
 			if in.IsNull() {
 				in.Skip()
 				out.UserContext = nil
@@ -248,7 +248,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts1(out *jwriter.Writer, in U
 	first := true
 	_ = first
 	if in.UserContext != nil {
-		const prefix string = ",\"user_context\":"
+		const prefix string = ",\"userContext\":"
 		first = false
 		out.RawString(prefix[1:])
 		(*in.UserContext).MarshalEasyJSON(out)
@@ -330,7 +330,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts2(in *jlexer.Lexer, out *Ta
 		switch key {
 		case "id":
 			out.Id = uint64(in.Uint64())
-		case "saga_id":
+		case "sagaId":
 			if in.IsNull() {
 				in.Skip()
 				out.SagaId = nil
@@ -342,13 +342,13 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts2(in *jlexer.Lexer, out *Ta
 			}
 		case "stream":
 			out.Stream = string(in.String())
-		case "stream_id":
+		case "streamId":
 			out.StreamId = string(in.String())
 		case "version":
 			out.Version = uint64(in.Uint64())
 		case "event":
 			out.Event = string(in.String())
-		case "event_time":
+		case "eventTime":
 			if in.IsNull() {
 				in.Skip()
 				out.EventTime = nil
@@ -389,7 +389,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts2(out *jwriter.Writer, in T
 		out.Uint64(uint64(in.Id))
 	}
 	if in.SagaId != nil {
-		const prefix string = ",\"saga_id\":"
+		const prefix string = ",\"sagaId\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
@@ -409,7 +409,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts2(out *jwriter.Writer, in T
 		out.String(string(in.Stream))
 	}
 	if in.StreamId != "" {
-		const prefix string = ",\"stream_id\":"
+		const prefix string = ",\"streamId\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
@@ -439,7 +439,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts2(out *jwriter.Writer, in T
 		out.String(string(in.Event))
 	}
 	if in.EventTime != nil {
-		const prefix string = ",\"event_time\":"
+		const prefix string = ",\"eventTime\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
@@ -677,7 +677,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts4(in *jlexer.Lexer, out *Ta
 			out.Description = string(in.String())
 		case "status":
 			out.Status = Status(in.Int32())
-		case "created_date_time":
+		case "createdDateTime":
 			if in.IsNull() {
 				in.Skip()
 				out.CreatedDateTime = nil
@@ -687,7 +687,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts4(in *jlexer.Lexer, out *Ta
 				}
 				easyjson7b8cbe4DecodeGoogleGolangOrgProtobufTypesKnownTimestamppb(in, out.CreatedDateTime)
 			}
-		case "updated_date_time":
+		case "updatedDateTime":
 			if in.IsNull() {
 				in.Skip()
 				out.UpdatedDateTime = nil
@@ -758,7 +758,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts4(out *jwriter.Writer, in T
 		out.Int32(int32(in.Status))
 	}
 	if in.CreatedDateTime != nil {
-		const prefix string = ",\"created_date_time\":"
+		const prefix string = ",\"createdDateTime\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
@@ -768,7 +768,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts4(out *jwriter.Writer, in T
 		easyjson7b8cbe4EncodeGoogleGolangOrgProtobufTypesKnownTimestamppb(out, *in.CreatedDateTime)
 	}
 	if in.UpdatedDateTime != nil {
-		const prefix string = ",\"updated_date_time\":"
+		const prefix string = ",\"updatedDateTime\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
@@ -852,7 +852,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts5(in *jlexer.Lexer, out *Ta
 				}
 				*out.Status = Status(in.Int32())
 			}
-		case "random_map":
+		case "randomMap":
 			if in.IsNull() {
 				in.Skip()
 			} else {
@@ -925,7 +925,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts5(out *jwriter.Writer, in T
 		out.Int32(int32(*in.Status))
 	}
 	if len(in.RandomMap) != 0 {
-		const prefix string = ",\"random_map\":"
+		const prefix string = ",\"randomMap\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
@@ -1078,7 +1078,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts7(in *jlexer.Lexer, out *Pr
 			continue
 		}
 		switch key {
-		case "user_context":
+		case "userContext":
 			if in.IsNull() {
 				in.Skip()
 				out.UserContext = nil
@@ -1105,7 +1105,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts7(out *jwriter.Writer, in P
 	first := true
 	_ = first
 	if in.UserContext != nil {
-		const prefix string = ",\"user_context\":"
+		const prefix string = ",\"userContext\":"
 		first = false
 		out.RawString(prefix[1:])
 		(*in.UserContext).MarshalEasyJSON(out)
@@ -1165,7 +1165,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts8(in *jlexer.Lexer, out *Li
 			continue
 		}
 		switch key {
-		case "user_context":
+		case "userContext":
 			if in.IsNull() {
 				in.Skip()
 				out.UserContext = nil
@@ -1175,9 +1175,9 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts8(in *jlexer.Lexer, out *Li
 				}
 				(*out.UserContext).UnmarshalEasyJSON(in)
 			}
-		case "page_number":
+		case "pageNumber":
 			out.PageNumber = uint32(in.Uint32())
-		case "count_per_page":
+		case "countPerPage":
 			out.CountPerPage = uint32(in.Uint32())
 		default:
 			in.SkipRecursive()
@@ -1194,13 +1194,13 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts8(out *jwriter.Writer, in L
 	first := true
 	_ = first
 	if in.UserContext != nil {
-		const prefix string = ",\"user_context\":"
+		const prefix string = ",\"userContext\":"
 		first = false
 		out.RawString(prefix[1:])
 		(*in.UserContext).MarshalEasyJSON(out)
 	}
 	if in.PageNumber != 0 {
-		const prefix string = ",\"page_number\":"
+		const prefix string = ",\"pageNumber\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
@@ -1210,7 +1210,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts8(out *jwriter.Writer, in L
 		out.Uint32(uint32(in.PageNumber))
 	}
 	if in.CountPerPage != 0 {
-		const prefix string = ",\"count_per_page\":"
+		const prefix string = ",\"countPerPage\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
@@ -1264,7 +1264,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts9(in *jlexer.Lexer, out *Ge
 			continue
 		}
 		switch key {
-		case "user_context":
+		case "userContext":
 			if in.IsNull() {
 				in.Skip()
 				out.UserContext = nil
@@ -1289,7 +1289,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts9(out *jwriter.Writer, in G
 	first := true
 	_ = first
 	if in.UserContext != nil {
-		const prefix string = ",\"user_context\":"
+		const prefix string = ",\"userContext\":"
 		first = false
 		out.RawString(prefix[1:])
 		(*in.UserContext).MarshalEasyJSON(out)
@@ -1339,7 +1339,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts10(in *jlexer.Lexer, out *D
 			continue
 		}
 		switch key {
-		case "user_context":
+		case "userContext":
 			if in.IsNull() {
 				in.Skip()
 				out.UserContext = nil
@@ -1366,7 +1366,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts10(out *jwriter.Writer, in 
 	first := true
 	_ = first
 	if in.UserContext != nil {
-		const prefix string = ",\"user_context\":"
+		const prefix string = ",\"userContext\":"
 		first = false
 		out.RawString(prefix[1:])
 		(*in.UserContext).MarshalEasyJSON(out)
@@ -1426,7 +1426,7 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts11(in *jlexer.Lexer, out *C
 			continue
 		}
 		switch key {
-		case "user_context":
+		case "userContext":
 			if in.IsNull() {
 				in.Skip()
 				out.UserContext = nil
@@ -1455,7 +1455,7 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts11(out *jwriter.Writer, in 
 	first := true
 	_ = first
 	if in.UserContext != nil {
-		const prefix string = ",\"user_context\":"
+		const prefix string = ",\"userContext\":"
 		first = false
 		out.RawString(prefix[1:])
 		(*in.UserContext).MarshalEasyJSON(out)
@@ -1506,7 +1506,7 @@ func (v *CreateTaskCommand) UnmarshalJSON(data []byte) error {
 func (v *CreateTaskCommand) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson7b8cbe4DecodePrototodoPkgDomainContracts11(l, v)
 }
-func easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(in *jlexer.Lexer, out *CompleteTaskCommand) {
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(in *jlexer.Lexer, out *CreateQuoteCommand) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1525,7 +1525,94 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(in *jlexer.Lexer, out *C
 			continue
 		}
 		switch key {
-		case "user_context":
+		case "userContext":
+			if in.IsNull() {
+				in.Skip()
+				out.UserContext = nil
+			} else {
+				if out.UserContext == nil {
+					out.UserContext = new(UserContext)
+				}
+				(*out.UserContext).UnmarshalEasyJSON(in)
+			}
+		case "quote":
+			out.Quote = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(out *jwriter.Writer, in CreateQuoteCommand) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.UserContext != nil {
+		const prefix string = ",\"userContext\":"
+		first = false
+		out.RawString(prefix[1:])
+		(*in.UserContext).MarshalEasyJSON(out)
+	}
+	if in.Quote != "" {
+		const prefix string = ",\"quote\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.Quote))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v CreateQuoteCommand) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v CreateQuoteCommand) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *CreateQuoteCommand) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *CreateQuoteCommand) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(l, v)
+}
+func easyjson7b8cbe4DecodePrototodoPkgDomainContracts13(in *jlexer.Lexer, out *CompleteTaskCommand) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "userContext":
 			if in.IsNull() {
 				in.Skip()
 				out.UserContext = nil
@@ -1547,12 +1634,12 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(in *jlexer.Lexer, out *C
 		in.Consumed()
 	}
 }
-func easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(out *jwriter.Writer, in CompleteTaskCommand) {
+func easyjson7b8cbe4EncodePrototodoPkgDomainContracts13(out *jwriter.Writer, in CompleteTaskCommand) {
 	out.RawByte('{')
 	first := true
 	_ = first
 	if in.UserContext != nil {
-		const prefix string = ",\"user_context\":"
+		const prefix string = ",\"userContext\":"
 		first = false
 		out.RawString(prefix[1:])
 		(*in.UserContext).MarshalEasyJSON(out)
@@ -1573,23 +1660,23 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(out *jwriter.Writer, in 
 // MarshalJSON supports json.Marshaler interface
 func (v CompleteTaskCommand) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(&w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts13(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v CompleteTaskCommand) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(w, v)
+	easyjson7b8cbe4EncodePrototodoPkgDomainContracts13(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *CompleteTaskCommand) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(&r, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts13(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *CompleteTaskCommand) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(l, v)
+	easyjson7b8cbe4DecodePrototodoPkgDomainContracts13(l, v)
 }

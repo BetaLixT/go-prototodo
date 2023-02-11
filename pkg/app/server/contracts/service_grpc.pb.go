@@ -299,6 +299,7 @@ var Tasks_ServiceDesc = grpc.ServiceDesc{
 type QuotesClient interface {
 	// Get a quote
 	Get(ctx context.Context, in *contracts.GetQuoteQuery, opts ...grpc.CallOption) (*contracts.QuoteData, error)
+	Create(ctx context.Context, in *contracts.CreateQuoteCommand, opts ...grpc.CallOption) (*contracts.QuoteData, error)
 }
 
 type quotesClient struct {
@@ -318,12 +319,22 @@ func (c *quotesClient) Get(ctx context.Context, in *contracts.GetQuoteQuery, opt
 	return out, nil
 }
 
+func (c *quotesClient) Create(ctx context.Context, in *contracts.CreateQuoteCommand, opts ...grpc.CallOption) (*contracts.QuoteData, error) {
+	out := new(contracts.QuoteData)
+	err := c.cc.Invoke(ctx, "/tasks.Quotes/Create", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QuotesServer is the server API for Quotes service.
 // All implementations must embed UnimplementedQuotesServer
 // for forward compatibility
 type QuotesServer interface {
 	// Get a quote
 	Get(context.Context, *contracts.GetQuoteQuery) (*contracts.QuoteData, error)
+	Create(context.Context, *contracts.CreateQuoteCommand) (*contracts.QuoteData, error)
 	mustEmbedUnimplementedQuotesServer()
 }
 
@@ -333,6 +344,9 @@ type UnimplementedQuotesServer struct {
 
 func (UnimplementedQuotesServer) Get(context.Context, *contracts.GetQuoteQuery) (*contracts.QuoteData, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedQuotesServer) Create(context.Context, *contracts.CreateQuoteCommand) (*contracts.QuoteData, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedQuotesServer) mustEmbedUnimplementedQuotesServer() {}
 
@@ -365,6 +379,24 @@ func _Quotes_Get_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Quotes_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(contracts.CreateQuoteCommand)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QuotesServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tasks.Quotes/Create",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QuotesServer).Create(ctx, req.(*contracts.CreateQuoteCommand))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Quotes_ServiceDesc is the grpc.ServiceDesc for Quotes service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -375,6 +407,10 @@ var Quotes_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Get",
 			Handler:    _Quotes_Get_Handler,
+		},
+		{
+			MethodName: "Create",
+			Handler:    _Quotes_Create_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

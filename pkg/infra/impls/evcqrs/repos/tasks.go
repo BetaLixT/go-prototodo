@@ -3,6 +3,7 @@ package repos
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"prototodo/pkg/domain/base/logger"
 	domcom "prototodo/pkg/domain/common"
 	"prototodo/pkg/domain/domains/tasks"
@@ -177,6 +178,7 @@ func (r *TasksRepository) Delete(
 		&dest,
 		DeleteTaskReadModelQuery,
 		id,
+		version-1,
 	)
 	if err != nil {
 		return nil, err
@@ -186,13 +188,76 @@ func (r *TasksRepository) Delete(
 }
 
 func (r *TasksRepository) Update(
-	ctx context.Context,
+	c context.Context,
 	id string,
 	sagaId *string,
 	version uint64,
 	data tasks.TaskData,
 ) (*tasks.TaskEvent, error) {
+	lgr := r.lgrf.Create(c)
 
+	ctx, ok := c.(cntxt.IContext)
+	if !ok {
+		lgr.Error("unexpected context type")
+		return nil, common.NewFailedToAssertContextTypeError()
+	}
+
+	set, vals, err := psqlSetBuilder(
+		3,
+		"title", data.Title,
+		"description", data.Description,
+		"status", data.Status,
+		"random_map", data.RandomMap,
+		"metadata", data.Metadata,
+	)
+	if err != nil {
+		lgr.Error("failed to generate update statement", zap.Error(err))
+		return nil, err
+	}
+
+	dbtx, err := r.getDBTx(ctx)
+	if err != nil {
+		lgr.Error("failed to get db transaction", zap.Error(err))
+		return nil, err
+	}
+
+	var evnt entities.TaskEvent
+	err = r.insertEvent(
+		ctx,
+		dbtx,
+		&evnt,
+		sagaId,
+		domcom.TaskStreamName,
+		id,
+		version,
+		domcom.EventUpdated,
+		data,
+	)
+	if err != nil {
+		lgr.Error("failed to insert update event", zap.Error(err))
+		return nil, err
+	}
+
+	allvals := append([]interface{}{id, version-1}, vals...)
+	dest := entities.TaskReadModel{}
+	err = dbtx.Get(
+		ctx,
+		&dest,
+		fmt.Sprintf(UpdateTaskQuery, set),
+		allvals...,
+	)
+	if err != nil {
+		lgr.Error("failed to update entity", zap.Error(err))
+		return nil, err
+	}
+
+	dto, err := evnt.ToDTO()
+	if err != nil {
+		lgr.Error("failed to generate dto", zap.Error(err))
+		return nil, err
+	}
+
+	return dto, nil 
 }
 
 // - Queries
@@ -214,7 +279,7 @@ const (
 	`
 
 	DeleteTaskReadModelQuery = `
-	DELETE FROM Task WHERE id = $1 RETURNING *
+	DELETE FROM Task WHERE id = $1 AND version = $2 RETURNING *
 	`
 
 	SelectTaskByIdQuery = `
@@ -223,5 +288,9 @@ const (
 
 	ListTasksQuery = `
 	SELECT * FROM Task LIMIT $1 OFFSET $2
+	`
+
+	UpdateTaskQuery = `
+	UPDATE Task SET %s WHERE id = $1 AND version = $2 RETURNING *
 	`
 )

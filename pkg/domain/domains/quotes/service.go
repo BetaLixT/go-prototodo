@@ -2,23 +2,57 @@ package quotes
 
 import (
 	"context"
+	"prototodo/pkg/domain/base/logger"
+	"prototodo/pkg/domain/base/uid"
 	"prototodo/pkg/domain/contracts"
 )
 
 type QuotesService struct {
-	repo IRepository
+	repo  IRepository
+	lgrf  logger.IFactory
+	urepo uid.IRepository
+}
+
+func NewQuotesService(
+	repo IRepository,
+	lgrf logger.IFactory,
+	urepo uid.IRepository,
+) *QuotesService {
+	return &QuotesService{
+		repo:  repo,
+		lgrf:  lgrf,
+		urepo: urepo,
+	}
 }
 
 func (s *QuotesService) GetRandomQuote(
 	ctx context.Context,
 	qry *contracts.GetQuoteQuery,
-) (*contracts.QuoteData, error) {
-
+) (res *contracts.QuoteData, err error) {
+	q, err := s.repo.GetRandom(ctx)
+	if err == nil {
+		res = q.ToContract()
+	}
+	return res, err
 }
 
 func (s *QuotesService) CreateQuote(
 	ctx context.Context,
 	cmd *contracts.CreateQuoteCommand,
-) (*contracts.QuoteData, error) {
-
+) (res *contracts.QuoteData, err error) {
+	lgr := s.lgrf.Create(ctx)
+	id, err := s.urepo.GetId(ctx)
+	if err != nil {
+		lgr.Error("failed to get unique id")
+		return
+	}
+	q, err := s.repo.Create(
+		ctx,
+		id,
+		cmd.Quote,
+	)
+	if err != nil {
+		res = q.Data.ToContract()
+	}
+	return
 }

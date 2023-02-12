@@ -2,8 +2,10 @@ package repos
 
 import (
 	"context"
+	"fmt"
 	"prototodo/pkg/infra/impls/evcqrs/cntxt"
 	"prototodo/pkg/infra/impls/evcqrs/common"
+	"strings"
 
 	"github.com/BetaLixT/tsqlx"
 )
@@ -72,6 +74,44 @@ func GetValueOrDefault[v comparable](in *v) (out v) {
 		out = *in
 	}
 	return out
+}
+
+func psqlSetBuilder(
+	pbeg int,
+	kv ...interface{},
+) (setq string, values []interface{}, err error) {
+	if len(kv)%2 != 0 {
+		err = common.NewUnevenKeyValueCountProvidedError()
+		return
+	}
+
+	cols := make([]string, len(kv)/2)
+	values = make([]interface{}, len(kv)/2)
+	vidx := 0
+
+	for idx := 0; idx < len(kv); idx += 2 {
+		if kv[idx+1] == nil {
+			continue
+		}
+		col, ok := kv[idx].(string)
+		if !ok {
+			err = common.NewNonStringKeyProvidedError()
+			values = nil
+			return
+		}
+		cols[vidx] = fmt.Sprintf("%s = $%d", col, pbeg+vidx)
+		values[vidx] = kv[idx+1]
+		vidx++
+	}
+
+	if vidx == 0 {
+		err = common.NewNoValuesBeingUpdatedError()
+		values = nil
+		return
+	}
+	setq = strings.Join(cols[:vidx], ",")
+	values = values[:vidx]
+	return
 }
 
 const (

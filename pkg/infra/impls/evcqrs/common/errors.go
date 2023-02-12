@@ -12,10 +12,19 @@ const (
 	FailedToAssertContextTypeErrorMessage = "FailedToAssertContextTypeError"
 
 	FailedToAssertDatabaseCtxTypeErrorCode    = 3_99_001
-	FailedToAssertDatabaseCtxTypeErrorMessage = "FailedToAssertContextTypeError"
+	FailedToAssertDatabaseCtxTypeErrorMessage = "FailedToAssertDatabaseCtxTypeError"
 
 	HexStringGenerationFailedErrorCode    = 3_99_002
 	HexStringGenerationFailedErrorMessage = "HexStringGenerationFailedError"
+
+	UnevenKeyValueCountProvidedErrorCode    = 3_99_003
+	UnevenKeyValueCountProvidedErrorMessage = "UnevenKeyValueCountProvidedError"
+
+	NonStringKeyProvidedErrorCode    = 3_99_004
+	NonStringKeyProvidedErrorMessage = "NonStringKeyProvidedError"
+
+	NoValuesBeingUpdatedErrorCode    = 3_99_005
+	NoValuesBeingUpdatedErrorMessage = "NoValuesBeingUpdatedError"
 )
 
 func NewFailedToAssertContextTypeError() *gorr.Error {
@@ -48,5 +57,38 @@ func NewHexStringGenerationFailedError(err error) *gorr.Error {
 		},
 		500,
 		err.Error(),
+	)
+}
+
+func NewUnevenKeyValueCountProvidedError() *gorr.Error {
+	return gorr.NewError(
+		gorr.ErrorCode{
+			Code:    UnevenKeyValueCountProvidedErrorCode,
+			Message: UnevenKeyValueCountProvidedErrorMessage,
+		},
+		500,
+		"",
+	)
+}
+
+func NewNonStringKeyProvidedError() *gorr.Error {
+	return gorr.NewError(
+		gorr.ErrorCode{
+			Code:    NonStringKeyProvidedErrorCode,
+			Message: NonStringKeyProvidedErrorMessage,
+		},
+		500,
+		"",
+	)
+}
+
+func NewNoValuesBeingUpdatedError() *gorr.Error {
+	return gorr.NewError(
+		gorr.ErrorCode{
+			Code:    NoValuesBeingUpdatedErrorCode,
+			Message: NoValuesBeingUpdatedErrorMessage,
+		},
+		400,
+		"",
 	)
 }

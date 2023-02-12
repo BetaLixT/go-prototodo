@@ -2,11 +2,18 @@ package quotes
 
 import (
 	"prototodo/pkg/domain/base/events"
+	"prototodo/pkg/domain/contracts"
 	"time"
 )
 
 type QuoteData struct {
 	Quote *string
+}
+
+func (m *QuoteData) ToContract() *contracts.QuoteData {
+	return &contracts.QuoteData{
+		Quote: m.Quote,
+	}
 }
 
 type Quote struct {
@@ -17,7 +24,28 @@ type Quote struct {
 	DateTimeCreated time.Time
 }
 
+func (m *Quote) ToContract() *contracts.QuoteData {
+	return &contracts.QuoteData{
+		Quote: &m.Quote,
+	}
+}
+
 type QuoteEvent struct {
 	events.EventEntity
 	Data QuoteData `json:"data"`
 }
+
+// func (t *QuoteEvent) ToContract() (*contracts.QuoteEvent, error) {
+// 	dat := t.Data.ToContract()
+//
+// 	return &contracts.QuoteEvent{
+// 		Id:        t.Id,
+// 		SagaId:    t.SagaId,
+// 		Stream:    t.Stream,
+// 		StreamId:  t.StreamId,
+// 		Event:     t.Event,
+// 		Version:   t.Version,
+// 		EventTime: timestamppb.New(t.EventTime),
+// 		Data:      dat,
+// 	}, nil
+// }

@@ -112,6 +112,60 @@ func GetMigrationScripts() []psqldb.MigrationScript {
 				DROP TABLE events;
 				`,
 		},
+		{
+			Key: "read-models",
+			Up: `
+				CREATE TABLE tasks (
+					id string PRIMARY KEY NOT NULL,
+					title text NOT NULL,
+					description text NOT NULL,
+					status text NOT NULL,
+					random_map jsonb NOT NULL,
+					metadata jsonb NOT NULL,
+
+					version bigint NOT NULL,	
+					date_time_created timestamp with time zone NOT NULL,
+					date_time_updated timestamp with time zone NOT NULL
+				);
+
+				CREATE TRIGGER set_tasks_create_time
+				BEFORE INSERT ON tasks
+				FOR EACH ROW
+				EXECUTE PROCEDURE trigger_set_date_time_created();
+
+				CREATE TRIGGER set_tasks_update_time
+				BEFORE UPDATE ON tasks
+				FOR EACH ROW
+				EXECUTE PROCEDURE trigger_set_date_time_updated();
+
+				CREATE TABLE quotes (
+					id string PRIMARY KEY NOT NULL,
+					quote string NOT NULL,
+
+					version bigint NOT NULL,
+					date_time_created timestamp with time zone NOT NULL,
+					date_time_updated timestamp with time zone NOT NULL
+				)
+
+				CREATE TRIGGER set_quotes_create_time
+				BEFORE INSERT ON quotes
+				FOR EACH ROW
+				EXECUTE PROCEDURE trigger_set_date_time_created();
+
+				CREATE TRIGGER set_quotes_update_time
+				BEFORE UPDATE ON quotes
+				FOR EACH ROW
+				EXECUTE PROCEDURE trigger_set_date_time_updated();
+				`,
+			Down: `
+			  DROP TRIGGER set_quotes_create_time on quotes;
+			  DROP TRIGGER set_quotes_update_time on quotes;
+			  DROP TABLE quotes;
+			  DROP TRIGGER set_tasks_create_time on tasks;
+			  DROP TRIGGER set_tasks_update_time on tasks;
+			  DROP TABLE tasks;
+				`,
+		},
 	}
 	return migrationScripts
 }

@@ -104,6 +104,22 @@ var timestampProcedures = MigrationScript{
 		END;
 		$$ LANGUAGE plpgsql;
 
+		CREATE OR REPLACE FUNCTION trigger_set_date_time_created()
+		RETURNS TRIGGER AS $$
+		BEGIN
+			NEW.date_time_created = NOW();
+			RETURN NEW;
+		END;
+		$$ LANGUAGE plpgsql;
+
+		CREATE OR REPLACE FUNCTION trigger_set_date_time_updated()
+		RETURNS TRIGGER AS $$
+		BEGIN
+			NEW.date_time_updated = NOW();
+			RETURN NEW;
+		END;
+		$$ LANGUAGE plpgsql;
+
 		CREATE OR REPLACE FUNCTION trigger_set_event_time()
 		RETURNS TRIGGER AS $$
 		BEGIN

@@ -263,7 +263,7 @@ func (r *TasksRepository) Update(
 // - Queries
 const (
 	InsertTaskReadModelQuery = `
-	INSERT INTO Task (
+	INSERT INTO tasks (
 		id,
 		title,
 		description,
@@ -279,18 +279,18 @@ const (
 	`
 
 	DeleteTaskReadModelQuery = `
-	DELETE FROM Task WHERE id = $1 AND version = $2 RETURNING *
+	DELETE FROM tasks WHERE id = $1 AND version = $2 RETURNING *
 	`
 
 	SelectTaskByIdQuery = `
-	SELECT * FROM Task WHERE id = $1
+	SELECT * FROM tasks WHERE id = $1
 	`
 
 	ListTasksQuery = `
-	SELECT * FROM Task LIMIT $1 OFFSET $2
+	SELECT * FROM tasks LIMIT $1 OFFSET $2
 	`
 
 	UpdateTaskQuery = `
-	UPDATE Task SET %s WHERE id = $1 AND version = $2 RETURNING *
+	UPDATE tasks SET %s WHERE id = $1 AND version = $2 RETURNING *
 	`
 )

@@ -20,6 +20,14 @@ type TraceRepository struct {
 	lgrf logger.IFactory
 }
 
+func NewTraceRepository(
+	lgrf logger.IFactory,
+) *TraceRepository {
+	return &TraceRepository{
+		lgrf: lgrf,
+	}
+}
+
 func (r *TraceRepository) ParseTraceParent(
 	parent context.Context,
 	traceprnt string,
@@ -58,13 +66,13 @@ func (r *TraceRepository) ParseTraceParent(
 func (*TraceRepository) ExtractTraceParent(
 	ctx context.Context,
 ) trace.TxModel {
-  val := ctx.Value(common.TraceKey)
-  if val != nil {
-    if val, ok := val.(trace.TxModel); ok {
-      return val
-    }
-  }
-  return trace.TxModel{}
+	val := ctx.Value(common.TraceKey)
+	if val != nil {
+		if val, ok := val.(trace.TxModel); ok {
+			return val
+		}
+	}
+	return trace.TxModel{}
 }
 
 func generateRadomHexString(n int) (string, error) {

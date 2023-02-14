@@ -55,6 +55,8 @@ func (r *TasksRepository) Create(
 	}
 
 	var evnt entities.TaskEvent
+	var dat entities.TaskData
+	dat.FromDTO(&data)
 	err = r.insertEvent(
 		ctx,
 		dbtx,
@@ -64,7 +66,7 @@ func (r *TasksRepository) Create(
 		id,
 		0,
 		domcom.EventCreated,
-		data,
+		&dat,
 	)
 	if err != nil {
 		return nil, err
@@ -79,8 +81,8 @@ func (r *TasksRepository) Create(
 		GetValueOrDefault(data.Title),
 		GetValueOrDefault(data.Description),
 		GetValueOrDefault(data.Status),
-		data.RandomMap,
-		data.Metadata,
+		entities.JsonMapString(data.RandomMap),
+		entities.JsonObj(data.Metadata),
 		evnt.Version,
 		evnt.EventTime,
 		evnt.EventTime,
@@ -89,7 +91,7 @@ func (r *TasksRepository) Create(
 		return nil, err
 	}
 
-	return evnt.ToDTO()
+	return evnt.ToDTO(), nil
 }
 
 func (r *TasksRepository) Get(
@@ -166,7 +168,7 @@ func (r *TasksRepository) Delete(
 		id,
 		version,
 		domcom.EventDeleted,
-		tasks.TaskData{},
+		entities.TaskData{},
 	)
 	if err != nil {
 		return nil, err
@@ -184,7 +186,7 @@ func (r *TasksRepository) Delete(
 		return nil, err
 	}
 
-	return evnt.ToDTO()
+	return evnt.ToDTO(), nil
 }
 
 func (r *TasksRepository) Update(
@@ -192,7 +194,7 @@ func (r *TasksRepository) Update(
 	id string,
 	sagaId *string,
 	version uint64,
-	data tasks.TaskData,
+	dat tasks.TaskData,
 ) (*tasks.TaskEvent, error) {
 	lgr := r.lgrf.Create(c)
 
@@ -202,6 +204,8 @@ func (r *TasksRepository) Update(
 		return nil, common.NewFailedToAssertContextTypeError()
 	}
 
+	var data entities.TaskData
+	data.FromDTO(&dat)
 	set, vals, err := psqlSetBuilder(
 		3,
 		"title", data.Title,
@@ -231,7 +235,7 @@ func (r *TasksRepository) Update(
 		id,
 		version,
 		domcom.EventUpdated,
-		data,
+		&data,
 	)
 	if err != nil {
 		lgr.Error("failed to insert update event", zap.Error(err))
@@ -250,14 +254,8 @@ func (r *TasksRepository) Update(
 		lgr.Error("failed to update entity", zap.Error(err))
 		return nil, err
 	}
-
-	dto, err := evnt.ToDTO()
-	if err != nil {
-		lgr.Error("failed to generate dto", zap.Error(err))
-		return nil, err
-	}
-
-	return dto, nil 
+	
+	return evnt.ToDTO(), nil 
 }
 
 // - Queries

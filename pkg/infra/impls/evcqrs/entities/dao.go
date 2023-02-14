@@ -1,6 +1,9 @@
 package entities
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
 	"prototodo/pkg/domain/base/events"
 	"prototodo/pkg/infra/psqldb"
 	"time"
@@ -20,7 +23,7 @@ type BaseEvent struct {
 	RequestId string    `db:"request_id"`
 }
 
-func (dao *BaseEvent) ToDTO() (*events.EventEntity, error) {
+func (dao *BaseEvent) ToDTO() (*events.EventEntity) {
 	return &events.EventEntity{
 		Id:        dao.Id,
 		SagaId:    dao.SagaId,
@@ -29,7 +32,7 @@ func (dao *BaseEvent) ToDTO() (*events.EventEntity, error) {
 		Event:     dao.Event,
 		Version:   dao.Version,
 		EventTime: dao.EventTime,
-	}, nil
+	}
 }
 
 type Unique struct {
@@ -38,6 +41,40 @@ type Unique struct {
 	SagaId   *string `db:"saga_id"`
 	Property string  `db:"property"`
 	Value    string  `db:"value"`
+}
+
+type JsonObj map[string]interface{}
+
+var _ driver.Value = (*JsonObj)(nil)
+
+func (a JsonObj) Value() (driver.Value, error) {
+	return json.Marshal(a)
+}
+
+func (a *JsonObj) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("type assertion to []byte failed")
+	}
+
+	return json.Unmarshal(b, &a)
+}
+
+type JsonMapString map[string]string
+
+var _ driver.Value = (*JsonObj)(nil)
+
+func (a JsonMapString) Value() (driver.Value, error) {
+	return json.Marshal(a)
+}
+
+func (a *JsonMapString) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("type assertion to []byte failed")
+	}
+
+	return json.Unmarshal(b, &a)
 }
 
 // Migration script
@@ -82,7 +119,7 @@ func GetMigrationScripts() []psqldb.MigrationScript {
 					user_type text NOT NULL,
 					user_id text NOT NULL,
 					permissions int NOT NULL,	
-					PRIMARY KEY(stream, stream_id, user_type, user)
+					PRIMARY KEY(stream, stream_id, user_type, user_id)
 				);
 
 				CREATE TABLE foreigns (
@@ -96,7 +133,7 @@ func GetMigrationScripts() []psqldb.MigrationScript {
 					foreign_stream text NOT NULL,
 					foreign_stream_id text NOT NULL,
 					stream text NOT NULL,
-					stream_id NOT NULL,
+					stream_id text NOT NULL,
 					saga_id text,
 					PRIMARY KEY (foreign_stream, foreign_stream_id, stream, stream_id),
 					CONSTRAINT foreign_constraints_fk FOREIGN KEY (foreign_stream, foreign_stream_id) REFERENCES foreigns (stream, stream_id)
@@ -116,7 +153,7 @@ func GetMigrationScripts() []psqldb.MigrationScript {
 			Key: "read-models",
 			Up: `
 				CREATE TABLE tasks (
-					id string PRIMARY KEY NOT NULL,
+					id text PRIMARY KEY NOT NULL,
 					title text NOT NULL,
 					description text NOT NULL,
 					status text NOT NULL,
@@ -139,13 +176,13 @@ func GetMigrationScripts() []psqldb.MigrationScript {
 				EXECUTE PROCEDURE trigger_set_date_time_updated();
 
 				CREATE TABLE quotes (
-					id string PRIMARY KEY NOT NULL,
-					quote string NOT NULL,
+					id text PRIMARY KEY NOT NULL,
+					quote text NOT NULL,
 
 					version bigint NOT NULL,
 					date_time_created timestamp with time zone NOT NULL,
 					date_time_updated timestamp with time zone NOT NULL
-				)
+				);
 
 				CREATE TRIGGER set_quotes_create_time
 				BEFORE INSERT ON quotes

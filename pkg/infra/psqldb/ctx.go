@@ -1,8 +1,6 @@
 package psqldb
 
 import (
-	"fmt"
-
 	"github.com/BetaLixT/tsqlx"
 	"github.com/jmoiron/sqlx"
 )
@@ -10,21 +8,21 @@ import (
 func NewDatabaseContext(
 	tracer tsqlx.ITracer,
 	optn *DatabaseOptions,
-) *tsqlx.TracedDB {
+) (*tsqlx.TracedDB, error) {
 
 	db, err := sqlx.Open("postgres", optn.ConnectionString)
 	if err != nil {
-		panic(fmt.Errorf("database connection open failure: %w", err))
+		return nil, err
 	}
 
 	err = db.Ping()
 	if err != nil {
-		panic(fmt.Errorf("database ping failure"))
+		return nil, err
 	}
 
 	return tsqlx.NewTracedDB(
 		db,
 		tracer,
 		optn.DatabaseServiceName,
-	)
+	), nil
 }

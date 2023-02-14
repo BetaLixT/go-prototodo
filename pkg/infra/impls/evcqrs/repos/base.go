@@ -28,16 +28,16 @@ func (r *BaseDataRepository) insertEvent(
 	_, tid, _, rid, _ := ctx.GetTraceInfo()
 	return trctx.Get(
 		ctx,
-		&out,
+		out,
 		InsertEventQuery,
 		sagaId,
 		stream,
 		id,
 		version,
 		event,
-		data,
 		tid,
 		rid,
+		data,
 	)
 }
 
@@ -126,6 +126,6 @@ const (
 		request_id,
 		data
 	) VALUES(
-		$1, $2, $3, $4, $5, $6
+		$1, $2, $3, $4, $5, $6, $7, $8
 	) RETURNING *`
 )

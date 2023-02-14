@@ -5,6 +5,8 @@ import (
 	"prototodo/pkg/infra/psqldb"
 	"testing"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 type MockTracer struct {
@@ -24,16 +26,33 @@ func (t *MockTracer) TraceDependency(
 
 }
 
+const (
+	TestDatabaseConnString  = "host=127.0.0.1 port=5432 user=admin password=123456 dbname=todo_test sslmode=disable"
+	TestDatabaseServiceName = "test-db"
+)
+
 func TestMigration(t *testing.T) {
-	dbctx := psqldb.NewDatabaseContext(
+	dbctx, err := psqldb.NewDatabaseContext(
 		&MockTracer{},
 		&psqldb.DatabaseOptions{
-			ConnectionString:    "host=127.0.0.1 port=5433 user=admin password=123456 dbname=todo-test sslmode=disable",
-			DatabaseServiceName: "test-db",
+			ConnectionString:    TestDatabaseConnString,
+			DatabaseServiceName: TestDatabaseServiceName,
 		},
 	)
-	if err := dbctx.Ping(); err != nil {
-		println("failed to ping database, skipping test")
+	if err != nil {
+		println("failed to connect to database, skipping test")
 		t.SkipNow()
+	}
+	ctx := context.Background()
+	lgr, _ := zap.NewDevelopment()
+	err = psqldb.RunMigrations(
+		ctx,
+		lgr,
+		dbctx,
+		GetMigrationScripts(),
+	)
+	if err != nil {
+		println("failed to run migration")
+		t.FailNow()
 	}
 }

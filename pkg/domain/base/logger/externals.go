@@ -8,5 +8,5 @@ import (
 
 // Logger factory to be used to create a new logger
 type IFactory interface {
-	Create(ctx context.Context) zap.Logger
+	Create(ctx context.Context) *zap.Logger
 }

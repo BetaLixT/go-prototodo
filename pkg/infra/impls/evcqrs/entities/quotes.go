@@ -25,7 +25,7 @@ func (a *QuoteData) Scan(value interface{}) error {
 }
 
 func (t *QuoteData) FromDTO(data *quotes.QuoteData) error {
-	t = &QuoteData{
+	*t = QuoteData{
 		Quote: data.Quote,
 	}
 	return nil
@@ -75,17 +75,13 @@ type QuoteEvent struct {
 
 func (dao *QuoteEvent) ToDTO() (*quotes.QuoteEvent, error) {
 
-	evnt, err := dao.BaseEvent.ToDTO()
-	if err != nil {
-		return nil, err
-	}
 	data, err := dao.Data.ToDTO()
 	if err != nil {
 		return nil, err
 	}
 
 	return &quotes.QuoteEvent{
-		EventEntity: *evnt,
+		EventEntity: *dao.BaseEvent.ToDTO(),
 		Data:        *data,
 	}, nil
 }

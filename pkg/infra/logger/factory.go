@@ -11,6 +11,8 @@ type LoggerFactory struct {
 	lgr *zap.Logger
 }
 
+// func (f*LoggerFactory) Create(ctx context.Context) *zap.Logger
+
 func NewLoggerFactory() (*LoggerFactory, error) {
 	lgr, err := zap.NewProduction()
 	if err != nil {

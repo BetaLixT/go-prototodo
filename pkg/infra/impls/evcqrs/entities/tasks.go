@@ -30,7 +30,7 @@ func (t *TaskData) FromDTO(data *tasks.TaskData) error {
 	if err != nil {
 		return err
 	}
-	t = &TaskData{
+	*t = TaskData{
 		Title:       data.Title,
 		Description: data.Description,
 		Status:      data.Status,
@@ -54,31 +54,27 @@ func (t *TaskData) FromDTOSlice(
 	return res, nil
 }
 
-func (t *TaskData) ToDTO() (*tasks.TaskData, error) {
+func (t *TaskData) ToDTO() *tasks.TaskData {
 	return &tasks.TaskData{
 		Title:       t.Title,
 		Description: t.Description,
 		Status:      t.Status,
 		RandomMap:   t.RandomMap,
 		Metadata:    t.Metadata.AsMap(),
-	}, nil
+	}
 }
 
 func (*TaskData) ToDTOSlice(
 	lhs []TaskData,
-) ([]tasks.TaskData, error) {
+) []tasks.TaskData {
 
 	dtos := make([]tasks.TaskData, len(lhs))
 	var t *tasks.TaskData
-	var err error
 	for idx := range lhs {
-		t, err = lhs[idx].ToDTO()
+		t = lhs[idx].ToDTO()
 		dtos[idx] = *t
-		if err != nil {
-			return nil, err
-		}
 	}
-	return dtos, nil
+	return dtos
 }
 
 type TaskEvent struct {
@@ -86,21 +82,11 @@ type TaskEvent struct {
 	Data TaskData `db:"data"`
 }
 
-func (dao *TaskEvent) ToDTO() (*tasks.TaskEvent, error) {
-
-	evnt, err := dao.BaseEvent.ToDTO()
-	if err != nil {
-		return nil, err
-	}
-	data, err := dao.Data.ToDTO()
-	if err != nil {
-		return nil, err
-	}
-
+func (dao *TaskEvent) ToDTO() *tasks.TaskEvent {
 	return &tasks.TaskEvent{
-		EventEntity: *evnt,
-		Data:        *data,
-	}, nil
+		EventEntity: *dao.BaseEvent.ToDTO(),
+		Data:        *dao.Data.ToDTO(),
+	}
 }
 
 func (*TaskEvent) ToDTOSlice(
@@ -108,27 +94,23 @@ func (*TaskEvent) ToDTOSlice(
 ) ([]tasks.TaskEvent, error) {
 	dtos := make([]tasks.TaskEvent, len(daos))
 	var temp *tasks.TaskEvent
-	var err error
 	for idx := range daos {
-		temp, err = daos[idx].ToDTO()
-		if err != nil {
-			return nil, err
-		}
+		temp = daos[idx].ToDTO()
 		dtos[idx] = *temp
 	}
 	return dtos, nil
 }
 
 type TaskReadModel struct {
-	Id              string                 `db:"id"`
-	Title           string                 `db:"title"`
-	Description     string                 `db:"description"`
-	Status          string                 `db:"status"`
-	RandomMap       map[string]string      `db:"random_map"`
-	Metadata        map[string]interface{} `db:"metadata"`
-	Version         uint64                 `db:"version"`
-	DateTimeCreated time.Time              `db:"date_time_created"`
-	DateTimeUpdated time.Time              `db:"date_time_updated"`
+	Id              string        `db:"id"`
+	Title           string        `db:"title"`
+	Description     string        `db:"description"`
+	Status          string        `db:"status"`
+	RandomMap       JsonMapString `db:"random_map"`
+	Metadata        JsonObj       `db:"metadata"`
+	Version         uint64        `db:"version"`
+	DateTimeCreated time.Time     `db:"date_time_created"`
+	DateTimeUpdated time.Time     `db:"date_time_updated"`
 }
 
 func (dao *TaskReadModel) ToDTO() (*tasks.Task, error) {

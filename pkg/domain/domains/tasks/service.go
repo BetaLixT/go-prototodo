@@ -46,6 +46,7 @@ func (s *TaskService) CreateTask(
 	evnt, err := s.repo.Create(
 		ctx,
 		id,
+		cmd.SagaId,
 		TaskData{
 			Title:       &cmd.Title,
 			Description: &cmd.Description,
@@ -93,7 +94,7 @@ func (s *TaskService) DeleteTask(
 	err := s.aclr.CanWrite(
 		ctx,
 		common.TaskStreamName,
-		cmd.Id,
+		[]string{cmd.Id},
 		cmd.UserContext.UserType,
 		cmd.UserContext.Id,
 	)
@@ -117,6 +118,7 @@ func (s *TaskService) DeleteTask(
 	evnt, err := s.repo.Delete(
 		ctx,
 		cmd.Id,
+		cmd.SagaId,
 		task.Version+1,
 	)
 	if err != nil {
@@ -154,7 +156,7 @@ func (s *TaskService) UpdateTask(
 	err := s.aclr.CanWrite(
 		ctx,
 		common.TaskStreamName,
-		cmd.Id,
+		[]string{cmd.Id},
 		cmd.UserContext.UserType,
 		cmd.UserContext.Id,
 	)
@@ -178,6 +180,7 @@ func (s *TaskService) UpdateTask(
 	evnt, err := s.repo.Update(
 		ctx,
 		cmd.Id,
+		cmd.SagaId,
 		task.Version+1,
 		TaskData{
 			Title:       cmd.Title,
@@ -208,7 +211,7 @@ func (s *TaskService) ProgressTask(
 	err := s.aclr.CanWrite(
 		ctx,
 		common.TaskStreamName,
-		cmd.Id,
+		[]string{cmd.Id},
 		cmd.UserContext.UserType,
 		cmd.UserContext.Id,
 	)
@@ -240,6 +243,7 @@ func (s *TaskService) ProgressTask(
 	evnt, err := s.repo.Update(
 		ctx,
 		cmd.Id,
+		cmd.SagaId,
 		task.Version+1,
 		TaskData{
 			Status: &progress,
@@ -269,7 +273,7 @@ func (s *TaskService) CompleteTask(
 	err := s.aclr.CanWrite(
 		ctx,
 		common.TaskStreamName,
-		cmd.Id,
+		[]string{cmd.Id},
 		cmd.UserContext.UserType,
 		cmd.UserContext.Id,
 	)
@@ -301,6 +305,7 @@ func (s *TaskService) CompleteTask(
 	evnt, err := s.repo.Update(
 		ctx,
 		cmd.Id,
+		cmd.SagaId,
 		task.Version+1,
 		TaskData{
 			Status: &completed,

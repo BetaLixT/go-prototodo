@@ -3,20 +3,20 @@ package cdb
 import (
 	"context"
 	"fmt"
+	"prototodo/pkg/domain/base/logger"
 
 	"github.com/gocql/gocql"
 	"go.uber.org/zap"
-	"techunicorn.com/udc/lette/pkg/infra/logger"
 )
 
 type CassandraSetup struct {
 	sess *gocql.Session
-	lgrf *logger.LoggerFactory
+	lgrf logger.IFactory
 }
 
 func NewCassandraSetup(
 	sess *gocql.Session,
-	lgrf *logger.LoggerFactory,
+	lgrf logger.IFactory,
 ) *CassandraSetup {
 	return &CassandraSetup{
 		sess: sess,
@@ -27,7 +27,7 @@ func NewCassandraSetup(
 func (cs *CassandraSetup) Initialize(
 	ctx context.Context,
 ) error {
-	lgr := cs.lgrf.NewLogger(ctx)
+	lgr := cs.lgrf.Create(ctx)
 	err := cs.sess.Query(Schema).Exec()
 	if err != nil {
 		lgr.Error("error while initializing cassandra", zap.Error(err))

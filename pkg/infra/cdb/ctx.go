@@ -2,20 +2,20 @@ package cdb
 
 import (
 	"context"
+	"prototodo/pkg/domain/base/logger"
 	"strconv"
 
 	trace "github.com/BetaLixT/appInsightsTrace"
 	"github.com/gocql/gocql"
 	"go.uber.org/zap"
-	"techunicorn.com/udc/lette/pkg/infra/logger"
 )
 
 func NewCassandraSession(
 	optn *Options,
-	lgrf *logger.LoggerFactory,
+	lgrf logger.IFactory,
 	isn *trace.AppInsightsCore,
 ) (*gocql.Session, error) {
-	lgr := lgrf.NewLogger(context.Background())
+	lgr := lgrf.Create(context.Background())
 	lgr.Info("connecting to cassandra...", zap.Strings("urls", optn.ClusterIPs))
 	auth := gocql.PasswordAuthenticator{
 		Username: optn.Username,

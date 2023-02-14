@@ -29,24 +29,29 @@ message CreateTaskCommand {
   UserContext userContext = 1;
   string title = 2;
   string description = 3;
+  optional string SagaId = 4;
 }
 message DeleteTaskCommand {
   UserContext userContext = 1;
   string id = 2;
+  optional string SagaId = 3;
 }
 message UpdateTaskCommand {
   UserContext userContext = 1;
   string id = 2;
   optional string title = 3;
   optional string description = 4;
+  optional string SagaId = 5;
 }
 message ProgressTaskCommand {
   UserContext userContext = 1;
   string id = 2;
+  optional string SagaId = 3;
 }
 message CompleteTaskCommand {
   UserContext userContext = 1;
   string id = 2;
+  optional string SagaId = 3;
 }
 
 // -- Queries
@@ -96,6 +101,7 @@ message TaskEntityList {
 message CreateQuoteCommand {
   UserContext userContext = 1;
   string quote = 2;
+  optional string SagaId = 3;
 }
 
 // -- Queries

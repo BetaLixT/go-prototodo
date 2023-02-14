@@ -6,6 +6,7 @@ import (
 	"prototodo/pkg/domain/domains/quotes"
 
 	"github.com/BetaLixT/tsqlx"
+	"github.com/betalixt/gorr"
 )
 
 type QuotesRepository struct {
@@ -31,12 +32,12 @@ func (r *QuotesRepository) Create(
 	ctx context.Context,
 	id string,
 	quote string,
-) (quotes.QuoteEvent, error) {
-
+) (*quotes.QuoteEvent, error) {
+	return nil, gorr.NewNotImplemented()
 }
 
 func (r *QuotesRepository) GetRandom(
 	ctx context.Context,
-) (quotes.Quote, error) {
-
+) (*quotes.Quote, error) {
+	return nil, gorr.NewNotImplemented()
 }

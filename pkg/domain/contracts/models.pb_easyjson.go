@@ -233,6 +233,16 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts1(in *jlexer.Lexer, out *Up
 				}
 				*out.Description = string(in.String())
 			}
+		case "SagaId":
+			if in.IsNull() {
+				in.Skip()
+				out.SagaId = nil
+			} else {
+				if out.SagaId == nil {
+					out.SagaId = new(string)
+				}
+				*out.SagaId = string(in.String())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -282,6 +292,16 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts1(out *jwriter.Writer, in U
 			out.RawString(prefix)
 		}
 		out.String(string(*in.Description))
+	}
+	if in.SagaId != nil {
+		const prefix string = ",\"SagaId\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(*in.SagaId))
 	}
 	out.RawByte('}')
 }
@@ -1090,6 +1110,16 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts7(in *jlexer.Lexer, out *Pr
 			}
 		case "id":
 			out.Id = string(in.String())
+		case "SagaId":
+			if in.IsNull() {
+				in.Skip()
+				out.SagaId = nil
+			} else {
+				if out.SagaId == nil {
+					out.SagaId = new(string)
+				}
+				*out.SagaId = string(in.String())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -1119,6 +1149,16 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts7(out *jwriter.Writer, in P
 			out.RawString(prefix)
 		}
 		out.String(string(in.Id))
+	}
+	if in.SagaId != nil {
+		const prefix string = ",\"SagaId\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(*in.SagaId))
 	}
 	out.RawByte('}')
 }
@@ -1351,6 +1391,16 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts10(in *jlexer.Lexer, out *D
 			}
 		case "id":
 			out.Id = string(in.String())
+		case "SagaId":
+			if in.IsNull() {
+				in.Skip()
+				out.SagaId = nil
+			} else {
+				if out.SagaId == nil {
+					out.SagaId = new(string)
+				}
+				*out.SagaId = string(in.String())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -1380,6 +1430,16 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts10(out *jwriter.Writer, in 
 			out.RawString(prefix)
 		}
 		out.String(string(in.Id))
+	}
+	if in.SagaId != nil {
+		const prefix string = ",\"SagaId\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(*in.SagaId))
 	}
 	out.RawByte('}')
 }
@@ -1440,6 +1500,16 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts11(in *jlexer.Lexer, out *C
 			out.Title = string(in.String())
 		case "description":
 			out.Description = string(in.String())
+		case "SagaId":
+			if in.IsNull() {
+				in.Skip()
+				out.SagaId = nil
+			} else {
+				if out.SagaId == nil {
+					out.SagaId = new(string)
+				}
+				*out.SagaId = string(in.String())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -1479,6 +1549,16 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts11(out *jwriter.Writer, in 
 			out.RawString(prefix)
 		}
 		out.String(string(in.Description))
+	}
+	if in.SagaId != nil {
+		const prefix string = ",\"SagaId\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(*in.SagaId))
 	}
 	out.RawByte('}')
 }
@@ -1537,6 +1617,16 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts12(in *jlexer.Lexer, out *C
 			}
 		case "quote":
 			out.Quote = string(in.String())
+		case "SagaId":
+			if in.IsNull() {
+				in.Skip()
+				out.SagaId = nil
+			} else {
+				if out.SagaId == nil {
+					out.SagaId = new(string)
+				}
+				*out.SagaId = string(in.String())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -1566,6 +1656,16 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts12(out *jwriter.Writer, in 
 			out.RawString(prefix)
 		}
 		out.String(string(in.Quote))
+	}
+	if in.SagaId != nil {
+		const prefix string = ",\"SagaId\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(*in.SagaId))
 	}
 	out.RawByte('}')
 }
@@ -1624,6 +1724,16 @@ func easyjson7b8cbe4DecodePrototodoPkgDomainContracts13(in *jlexer.Lexer, out *C
 			}
 		case "id":
 			out.Id = string(in.String())
+		case "SagaId":
+			if in.IsNull() {
+				in.Skip()
+				out.SagaId = nil
+			} else {
+				if out.SagaId == nil {
+					out.SagaId = new(string)
+				}
+				*out.SagaId = string(in.String())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -1653,6 +1763,16 @@ func easyjson7b8cbe4EncodePrototodoPkgDomainContracts13(out *jwriter.Writer, in 
 			out.RawString(prefix)
 		}
 		out.String(string(in.Id))
+	}
+	if in.SagaId != nil {
+		const prefix string = ",\"SagaId\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(*in.SagaId))
 	}
 	out.RawByte('}')
 }

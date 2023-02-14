@@ -234,6 +234,9 @@ components:
         description:
           type: string
           example: sample
+        SagaId:
+          type: string
+          example: sample
     UserContext:
       type: object
       properties:
@@ -261,6 +264,9 @@ components:
         id:
           type: string
           example: sample
+        SagaId:
+          type: string
+          example: sample
     UpdateTaskCommand:
       type: object
       properties:
@@ -275,6 +281,9 @@ components:
         description:
           type: string
           example: sample
+        SagaId:
+          type: string
+          example: sample
     ProgressTaskCommand:
       type: object
       properties:
@@ -283,12 +292,18 @@ components:
         id:
           type: string
           example: sample
+        SagaId:
+          type: string
+          example: sample
     CompleteTaskCommand:
       type: object
       properties:
         userContext:
           $ref: '#/components/schemas/UserContext'
         id:
+          type: string
+          example: sample
+        SagaId:
           type: string
           example: sample
     TaskEntityList:
@@ -355,5 +370,8 @@ components:
         userContext:
           $ref: '#/components/schemas/UserContext'
         quote:
+          type: string
+          example: sample
+        SagaId:
           type: string
           example: sample

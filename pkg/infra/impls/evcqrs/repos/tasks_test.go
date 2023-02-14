@@ -72,7 +72,6 @@ func createDependenciesAndMigrate() (
 		return nil, nil, nil, err
 	}
 
-	
 	lgrf := &LoggerFactory{lgr: lgr}
 
 	ctxf := NewContextFactory(
@@ -123,7 +122,7 @@ func TestCreateDelete(t *testing.T) {
 	lgr := lgrf.Create(ctx)
 	if err != nil {
 		println()
-		lgr.Error("failed lmao", zap.Error(err))
+		lgr.Error("failed to create record", zap.Error(err))
 		t.FailNow()
 	}
 	if ev.StreamId != id {
@@ -136,6 +135,21 @@ func TestCreateDelete(t *testing.T) {
 	}
 	if *ev.Data.Title != "title" {
 		println("invalid title")
+		t.FailNow()
+	}
+	_, err = r.Delete(
+		ctx,
+		id,
+		nil,
+		1,
+	)
+	if err != nil {
+		lgr.Error("failed to delete record", zap.Error(err))
+		t.FailNow()
+	}
+	err = ctx.CommitTransaction()
+	if err != nil {
+		lgr.Error("failed to commit transaction", zap.Error(err))
 		t.FailNow()
 	}
 }

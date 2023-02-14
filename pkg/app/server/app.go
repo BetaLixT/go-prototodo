@@ -8,8 +8,8 @@ import (
 )
 
 func Start(impl string) {
-  var a app
-  var err error
+	var a app
+	var err error
 	switch impl {
 	case "inmem":
 		a, err = initializeAppInMem()
@@ -22,7 +22,7 @@ func Start(impl string) {
 			panic(err)
 		}
 	}
-	
+
 	a.start(context.Background())
 }
 
@@ -32,14 +32,12 @@ type IInterface interface {
 }
 
 type app interface {
-  start(context.Context)
+	start(context.Context)
 }
-
 
 // =============================================================================
 // Event sourced CQRS Implementation
 // =============================================================================
-
 
 var cqrsDependencySet = wire.NewSet(
 	evcqrs.DependencySet,
@@ -57,11 +55,9 @@ func (*appCQRS) start(ctx context.Context) {
 
 }
 
-
 // =============================================================================
 // In Memory Implementation
 // =============================================================================
-
 
 var inMemDependencySet = wire.NewSet(
 	newAppInMem,

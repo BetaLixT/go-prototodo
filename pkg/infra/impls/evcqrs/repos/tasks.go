@@ -168,7 +168,7 @@ func (r *TasksRepository) Delete(
 		id,
 		version,
 		domcom.EventDeleted,
-		entities.TaskData{},
+		&entities.TaskData{},
 	)
 	if err != nil {
 		return nil, err
@@ -242,7 +242,7 @@ func (r *TasksRepository) Update(
 		return nil, err
 	}
 
-	allvals := append([]interface{}{id, version-1}, vals...)
+	allvals := append([]interface{}{id, version - 1}, vals...)
 	dest := entities.TaskReadModel{}
 	err = dbtx.Get(
 		ctx,
@@ -254,8 +254,8 @@ func (r *TasksRepository) Update(
 		lgr.Error("failed to update entity", zap.Error(err))
 		return nil, err
 	}
-	
-	return evnt.ToDTO(), nil 
+
+	return evnt.ToDTO(), nil
 }
 
 // - Queries

@@ -3,20 +3,20 @@ package quotes
 import (
 	"context"
 	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/uid"
+	"prototodo/pkg/domain/base/uids"
 	"prototodo/pkg/domain/contracts"
 )
 
 type QuotesService struct {
 	repo  IRepository
 	lgrf  logger.IFactory
-	urepo uid.IRepository
+	urepo uids.IRepository
 }
 
 func NewQuotesService(
 	repo IRepository,
 	lgrf logger.IFactory,
-	urepo uid.IRepository,
+	urepo uids.IRepository,
 ) *QuotesService {
 	return &QuotesService{
 		repo:  repo,

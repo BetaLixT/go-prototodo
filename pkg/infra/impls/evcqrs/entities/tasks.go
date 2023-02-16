@@ -4,6 +4,8 @@ import (
 	"database/sql/driver"
 	"errors"
 	"prototodo/pkg/domain/domains/tasks"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/golang/protobuf/proto"
@@ -12,19 +14,22 @@ import (
 
 var _ driver.Value = (*TaskData)(nil)
 
-func (a *TaskData) Value() (driver.Value, error) {
-	return proto.Marshal(a)
+// Value for db write
+func (t *TaskData) Value() (driver.Value, error) {
+	return proto.Marshal(t)
 }
 
-func (a *TaskData) Scan(value interface{}) error {
+// Scan to read from db
+func (t *TaskData) Scan(value interface{}) error {
 	b, ok := value.([]byte)
 	if !ok {
 		return errors.New("type assertion to []byte failed")
 	}
 
-	return proto.Unmarshal(b, a)
+	return proto.Unmarshal(b, t)
 }
 
+// FromDTO to populate structure from dto
 func (t *TaskData) FromDTO(data *tasks.TaskData) error {
 	mdata, err := structpb.NewStruct(data.Metadata)
 	if err != nil {
@@ -40,6 +45,53 @@ func (t *TaskData) FromDTO(data *tasks.TaskData) error {
 	return nil
 }
 
+// GeneratePSQLReadModelSet Generates a psql set for the read model
+func (t *TaskData) GeneratePSQLReadModelSet(
+	pbeg int,
+) (string, []interface{}, int) {
+	sets := make([]string, 5)
+	vals := make([]interface{}, 5)
+	idx := 0
+	if t.Title != nil {
+		sets[idx] = "title = $" + strconv.Itoa(pbeg)
+		vals[idx] = t.Title
+		idx++
+		pbeg++
+	}
+	if t.Description != nil {
+		sets[idx] = "description = $" + strconv.Itoa(pbeg)
+		vals[idx] = t.Description
+		idx++
+		pbeg++
+	}
+	if t.Status != nil {
+		sets[idx] = "status = $" + strconv.Itoa(pbeg)
+		vals[idx] = t.Status
+		idx++
+		pbeg++
+	}
+	if t.RandomMap != nil {
+		sets[idx] = "random_map = $" + strconv.Itoa(pbeg)
+		vals[idx] = JsonMapString(t.RandomMap)
+		idx++
+		pbeg++
+	}
+	if t.Metadata != nil {
+		sets[idx] = "metadata = $" + strconv.Itoa(pbeg)
+		vals[idx] = JsonObj(t.Metadata.AsMap())
+		idx++
+		pbeg++
+	}
+	var set string
+	if idx == 0 {
+		set = ""
+	} else {
+		set = strings.Join(sets[:idx], ",")
+	}
+	return set, vals[:idx], pbeg
+}
+
+// FromDTOSlice to create a dao slice from dto slice
 func (t *TaskData) FromDTOSlice(
 	daos []tasks.TaskData,
 ) ([]TaskData, error) {
@@ -54,6 +106,7 @@ func (t *TaskData) FromDTOSlice(
 	return res, nil
 }
 
+// ToDTO to get the dto from dao
 func (t *TaskData) ToDTO() *tasks.TaskData {
 	return &tasks.TaskData{
 		Title:       t.Title,
@@ -64,10 +117,10 @@ func (t *TaskData) ToDTO() *tasks.TaskData {
 	}
 }
 
+// ToDTOSlice to get the dto slice from dao slice
 func (*TaskData) ToDTOSlice(
 	lhs []TaskData,
 ) []tasks.TaskData {
-
 	dtos := make([]tasks.TaskData, len(lhs))
 	var t *tasks.TaskData
 	for idx := range lhs {
@@ -77,11 +130,13 @@ func (*TaskData) ToDTOSlice(
 	return dtos
 }
 
+// TaskEvent representing task events
 type TaskEvent struct {
 	BaseEvent
 	Data TaskData `db:"data"`
 }
 
+// ToDTO gets dto from dao
 func (dao *TaskEvent) ToDTO() *tasks.TaskEvent {
 	return &tasks.TaskEvent{
 		EventEntity: *dao.BaseEvent.ToDTO(),
@@ -89,6 +144,7 @@ func (dao *TaskEvent) ToDTO() *tasks.TaskEvent {
 	}
 }
 
+// ToDTOSlice gets dto slice from dao slice
 func (*TaskEvent) ToDTOSlice(
 	daos []TaskEvent,
 ) ([]tasks.TaskEvent, error) {
@@ -101,8 +157,9 @@ func (*TaskEvent) ToDTOSlice(
 	return dtos, nil
 }
 
+// TaskReadModel the read model for task data
 type TaskReadModel struct {
-	Id              string        `db:"id"`
+	ID              string        `db:"id"`
 	Title           string        `db:"title"`
 	Description     string        `db:"description"`
 	Status          string        `db:"status"`
@@ -113,9 +170,10 @@ type TaskReadModel struct {
 	DateTimeUpdated time.Time     `db:"date_time_updated"`
 }
 
+// ToDTO gets dto from dao
 func (dao *TaskReadModel) ToDTO() (*tasks.Task, error) {
 	return &tasks.Task{
-		Id:              dao.Id,
+		Id:              dao.ID,
 		Title:           dao.Title,
 		Description:     dao.Description,
 		Status:          dao.Status,
@@ -127,6 +185,7 @@ func (dao *TaskReadModel) ToDTO() (*tasks.Task, error) {
 	}, nil
 }
 
+// ToDTOSlice ToDTO gets dto slice from dao slice
 func (*TaskReadModel) ToDTOSlice(
 	daos []TaskReadModel,
 ) ([]tasks.Task, error) {

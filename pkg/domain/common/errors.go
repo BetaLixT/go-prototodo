@@ -11,17 +11,20 @@ const (
 	InvalidUserTypeForTaskErrorCode    = 2_00_000
 	InvalidUserTypeForTaskErrorMessage = "InvalidUserTypeForTaskError"
 
-	TaskMissingErrorCode = 2_00_001
+	TaskMissingErrorCode    = 2_00_001
 	TaskMissingErrorMessage = "TaskMissingError"
 
-	InvalidTaskStatusErrorCode = 2_00_002
+	InvalidTaskStatusErrorCode    = 2_00_002
 	InvalidTaskStatusErrorMessage = "InvalidTaskStatusError"
 
-	NotPendingTaskErrorCode = 2_00_003
+	NotPendingTaskErrorCode    = 2_00_003
 	NotPendingTaskErrorMessage = "NotPendingTaskError"
 
-	NotProgressTaskErrorCode = 2_00_004
+	NotProgressTaskErrorCode    = 2_00_004
 	NotProgressTaskErrorMessage = "NotPendingTaskError"
+
+	NoTaskUpdatesErrorCode    = 2_00_005
+	NoTaskUpdatesErrorMessage = "NoTaskUpdatesError"
 )
 
 func NewInvalidUserTypeForTaskError() *gorr.Error {
@@ -68,6 +71,8 @@ func NewNotPendingTaskError() *gorr.Error {
 	)
 }
 
+// NewNotProgressTaskError provides an error for when the task was expected to
+// be in progress but wasn't
 func NewNotProgressTaskError() *gorr.Error {
 	return gorr.NewError(
 		gorr.ErrorCode{
@@ -76,5 +81,18 @@ func NewNotProgressTaskError() *gorr.Error {
 		},
 		400,
 		"only users are allowed to create task",
+	)
+}
+
+// NewNoTaskUpdatesError returns error for when no fields are being provided for
+// an update
+func NewNoTaskUpdatesError() *gorr.Error {
+	return gorr.NewError(
+		gorr.ErrorCode{
+			Code:    NoTaskUpdatesErrorCode,
+			Message: NoTaskUpdatesErrorMessage,
+		},
+		400,
+		"",
 	)
 }

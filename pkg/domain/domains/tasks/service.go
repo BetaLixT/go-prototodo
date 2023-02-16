@@ -4,7 +4,7 @@ import (
 	"context"
 	"prototodo/pkg/domain/base/acl"
 	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/uid"
+	"prototodo/pkg/domain/base/uids"
 	"prototodo/pkg/domain/common"
 	"prototodo/pkg/domain/contracts"
 
@@ -15,7 +15,7 @@ type TaskService struct {
 	repo IRepository
 	lgrf logger.IFactory
 	aclr acl.IRepository
-	uidr uid.IRepository
+	uidr uids.IRepository
 }
 
 func (s *TaskService) CreateTask(

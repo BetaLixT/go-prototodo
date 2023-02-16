@@ -1,4 +1,4 @@
-package uid
+package uids
 
 import "context"
 

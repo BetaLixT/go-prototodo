@@ -15,11 +15,13 @@ import (
 	"go.uber.org/zap"
 )
 
+// TasksRepository repository implimentation for tasks
 type TasksRepository struct {
 	BaseDataRepository
 	lgrf logger.IFactory
 }
 
+// NewTasksRepository creates new task
 func NewTasksRepository(
 	dbctx *tsqlx.TracedDB,
 	lgrf logger.IFactory,
@@ -34,10 +36,11 @@ func NewTasksRepository(
 
 var _ tasks.IRepository = (*TasksRepository)(nil)
 
+// Create creates a new task
 func (r *TasksRepository) Create(
 	c context.Context,
 	id string,
-	sagaId *string,
+	sagaID *string,
 	data tasks.TaskData,
 ) (*tasks.TaskEvent, error) {
 	lgr := r.lgrf.Create(c)
@@ -61,7 +64,7 @@ func (r *TasksRepository) Create(
 		ctx,
 		dbtx,
 		&evnt,
-		sagaId,
+		sagaID,
 		domcom.TaskStreamName,
 		id,
 		0,
@@ -94,6 +97,7 @@ func (r *TasksRepository) Create(
 	return evnt.ToDTO(), nil
 }
 
+// Get fetches an exiting task
 func (r *TasksRepository) Get(
 	ctx context.Context,
 	id string,
@@ -115,6 +119,7 @@ func (r *TasksRepository) Get(
 	return task.ToDTO()
 }
 
+// List gives a paged list of tasks
 func (r *TasksRepository) List(
 	ctx context.Context,
 	countPerPage int,
@@ -138,10 +143,11 @@ func (r *TasksRepository) List(
 	return ((*entities.TaskReadModel)(nil)).ToDTOSlice(tasks)
 }
 
+// Delete deletes an existing task
 func (r *TasksRepository) Delete(
 	c context.Context,
 	id string,
-	sagaId *string,
+	sagaID *string,
 	version uint64,
 ) (*tasks.TaskEvent, error) {
 	lgr := r.lgrf.Create(c)
@@ -163,7 +169,7 @@ func (r *TasksRepository) Delete(
 		ctx,
 		dbtx,
 		&evnt,
-		sagaId,
+		sagaID,
 		domcom.TaskStreamName,
 		id,
 		version,
@@ -189,10 +195,11 @@ func (r *TasksRepository) Delete(
 	return evnt.ToDTO(), nil
 }
 
+// Update updates an existing task
 func (r *TasksRepository) Update(
 	c context.Context,
 	id string,
-	sagaId *string,
+	sagaID *string,
 	version uint64,
 	dat tasks.TaskData,
 ) (*tasks.TaskEvent, error) {
@@ -206,17 +213,11 @@ func (r *TasksRepository) Update(
 
 	var data entities.TaskData
 	data.FromDTO(&dat)
-	set, vals, err := psqlSetBuilder(
-		3,
-		"title", data.Title,
-		"description", data.Description,
-		"status", data.Status,
-		"random_map", data.RandomMap,
-		"metadata", data.Metadata,
-	)
-	if err != nil {
-		lgr.Error("failed to generate update statement", zap.Error(err))
-		return nil, err
+
+	set, vals, _ := data.GeneratePSQLReadModelSet(3)
+	if set == "" {
+		lgr.Error("no values updated")
+		return nil, domcom.NewNoTaskUpdatesError()
 	}
 
 	dbtx, err := r.getDBTx(ctx)
@@ -230,7 +231,7 @@ func (r *TasksRepository) Update(
 		ctx,
 		dbtx,
 		&evnt,
-		sagaId,
+		sagaID,
 		domcom.TaskStreamName,
 		id,
 		version,

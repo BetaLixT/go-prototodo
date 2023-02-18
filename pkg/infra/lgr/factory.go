@@ -1,4 +1,4 @@
-package logger
+package lgr
 
 import (
 	"context"
@@ -23,7 +23,7 @@ func NewLoggerFactory() (*LoggerFactory, error) {
 	}, nil
 }
 
-func (lf *LoggerFactory) NewLogger(
+func (lf *LoggerFactory) Create(
 	c context.Context,
 ) *zap.Logger {
 	if c == nil {

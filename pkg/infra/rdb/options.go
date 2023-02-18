@@ -5,4 +5,5 @@ type Options struct {
 	Password    string
 	ServiceName string
 	TLS         bool
+	Database    int
 }

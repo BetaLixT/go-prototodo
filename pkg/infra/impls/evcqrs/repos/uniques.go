@@ -18,7 +18,7 @@ type UniquesRepository struct {
 
 var _ uniques.IRepository = (*UniquesRepository)(nil)
 
-func NewUniqueRepository(
+func NewUniquesRepository(
 	base *BaseDataRepository,
 	lgrf logger.IFactory,
 ) *UniquesRepository {

@@ -15,12 +15,12 @@ func NewRedisContext(
 	rop := &redis.Options{
 		Addr:     optn.Address,
 		Password: optn.Password, // no password set
-		DB:       0,             // use default DB
+		DB:       optn.Database, // use default DB
 	}
 	if optn.TLS {
 		rop.TLSConfig = &tls.Config{
 			MinVersion: tls.VersionTLS12,
-			//Certificates: []tls.Certificate{cert}
+			// Certificates: []tls.Certificate{cert}
 		}
 	}
 	client := redis.NewClient(

@@ -135,7 +135,73 @@ func TestCreateACLEntry(t *testing.T) {
 		"xyz",
 	)
 	if err == nil {
-		lgr.Error("expected failure for can write cries")
+		lgr.Error("expected can read but failed second time around", zap.Error(err))
+		t.FailNow()
+	}
+
+	err = r.CanRead(
+		ctxr,
+		id,
+		[]string{"123", "364"},
+		"tester",
+		"xyz",
+	)
+	if err == nil {
+		lgr.Error("expected read would fail due to non existent id")
+		t.FailNow()
+	}
+
+	ctx3 := ctxf.Create(
+		context.Background(),
+		time.Minute*2,
+	)
+	err = r.CreateACLEntry(
+		ctx3,
+		id,
+		"364",
+		"tester",
+		"xyz",
+		acl.Read|acl.Write,
+	)
+	if err != nil {
+		lgr.Error("acl creation failed", zap.Error(err))
+		t.FailNow()
+	}
+	ctx3.CommitTransaction()
+
+	err = r.CanRead(
+		ctxr,
+		id,
+		[]string{"123", "364"},
+		"tester",
+		"xyz",
+	)
+	if err != nil {
+		lgr.Error("read would succeed expected", zap.Error(err))
+		t.FailNow()
+	}
+
+	err = r.CanWrite(
+		ctxr,
+		id,
+		[]string{"123", "364"},
+		"tester",
+		"xyz",
+	)
+	if err == nil {
+		lgr.Error("expected that write would fail but didn't")
+		t.FailNow()
+	}
+
+	err = r.CanWrite(
+		ctxr,
+		id,
+		[]string{"364"},
+		"tester",
+		"xyz",
+	)
+	if err != nil {
+		lgr.Error("can write unexpected fail", zap.Error(err))
 		t.FailNow()
 	}
 }

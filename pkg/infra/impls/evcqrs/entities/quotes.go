@@ -11,19 +11,22 @@ import (
 
 var _ driver.Value = (*QuoteData)(nil)
 
-func (a *QuoteData) Value() (driver.Value, error) {
-	return proto.Marshal(a)
+// Value for db write
+func (t *QuoteData) Value() (driver.Value, error) {
+	return proto.Marshal(t)
 }
 
-func (a *QuoteData) Scan(value interface{}) error {
+// Scan to read from db
+func (t *QuoteData) Scan(value interface{}) error {
 	b, ok := value.([]byte)
 	if !ok {
 		return errors.New("type assertion to []byte failed")
 	}
 
-	return proto.Unmarshal(b, a)
+	return proto.Unmarshal(b, t)
 }
 
+// FromDTO to populate structure from dto
 func (t *QuoteData) FromDTO(data *quotes.QuoteData) error {
 	*t = QuoteData{
 		Quote: data.Quote,
@@ -31,6 +34,7 @@ func (t *QuoteData) FromDTO(data *quotes.QuoteData) error {
 	return nil
 }
 
+// FromDTOSlice to create a dao slice from dto slice
 func (t *QuoteData) FromDTOSlice(
 	daos []quotes.QuoteData,
 ) ([]QuoteData, error) {
@@ -45,93 +49,84 @@ func (t *QuoteData) FromDTOSlice(
 	return res, nil
 }
 
-func (t *QuoteData) ToDTO() (*quotes.QuoteData, error) {
+// ToDTO to get the dto from dao
+func (t *QuoteData) ToDTO() *quotes.QuoteData {
 	return &quotes.QuoteData{
 		Quote: t.Quote,
-	}, nil
+	}
 }
 
+// ToDTOSlice to get the dto slice from dao slice
 func (*QuoteData) ToDTOSlice(
 	lhs []QuoteData,
 ) ([]quotes.QuoteData, error) {
-
 	dtos := make([]quotes.QuoteData, len(lhs))
 	var t *quotes.QuoteData
-	var err error
 	for idx := range lhs {
-		t, err = lhs[idx].ToDTO()
+		t = lhs[idx].ToDTO()
 		dtos[idx] = *t
-		if err != nil {
-			return nil, err
-		}
 	}
 	return dtos, nil
 }
 
+// QuoteEvent representing quote events
 type QuoteEvent struct {
 	BaseEvent
 	Data QuoteData `db:"data"`
 }
 
-func (dao *QuoteEvent) ToDTO() (*quotes.QuoteEvent, error) {
-
-	data, err := dao.Data.ToDTO()
-	if err != nil {
-		return nil, err
-	}
+// ToDTO gets dto from dao
+func (dao *QuoteEvent) ToDTO() *quotes.QuoteEvent {
+	data := dao.Data.ToDTO()
 
 	return &quotes.QuoteEvent{
 		EventEntity: *dao.BaseEvent.ToDTO(),
 		Data:        *data,
-	}, nil
+	}
 }
 
+// ToDTOSlice gets dto slice from dao slice
 func (*QuoteEvent) ToDTOSlice(
 	daos []QuoteEvent,
-) ([]quotes.QuoteEvent, error) {
+) []quotes.QuoteEvent {
 	dtos := make([]quotes.QuoteEvent, len(daos))
 	var temp *quotes.QuoteEvent
-	var err error
 	for idx := range daos {
-		temp, err = daos[idx].ToDTO()
-		if err != nil {
-			return nil, err
-		}
+		temp = daos[idx].ToDTO()
 		dtos[idx] = *temp
 	}
-	return dtos, nil
+	return dtos
 }
 
+// QuoteReadModel the read model for quote data
 type QuoteReadModel struct {
-	Id              string    `db:"id"`
+	ID              string    `db:"id"`
 	Quote           string    `db:"quote"`
 	Version         uint64    `db:"version"`
 	DateTimeCreated time.Time `db:"date_time_created"`
 	DateTimeUpdated time.Time `db:"date_time_updated"`
 }
 
-func (dao *QuoteReadModel) ToDTO() (*quotes.Quote, error) {
+// ToDTO gets dto from dao
+func (dao *QuoteReadModel) ToDTO() *quotes.Quote {
 	return &quotes.Quote{
-		Id:              dao.Id,
+		Id:              dao.ID,
 		Quote:           dao.Quote,
 		Version:         dao.Version,
 		DateTimeUpdated: dao.DateTimeUpdated,
 		DateTimeCreated: dao.DateTimeCreated,
-	}, nil
+	}
 }
 
+// ToDTOSlice ToDTO gets dto slice from dao slice
 func (*QuoteReadModel) ToDTOSlice(
 	daos []QuoteReadModel,
-) ([]quotes.Quote, error) {
+) []quotes.Quote {
 	dtos := make([]quotes.Quote, len(daos))
 	var temp *quotes.Quote
-	var err error
 	for idx := range daos {
-		temp, err = daos[idx].ToDTO()
-		if err != nil {
-			return nil, err
-		}
+		temp = daos[idx].ToDTO()
 		dtos[idx] = *temp
 	}
-	return dtos, nil
+	return dtos
 }

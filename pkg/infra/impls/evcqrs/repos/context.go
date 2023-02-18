@@ -15,11 +15,13 @@ import (
 	"go.uber.org/zap"
 )
 
+// ContextFactory to create new contexts
 type ContextFactory struct {
 	lgrf  logger.IFactory
 	trepo trace.IRepository
 }
 
+// NewContextFactory constructor for context factory
 func NewContextFactory(
 	lgrf logger.IFactory,
 	trepo trace.IRepository,
@@ -30,6 +32,7 @@ func NewContextFactory(
 	}
 }
 
+// Create creates a new context with timeout, transactions and trace info
 func (f *ContextFactory) Create(
 	ctx context.Context,
 	timeout time.Duration,
@@ -73,10 +76,12 @@ func (f *ContextFactory) Create(
 	return c
 }
 
-var _ context.Context = (*internalContext)(nil)
-var _ domcntxt.IContext = (*internalContext)(nil)
-var _ infrcntxt.IContext = (*internalContext)(nil)
-var _ implcntxt.IContext = (*internalContext)(nil)
+var (
+	_ context.Context    = (*internalContext)(nil)
+	_ domcntxt.IContext  = (*internalContext)(nil)
+	_ infrcntxt.IContext = (*internalContext)(nil)
+	_ implcntxt.IContext = (*internalContext)(nil)
+)
 
 type internalContext struct {
 	lgrf logger.IFactory
@@ -218,9 +223,9 @@ func (c *internalContext) RegisterCommitAction(
 
 func (c *internalContext) RegisterEvent(
 	id uint64,
-	sagaId *string,
+	sagaID *string,
 	stream string,
-	streamId string,
+	streamID string,
 	event string,
 	version uint64,
 	eventTime time.Time,
@@ -230,7 +235,7 @@ func (c *internalContext) RegisterEvent(
 	defer c.txmtx.Unlock()
 	c.events = append(c.events, dispatchableEvent{
 		stream:    stream,
-		streamId:  streamId,
+		streamID:  streamID,
 		event:     event,
 		version:   int(version),
 		eventTime: eventTime,
@@ -262,8 +267,10 @@ func (c *internalContext) GetTraceInfo() (ver, tid, pid, rid, flg string) {
 
 // - Minimal context
 
-var _ context.Context = (*minimalContext)(nil)
-var _ infrcntxt.IContext = (*minimalContext)(nil)
+var (
+	_ context.Context    = (*minimalContext)(nil)
+	_ infrcntxt.IContext = (*minimalContext)(nil)
+)
 
 func newMinimalContext(ctx *internalContext) *minimalContext {
 	return &minimalContext{
@@ -308,7 +315,8 @@ func (c *minimalContext) GetTraceInfo() (ver, tid, pid, rid, flg string) {
 
 type dispatchableEvent struct {
 	stream    string
-	streamId  string
+	streamID  string
+	sagaID    *string
 	version   int
 	event     string
 	eventTime time.Time

@@ -1,3 +1,5 @@
+// Package entities containing all data access objects (models that relate to
+// the how the data is stored in the database)
 package entities
 
 import (
@@ -8,50 +10,102 @@ import (
 	"prototodo/pkg/infra/psqldb"
 	"time"
 
+	// blank import to load postgresql drivers
 	_ "github.com/lib/pq"
 )
 
+// =============================================================================
+// Base Event DAOs
+// =============================================================================
+
+// BaseEvent representing the event model that every event should embed
 type BaseEvent struct {
-	Id        uint64    `db:"id"`
-	SagaId    *string   `db:"saga_id"`
+	ID        uint64    `db:"id"`
+	SagaID    *string   `db:"saga_id"`
 	Stream    string    `db:"stream"`
-	StreamId  string    `db:"stream_id"`
+	StreamID  string    `db:"stream_id"`
 	Event     string    `db:"event"`
 	Version   uint64    `db:"version"`
 	EventTime time.Time `db:"event_time"`
-	TraceId   string    `db:"trace_id"`
-	RequestId string    `db:"request_id"`
+	TraceID   string    `db:"trace_id"`
+	RequestID string    `db:"request_id"`
 }
 
-func (dao *BaseEvent) ToDTO() (*events.EventEntity) {
+// ToDTO getting dto from dao structure
+func (dao *BaseEvent) ToDTO() *events.EventEntity {
 	return &events.EventEntity{
-		Id:        dao.Id,
-		SagaId:    dao.SagaId,
+		Id:        dao.ID,
+		SagaId:    dao.SagaID,
 		Stream:    dao.Stream,
-		StreamId:  dao.StreamId,
+		StreamId:  dao.StreamID,
 		Event:     dao.Event,
 		Version:   dao.Version,
 		EventTime: dao.EventTime,
 	}
 }
 
+// =============================================================================
+// Uniques DAOs
+// =============================================================================
+
+// Unique dao for unique constraint
 type Unique struct {
 	Stream   string  `db:"stream"`
-	StreamId string  `db:"stream_id"`
-	SagaId   *string `db:"saga_id"`
+	StreamID string  `db:"stream_id"`
+	SagaID   *string `db:"saga_id"`
 	Property string  `db:"property"`
 	Value    string  `db:"value"`
 }
 
-type JsonObj map[string]interface{}
+// =============================================================================
+// ACL DAOs
+// =============================================================================
 
-var _ driver.Value = (*JsonObj)(nil)
+// ACL dao representing an ACL entry
+type ACL struct {
+	Stream      string `db:"stream"`
+	StreamID    string `db:"stream_id"`
+	UserType    string `db:"user_type"`
+	UserId      string `db:"user_id"`
+	Permissions int    `db:"permissions"`
+}
 
-func (a JsonObj) Value() (driver.Value, error) {
+// =============================================================================
+// Foreigns DAOs
+// =============================================================================
+
+// Foreign dao that represents a foreign entity
+type Foreign struct {
+	Stream   string  `db:"stream"`
+	StreamID string  `db:"stream_id"`
+	SagaID   *string `db:"saga_id"`
+}
+
+// ForeignConstraint dao that represents a foreign constraint entry
+type ForeignConstraint struct {
+	ForeignStream   string  `db:"foreign_stream"`
+	ForeignStreamID string  `db:"foreign_stream_id"`
+	Stream          string  `db:"stream"`
+	StreamID        string  `db:"stream_id"`
+	SagaID          *string `db:"saga_id"`
+}
+
+// =============================================================================
+// Common DAO models
+// =============================================================================
+
+// JSONObj dao for objects to be stored as json
+type JSONObj map[string]interface{}
+
+var _ driver.Value = (*JSONObj)(nil)
+
+// Value for db writes
+func (a JSONObj) Value() (driver.Value, error) {
 	return json.Marshal(a)
 }
 
-func (a *JsonObj) Scan(value interface{}) error {
+// Scan for db reads
+func (a *JSONObj) Scan(value interface{}) error {
 	b, ok := value.([]byte)
 	if !ok {
 		return fmt.Errorf("type assertion to []byte failed")
@@ -60,15 +114,18 @@ func (a *JsonObj) Scan(value interface{}) error {
 	return json.Unmarshal(b, &a)
 }
 
-type JsonMapString map[string]string
+// JSONMapString  dao for map[string]string to be stored as json
+type JSONMapString map[string]string
 
-var _ driver.Value = (*JsonObj)(nil)
+var _ driver.Value = (*JSONObj)(nil)
 
-func (a JsonMapString) Value() (driver.Value, error) {
+// Value fo db writes
+func (a JSONMapString) Value() (driver.Value, error) {
 	return json.Marshal(a)
 }
 
-func (a *JsonMapString) Scan(value interface{}) error {
+// Scan for db reads
+func (a *JSONMapString) Scan(value interface{}) error {
 	b, ok := value.([]byte)
 	if !ok {
 		return fmt.Errorf("type assertion to []byte failed")
@@ -77,7 +134,12 @@ func (a *JsonMapString) Scan(value interface{}) error {
 	return json.Unmarshal(b, &a)
 }
 
-// Migration script
+// =============================================================================
+// Migrations
+// =============================================================================
+
+// GetMigrationScripts provides all the migration scripts required for the
+// application
 func GetMigrationScripts() []psqldb.MigrationScript {
 	migrationScripts := []psqldb.MigrationScript{
 		{

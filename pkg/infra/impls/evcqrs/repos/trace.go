@@ -16,10 +16,13 @@ import (
 
 var _ trace.IRepository = (*TraceRepository)(nil)
 
+// TraceRepository repository for generating, injecting and extracting trace
+// info
 type TraceRepository struct {
 	lgrf logger.IFactory
 }
 
+// NewTraceRepository constructs a TraceRepository
 func NewTraceRepository(
 	lgrf logger.IFactory,
 ) *TraceRepository {
@@ -28,13 +31,14 @@ func NewTraceRepository(
 	}
 }
 
+// ParseTraceParent parses and or generates trace information and returns
+// context with trace information injected
 func (r *TraceRepository) ParseTraceParent(
 	parent context.Context,
 	traceprnt string,
 ) (context.Context, error) {
 	lgr := r.lgrf.Create(parent)
 	ver, tid, pid, flg, err := decodeTraceparent(traceprnt)
-
 	// If the header could not be decoded, generate a new header
 	if err != nil {
 		ver, flg = "00", "01"
@@ -63,6 +67,7 @@ func (r *TraceRepository) ParseTraceParent(
 	return context.WithValue(parent, common.TraceKey, trc), nil
 }
 
+// ExtractTraceParent extracts injected trace information from context
 func (*TraceRepository) ExtractTraceParent(
 	ctx context.Context,
 ) trace.TxModel {
@@ -79,9 +84,8 @@ func generateRadomHexString(n int) (string, error) {
 	buff := make([]byte, n)
 	if _, err := rand.Read(buff); err != nil {
 		return "", err
-	} else {
-		return hex.EncodeToString(buff), nil
 	}
+	return hex.EncodeToString(buff), nil
 }
 
 func decodeTraceparent(traceparent string) (string, string, string, string, error) {

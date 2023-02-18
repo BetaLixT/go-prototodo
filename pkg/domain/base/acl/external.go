@@ -1,27 +1,30 @@
+// Package acl defining functionalities and models around managing the Access
+// Control List of resources
 package acl
 
 import "context"
 
+// IRepository repo interface for managing ACL
 type IRepository interface {
 	CreateACLEntry(
 		ctx context.Context,
 		stream string,
-		streamId string,
+		streamID string,
 		userType string,
-		userId string,
+		userID string,
 		permissions int,
 	) error
 	DeleteACLEntry(
 		ctx context.Context,
 		stream string,
-		streamId string,
+		streamID string,
 		userType string,
-		userId string,
+		userID string,
 	) error
 	DeleteACLEntries(
 		ctx context.Context,
 		stream string,
-		streamId string,
+		streamID string,
 	) error
 
 	CanRead(
@@ -29,13 +32,13 @@ type IRepository interface {
 		stream string,
 		streamIds []string,
 		userType string,
-		userId string,
+		userID string,
 	) error
 	CanWrite(
 		ctx context.Context,
 		stream string,
 		streamIds []string,
 		userType string,
-		userId string,
+		userID string,
 	) error
 }

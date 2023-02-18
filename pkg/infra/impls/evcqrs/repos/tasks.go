@@ -11,26 +11,23 @@ import (
 	"prototodo/pkg/infra/impls/evcqrs/common"
 	"prototodo/pkg/infra/impls/evcqrs/entities"
 
-	"github.com/BetaLixT/tsqlx"
 	"go.uber.org/zap"
 )
 
 // TasksRepository repository implimentation for tasks
 type TasksRepository struct {
-	BaseDataRepository
+	*BaseDataRepository
 	lgrf logger.IFactory
 }
 
-// NewTasksRepository creates new task
+// NewTasksRepository creates new TasksRepository
 func NewTasksRepository(
-	dbctx *tsqlx.TracedDB,
+	base *BaseDataRepository,
 	lgrf logger.IFactory,
 ) *TasksRepository {
 	return &TasksRepository{
-		BaseDataRepository: BaseDataRepository{
-			dbctx: dbctx,
-		},
-		lgrf: lgrf,
+		BaseDataRepository: base,
+		lgrf:               lgrf,
 	}
 }
 
@@ -84,8 +81,8 @@ func (r *TasksRepository) Create(
 		GetValueOrDefault(data.Title),
 		GetValueOrDefault(data.Description),
 		GetValueOrDefault(data.Status),
-		entities.JsonMapString(data.RandomMap),
-		entities.JsonObj(data.Metadata),
+		entities.JSONMapString(data.RandomMap),
+		entities.JSONObj(data.Metadata),
 		evnt.Version,
 		evnt.EventTime,
 		evnt.EventTime,

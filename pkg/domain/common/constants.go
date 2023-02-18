@@ -1,11 +1,14 @@
-// All the constants used by and known to the domain
-
+// Package common containing constants and errors pertaining to the domains
 package common
 
+// All the constants used by and known to the domain
+
 const (
-	TaskStreamName = "tasks"
-	UserTypeUser   = "user"
-	UserTypeApp    = "application"
+	ServiceName     = "prototodo"
+	TaskStreamName  = "tasks"
+	QuoteStreamName = "quotes"
+	UserTypeUser    = "user"
+	UserTypeApp     = "application"
 
 	EventCreated = "created"
 	EventUpdated = "updated"

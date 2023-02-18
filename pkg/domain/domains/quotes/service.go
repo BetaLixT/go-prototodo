@@ -1,3 +1,5 @@
+// Package quotes containing all business logic and DTO related to the quotes
+// domain
 package quotes
 
 import (

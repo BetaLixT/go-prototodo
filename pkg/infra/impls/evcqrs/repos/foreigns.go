@@ -213,7 +213,7 @@ const (
 	INSERT INTO foreigns(
 		stream,
 		stream_id,
-		saga_id,
+		saga_id
 	) VALUES(
 		$1, $2, $3
 	) RETURNING *
@@ -231,7 +231,7 @@ const (
 		foreign_stream_id,
 		stream,
 		stream_id,
-		saga_id,
+		saga_id
 	) VALUES(
 		$1, $2, $3, $4, $5
 	) RETURNING *

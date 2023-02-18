@@ -43,7 +43,7 @@ func (s *QuotesService) CreateQuote(
 	cmd *contracts.CreateQuoteCommand,
 ) (res *contracts.QuoteData, err error) {
 	lgr := s.lgrf.Create(ctx)
-	id, err := s.urepo.GetId(ctx)
+	id, err := s.urepo.GetID(ctx)
 	if err != nil {
 		lgr.Error("failed to get unique id")
 		return
@@ -51,6 +51,7 @@ func (s *QuotesService) CreateQuote(
 	q, err := s.repo.Create(
 		ctx,
 		id,
+		cmd.SagaId,
 		cmd.Quote,
 	)
 	if err != nil {

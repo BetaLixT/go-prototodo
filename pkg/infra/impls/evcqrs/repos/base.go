@@ -16,6 +16,14 @@ type BaseDataRepository struct {
 	dbctx *tsqlx.TracedDB
 }
 
+func NewBaseDataRepository(
+	dbctx *tsqlx.TracedDB,
+) *BaseDataRepository {
+	return &BaseDataRepository{
+		dbctx: dbctx,
+	}
+}
+
 func (r *BaseDataRepository) insertEvent(
 	ctx cntxt.IContext,
 	trctx *tsqlx.TracedTx,

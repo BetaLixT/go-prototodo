@@ -105,8 +105,9 @@ func TestCreateDelete(t *testing.T) {
 		t.SkipNow()
 	}
 
+	base := NewBaseDataRepository(dbctx)
 	r := NewTasksRepository(
-		dbctx,
+		base,
 		lgrf,
 	)
 
@@ -172,8 +173,9 @@ func TestCreateUpdate(t *testing.T) {
 		t.SkipNow()
 	}
 
+	base := NewBaseDataRepository(dbctx)
 	r := NewTasksRepository(
-		dbctx,
+		base,
 		lgrf,
 	)
 
@@ -265,8 +267,9 @@ func TestFullUpdate(t *testing.T) {
 		t.SkipNow()
 	}
 
+	base := NewBaseDataRepository(dbctx)
 	r := NewTasksRepository(
-		dbctx,
+		base,
 		lgrf,
 	)
 

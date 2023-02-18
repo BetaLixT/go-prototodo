@@ -16,14 +16,12 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/lib/pq"
-	"github.com/patrickmn/go-cache"
 	"go.uber.org/zap"
 )
 
 type ACLRepository struct {
 	*BaseDataRepository
 	rctx    *redis.Client
-	mcache  *cache.Cache
 	lgrf    logger.IFactory
 	keySffx string
 }
@@ -33,13 +31,11 @@ var _ acl.IRepository = (*ACLRepository)(nil)
 func NewACLRepository(
 	base *BaseDataRepository,
 	rctx *redis.Client,
-	mcache *cache.Cache,
 	lgrf logger.IFactory,
 ) *ACLRepository {
 	return &ACLRepository{
 		BaseDataRepository: base,
 		rctx:               rctx,
-		mcache:             mcache,
 		lgrf:               lgrf,
 		keySffx:            common.ACLCacheSuffix + domcom.ServiceName + ":",
 	}
@@ -483,36 +479,36 @@ func generateACLSetMember(stream string, id string, perm int) string {
 // - Queries
 const (
 	InsertACLQuery = `
-	INSERT INTO acls (
+	INSERT INTO acl (
 		stream,
 		stream_id,
 		user_type,
 		user_id,
-	  permissions,
+	  permissions
 	) VALUES (
 		$1, $2, $3, $4, $5
 	) RETURNING *
 	`
 
 	SelectACLEntriesQuery = `
-  SELECT * FROM acls
-  WHERE user_type = $1 AND user_id = $2 AND stream = $3 AND stream_ids = ANY($4)
+  SELECT * FROM acl
+  WHERE user_type = $1 AND user_id = $2 AND stream = $3 AND stream_id = ANY($4)
 	`
 
 	SelectACLEntryQuery = `
-  SELECT * FROM acls
-  WHERE user_type = $1 AND user_id = $2 AND stream = $3 AND stream_ids = $4
+  SELECT * FROM acl
+  WHERE user_type = $1 AND user_id = $2 AND stream = $3 AND stream_id = $4
 	`
 
 	DeleteACLEntryQuery = `
-  DELETE acls
-  WHERE user_type = $1 AND user_id = $2 AND stream = $3 AND stream_ids = $4
+  DELETE acl
+  WHERE user_type = $1 AND user_id = $2 AND stream = $3 AND stream_id = $4
   RETURNING *
 	`
 
 	DeleteACLEntriesQuery = `
-  DELETE acls
-  WHERE stream = $1 AND stream_ids = $2
+  DELETE acl
+  WHERE stream = $1 AND stream_id = $2
   RETURNING *
 	`
 )

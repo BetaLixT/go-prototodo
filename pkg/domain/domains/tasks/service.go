@@ -34,7 +34,7 @@ func (s *TaskService) CreateTask(
 
 	pending := contracts.Status(contracts.Status_PENDING).String()
 
-	id, err := s.uidr.GetId(ctx)
+	id, err := s.uidr.GetID(ctx)
 	if err != nil {
 		lgr.Error(
 			"failed to get unique id",
@@ -87,7 +87,6 @@ func (s *TaskService) DeleteTask(
 	ctx context.Context,
 	cmd *contracts.DeleteTaskCommand,
 ) (*contracts.TaskEvent, error) {
-
 	lgr := s.lgrf.Create(ctx)
 	lgr.Info("deleting task")
 
@@ -149,7 +148,6 @@ func (s *TaskService) UpdateTask(
 	ctx context.Context,
 	cmd *contracts.UpdateTaskCommand,
 ) (*contracts.TaskEvent, error) {
-
 	lgr := s.lgrf.Create(ctx)
 	lgr.Info("updating task")
 
@@ -204,7 +202,6 @@ func (s *TaskService) ProgressTask(
 	ctx context.Context,
 	cmd *contracts.ProgressTaskCommand,
 ) (*contracts.TaskEvent, error) {
-
 	lgr := s.lgrf.Create(ctx)
 	lgr.Info("progressing task")
 
@@ -266,7 +263,6 @@ func (s *TaskService) CompleteTask(
 	ctx context.Context,
 	cmd *contracts.CompleteTaskCommand,
 ) (*contracts.TaskEvent, error) {
-
 	lgr := s.lgrf.Create(ctx)
 	lgr.Info("completing task")
 
@@ -329,7 +325,6 @@ func (s *TaskService) QueryTask(
 	ctx context.Context,
 	qry *contracts.ListTasksQuery,
 ) (*contracts.TaskEntityList, error) {
-
 	lgr := s.lgrf.Create(ctx)
 	lgr.Info("query tasks")
 

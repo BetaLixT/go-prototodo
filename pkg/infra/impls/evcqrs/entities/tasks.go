@@ -72,13 +72,13 @@ func (t *TaskData) GeneratePSQLReadModelSet(
 	}
 	if t.RandomMap != nil {
 		sets[idx] = "random_map = $" + strconv.Itoa(pbeg)
-		vals[idx] = JsonMapString(t.RandomMap)
+		vals[idx] = JSONMapString(t.RandomMap)
 		idx++
 		pbeg++
 	}
 	if t.Metadata != nil {
 		sets[idx] = "metadata = $" + strconv.Itoa(pbeg)
-		vals[idx] = JsonObj(t.Metadata.AsMap())
+		vals[idx] = JSONObj(t.Metadata.AsMap())
 		idx++
 		pbeg++
 	}
@@ -163,8 +163,8 @@ type TaskReadModel struct {
 	Title           string        `db:"title"`
 	Description     string        `db:"description"`
 	Status          string        `db:"status"`
-	RandomMap       JsonMapString `db:"random_map"`
-	Metadata        JsonObj       `db:"metadata"`
+	RandomMap       JSONMapString `db:"random_map"`
+	Metadata        JSONObj       `db:"metadata"`
 	Version         uint64        `db:"version"`
 	DateTimeCreated time.Time     `db:"date_time_created"`
 	DateTimeUpdated time.Time     `db:"date_time_updated"`

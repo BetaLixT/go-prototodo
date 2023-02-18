@@ -204,4 +204,54 @@ func TestCreateACLEntry(t *testing.T) {
 		lgr.Error("can write unexpected fail", zap.Error(err))
 		t.FailNow()
 	}
+
+	ctx4 := ctxf.Create(
+		context.Background(),
+		time.Minute*2,
+	)
+	err = r.CreateACLEntry(
+		ctx4,
+		id,
+		"5345",
+		"tester",
+		"xyz",
+		acl.Write,
+	)
+	err = r.CreateACLEntry(
+		ctx4,
+		id,
+		"8542",
+		"tester",
+		"xyz",
+		acl.Write,
+	)
+	if err != nil {
+		lgr.Error("acl creation failed", zap.Error(err))
+		t.FailNow()
+	}
+	ctx4.CommitTransaction()
+
+	err = r.CanWrite(
+		ctxr,
+		id,
+		[]string{"5345", "8542"},
+		"tester",
+		"xyz",
+	)
+	if err != nil {
+		lgr.Error("expected success but failed", zap.Error(err))
+		t.FailNow()
+	}
+
+	err = r.CanWrite(
+		ctxr,
+		id,
+		[]string{"5345", "8542"},
+		"tester",
+		"xyz",
+	)
+	if err != nil {
+		lgr.Error("expected success but failed second time around", zap.Error(err))
+		t.FailNow()
+	}
 }

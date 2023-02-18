@@ -8,29 +8,27 @@ import (
 	"prototodo/pkg/infra/impls/evcqrs/common"
 	"prototodo/pkg/infra/impls/evcqrs/entities"
 
-	"github.com/BetaLixT/tsqlx"
 	"go.uber.org/zap"
 )
 
-type UniqueRepository struct {
+type UniquesRepository struct {
 	*BaseDataRepository
 	lgrf logger.IFactory
 }
 
-var _ uniques.IRepository = (*UniqueRepository)(nil)
+var _ uniques.IRepository = (*UniquesRepository)(nil)
 
 func NewUniqueRepository(
 	base *BaseDataRepository,
 	lgrf logger.IFactory,
-	db *tsqlx.TracedDB,
-) *UniqueRepository {
-	return &UniqueRepository{
+) *UniquesRepository {
+	return &UniquesRepository{
 		BaseDataRepository: base,
 		lgrf:               lgrf,
 	}
 }
 
-func (r *UniqueRepository) RegisterConstraint(
+func (r *UniquesRepository) RegisterConstraint(
 	c context.Context,
 	stream string,
 	streamId string,
@@ -72,7 +70,7 @@ func (r *UniqueRepository) RegisterConstraint(
 	return err
 }
 
-func (r *UniqueRepository) RemoveConstraint(
+func (r *UniquesRepository) RemoveConstraint(
 	c context.Context,
 	stream string,
 	streamId string,

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"prototodo/pkg/domain/base/events"
+	"prototodo/pkg/domain/base/foreigns"
 	"prototodo/pkg/infra/psqldb"
 	"time"
 
@@ -88,6 +89,29 @@ type ForeignConstraint struct {
 	Stream          string  `db:"stream"`
 	StreamID        string  `db:"stream_id"`
 	SagaID          *string `db:"saga_id"`
+}
+
+// ForeignConstraint dao that represents a foreign constraint entry
+type ForeignAssociatedObject struct {
+	Stream   string `db:"stream"`
+	StreamID string `db:"stream_id"`
+}
+
+func (dao *ForeignAssociatedObject) ToDTO() *foreigns.Object {
+	return &foreigns.Object{
+		Stream:   dao.Stream,
+		StreamId: dao.StreamID,
+	}
+}
+
+func (_ *ForeignAssociatedObject) ToDTOSlice(
+	daos []ForeignAssociatedObject,
+) []foreigns.Object {
+	dtos := make([]foreigns.Object, len(daos))
+	for idx := range daos {
+		dtos[idx] = *daos[idx].ToDTO()
+	}
+	return dtos
 }
 
 // =============================================================================

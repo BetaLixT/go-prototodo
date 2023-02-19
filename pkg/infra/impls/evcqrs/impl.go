@@ -1,3 +1,4 @@
+// Package evcqrs Event source CQRS implementation of the domain layer
 package evcqrs
 
 import (
@@ -23,6 +24,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// DependencySet dependencies provided by the implementation
 var DependencySet = wire.NewSet(
 	// Infra
 	lgr.NewLoggerFactory,
@@ -76,11 +78,15 @@ var DependencySet = wire.NewSet(
 	),
 )
 
+// Implementation used for graceful starting and stopping of the implementation
+// layer
 type Implementation struct {
 	dbctx *tsqlx.TracedDB
 	lgrf  *lgr.LoggerFactory
 }
 
+// Start runs any routines that are required before the implemtation layer can
+// be utilized
 func (i *Implementation) Start(ctx context.Context) error {
 	lgri := i.lgrf.Create(ctx)
 	err := psqldb.RunMigrations(
@@ -96,6 +102,8 @@ func (i *Implementation) Start(ctx context.Context) error {
 	return nil
 }
 
+// Stop runs any routines that are required for the implementation layer to
+// gracefully shutdown
 func (i *Implementation) Stop(ctx context.Context) error {
 	i.lgrf.Close()
 	return nil

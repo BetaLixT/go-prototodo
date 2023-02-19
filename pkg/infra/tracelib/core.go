@@ -1,3 +1,5 @@
+// Package tracelib defines immplementation for the ITracer interfaces used by
+// our libraries
 package tracelib
 
 import (
@@ -18,6 +20,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// Tracer implementation of ITracer
 type Tracer struct {
 	constructor ISpanConstructor
 	extractor   ITraceExtractor
@@ -149,7 +152,8 @@ func NewTracer(
 	}, nil
 }
 
-func (insights *Tracer) Close() {
+// Close does nothing, just satisfying interfaces
+func (ins *Tracer) Close() {
 }
 
 // Converts string Trace Ids to binary values in byte arrays
@@ -177,28 +181,26 @@ func stobTraceIds(
 	return
 }
 
-// Creates new resource id as a byte array
+// CreateResourceIdBytes Creates new resource id as a byte array
 func (ins *Tracer) CreateResourceIdBytes() (rid [8]byte, err error) {
 	ridSlc, n := make([]byte, 8), 0
 	if n, err = ins.rand.Read(ridSlc); err != nil || n != 8 {
 		return rid, err
-	} else {
-		copy(rid[:], ridSlc)
-		return
 	}
+	copy(rid[:], ridSlc)
+	return
 }
 
-// Creates new resource id as a string
+// CreateResourceIdString Creates new resource id as a string
 func (ins *Tracer) CreateResourceIdString() (rid string, err error) {
 	ridSlc, n := make([]byte, 8), 0
 	if n, err = ins.rand.Read(ridSlc); err != nil || n != 8 {
 		return rid, err
-	} else {
-		return hex.EncodeToString(ridSlc), nil
 	}
+	return hex.EncodeToString(ridSlc), nil
 }
 
-// !! - This only needed by older interfaces
+// ExtractTraceInfo !! - This only needed by older interfaces
 func (ins *Tracer) ExtractTraceInfo(
 	ctx context.Context,
 ) (ver, tid, pid, rid, flg string) {
@@ -207,6 +209,7 @@ func (ins *Tracer) ExtractTraceInfo(
 
 // - Context dependent
 
+// TraceRequest will trace an incoming request
 func (ins *Tracer) TraceRequest(
 	ctx context.Context,
 	method string,
@@ -231,6 +234,7 @@ func (ins *Tracer) TraceRequest(
 	ins.collector.Feed(span)
 }
 
+// TraceEvent will trace an incomming event
 func (ins *Tracer) TraceEvent(
 	ctx context.Context,
 	name string,
@@ -250,6 +254,7 @@ func (ins *Tracer) TraceEvent(
 	ins.collector.Feed(span)
 }
 
+// TraceDependency will trace calls to external dependencies
 func (ins *Tracer) TraceDependency(
 	ctx context.Context,
 	spanId string,
@@ -281,6 +286,7 @@ func (ins *Tracer) TraceDependency(
 
 // - Context Independent
 
+// TraceRequestWithIds trace incoming requests without a context
 func (ins *Tracer) TraceRequestWithIds(
 	traceId string,
 	parentId string,
@@ -306,6 +312,7 @@ func (ins *Tracer) TraceRequestWithIds(
 	ins.collector.Feed(span)
 }
 
+// TraceEventWithIds trace incoming events without a context
 func (ins *Tracer) TraceEventWithIds(
 	traceId string,
 	parentId string,
@@ -326,6 +333,7 @@ func (ins *Tracer) TraceEventWithIds(
 	ins.collector.Feed(span)
 }
 
+// TraceDependencyWithIds trace dependencies without a context
 func (ins *Tracer) TraceDependencyWithIds(
 	traceId string,
 	requestId string,

@@ -1,3 +1,4 @@
+// Package jaeger defines the jaeger exporter for tracing
 package jaeger
 
 import (
@@ -5,11 +6,13 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
-type JaegerTraceExporter sdktrace.SpanExporter
+// TraceExporter exporter for jaeger
+type TraceExporter sdktrace.SpanExporter
 
+// NewJaegerTraceExporter Constrcuts a new jeager trace exporter
 func NewJaegerTraceExporter(
 	opts *ExporterOptions,
-) (JaegerTraceExporter, error) {
+) (TraceExporter, error) {
 	if opts.Endpoint == "" {
 		return nil, nil
 	}

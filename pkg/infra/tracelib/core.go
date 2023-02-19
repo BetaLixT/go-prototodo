@@ -1,5 +1,3 @@
-// Package tracelib implementing the ITracer interfaces utilized by our
-// libraries
 package tracelib
 
 import (
@@ -20,12 +18,12 @@ import (
 	"go.uber.org/zap"
 )
 
-// Tracer is an implementation of the ITracer interfaces
 type Tracer struct {
 	constructor ISpanConstructor
 	extractor   ITraceExtractor
-	collector   *motel.SpanCollector
+	collector   motel.SpanCollector
 	exporters   []sdktrace.SpanExporter
+	resource    *resource.Resource
 	rand        *mrand.Rand
 }
 
@@ -44,7 +42,7 @@ func makeRand() (rng *mrand.Rand, err error) {
 	), nil
 }
 
-// NewBasic Constructs an instance of AppInsightsCore with defaults, including
+// NewBasic Constructs an instance of Tracer with defaults, including
 // the default ITraceExtractor which does not provide any tracing information
 // from the context it is recommended to use the non context dependent functions
 // (functions that end with "WithIds") to take advangate of the tracing if you
@@ -68,16 +66,17 @@ func NewBasic(
 		return nil, errors.New("failed to create resource")
 	}
 
-	sc := motel.NewSpanCollector(exporters, res, 0, 0)
+	sc := motel.NewSpanCollector(exporters, 0, 0)
 	return &Tracer{
 		constructor: &DefaultSpanConstructor{},
 		collector:   sc,
 		exporters:   exporters,
+		resource:    res,
 		rand:        rand,
 	}, nil
 }
 
-// NewBasicWithLogger Constructs an instance of AppInsightsCore using the
+// NewBasicWithLogger Constructs an instance of Tracer using the
 // provided zap logger and the default ITraceExtractor which does not provide
 // any tracing information from the context it is recommended to use the non
 // context dependent functions (functions that end with "WithIds") to take
@@ -102,16 +101,17 @@ func NewBasicWithLogger(
 		return nil, errors.New("failed to create resource")
 	}
 
-	sc := motel.NewSpanCollector(exporters, res, 0, 0)
+	sc := motel.NewSpanCollector(exporters, 0, 0)
 	return &Tracer{
 		constructor: &DefaultSpanConstructor{},
-		collector:   &sc,
+		collector:   sc,
 		exporters:   exporters,
+		resource:    res,
 		rand:        rand,
 	}, nil
 }
 
-// NewTracer Constructs an instance of AppInsightsCore using the provided zap
+// NewTracer Constructs an instance of Tracer using the provided zap
 // logger and a custom trace extractor, it's recommended to provide a custom
 // trace extractor that will extract the w3c trace information from the context
 // and take advantage of the context dependent trace functions, check
@@ -138,12 +138,13 @@ func NewTracer(
 		return nil, errors.New("failed to create resource")
 	}
 
-	sc := motel.NewSpanCollector(exporters, res, 0, 0)
+	sc := motel.NewSpanCollector(exporters, 0, 0)
 	return &Tracer{
 		collector:   sc,
 		constructor: constructor,
 		extractor:   extractor,
 		exporters:   exporters,
+		resource:    res,
 		rand:        rand,
 	}, nil
 }
@@ -223,7 +224,7 @@ func (ins *Tracer) TraceRequest(
 	tidb, pidb, ridb := stobTraceIds(tid, pid, rid)
 
 	span := ins.constructor.NewRequestSpan(
-		tidb, pidb, ridb, ins.collector.GetResource(),
+		tidb, pidb, ridb, ins.resource,
 		method, path, query, statusCode, bodySize, ip,
 		userAgent, startTimestamp, eventTimestamp, fields,
 	)
@@ -243,7 +244,7 @@ func (ins *Tracer) TraceEvent(
 	tidb, pidb, ridb := stobTraceIds(tid, pid, rid)
 
 	span := ins.constructor.NewEventSpan(
-		tidb, pidb, ridb, ins.collector.GetResource(),
+		tidb, pidb, ridb, ins.resource,
 		name, key, statusCode, startTimestamp, eventTimestamp, fields,
 	)
 	ins.collector.Feed(span)
@@ -271,7 +272,7 @@ func (ins *Tracer) TraceDependency(
 	)
 
 	span := ins.constructor.NewDependencySpan(
-		tidb, pidb, sidb, res,
+		tidb, pidb, sidb, ins.resource, res,
 		dependencyType, serviceName, commandName,
 		success, startTimestamp, eventTimestamp, fields,
 	)
@@ -298,7 +299,7 @@ func (ins *Tracer) TraceRequestWithIds(
 	tidb, pidb, ridb := stobTraceIds(traceId, parentId, requestId)
 
 	span := ins.constructor.NewRequestSpan(
-		tidb, pidb, ridb, ins.collector.GetResource(),
+		tidb, pidb, ridb, ins.resource,
 		method, path, query, statusCode, bodySize, ip,
 		userAgent, startTimestamp, eventTimestamp, fields,
 	)
@@ -319,7 +320,7 @@ func (ins *Tracer) TraceEventWithIds(
 	tidb, pidb, ridb := stobTraceIds(traceId, parentId, requestId)
 
 	span := ins.constructor.NewEventSpan(
-		tidb, pidb, ridb, ins.collector.GetResource(),
+		tidb, pidb, ridb, ins.resource,
 		name, key, statusCode, startTimestamp, eventTimestamp, fields,
 	)
 	ins.collector.Feed(span)
@@ -347,7 +348,7 @@ func (ins *Tracer) TraceDependencyWithIds(
 	)
 
 	span := ins.constructor.NewDependencySpan(
-		tidb, pidb, sidb, res,
+		tidb, pidb, sidb, ins.resource, res,
 		dependencyType, serviceName, commandName,
 		success, startTimestamp, eventTimestamp, fields,
 	)

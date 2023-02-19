@@ -8,11 +8,10 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 )
 
-// ITraceExtractor Implement this to extract w3c-trace information from the
-// context, an example usage would be to build a middleware for incoming http
-// calls to inject trace information into the context and create an
-// implementation of ITraceExtractor to get the trace (using ctx.Value and with
-// the correct key(s))
+// Implement this to extract w3c-trace information from the context, an example
+// usage would be to build a middleware for incoming http calls to inject trace
+// information into the context and create an implementation of ITraceExtractor
+// to get the trace (using ctx.Value and with the correct key(s))
 type ITraceExtractor interface {
 	ExtractTraceInfo(
 		ctx context.Context,
@@ -53,6 +52,7 @@ type ISpanConstructor interface {
 		pid [8]byte,
 		rid [8]byte,
 		res *resource.Resource,
+		dep *resource.Resource,
 		dependencyType string,
 		serviceName string,
 		commandName string,

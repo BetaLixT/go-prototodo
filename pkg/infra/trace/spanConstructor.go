@@ -8,10 +8,12 @@ import (
 	"github.com/Soreing/motel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/sdk/resource"
+	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
 	"go.opentelemetry.io/otel/trace"
 )
 
-type spanConstructor struct{}
+type spanConstructor struct {
+}
 
 func (sc *spanConstructor) NewRequestSpan(
 	tid [16]byte,
@@ -79,6 +81,7 @@ func (sc *spanConstructor) NewDependencySpan(
 	pid [8]byte,
 	rid [8]byte,
 	res *resource.Resource,
+	dep *resource.Resource,
 	dependencyType string,
 	serviceName string,
 	commandName string,
@@ -90,10 +93,16 @@ func (sc *spanConstructor) NewDependencySpan(
 	span := motel.CreateSpan(
 		commandName,
 		trace.SpanKindClient,
-		res, tid, pid, rid, 0x01,
+		dep, tid, pid, rid, 0x01,
 		success, startTimestamp, eventTimestamp,
 	)
+
+	for _, e := range res.Attributes() {
+		if string(e.Key) == string(semconv.ServiceNameKey) {
+			span.WithAttribute("source", e.Value)
+		}
+	}
+
 	span.WithAttribute("type", attribute.StringValue(dependencyType))
-	span.WithAttribute("target", attribute.StringValue(serviceName))
 	return span
 }

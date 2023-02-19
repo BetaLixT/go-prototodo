@@ -1,10 +1,11 @@
-package trace
+// Package tracectx defines functionality for parsing, injecting and extracting
+// trace context
+package tracectx
 
 import "context"
 
+// IRepository an interface that defines trace context functionality
 type IRepository interface {
-	// Parses (or generates new) traceparent and returns
-	// context with trace info injected
 	ParseTraceParent(
 		parent context.Context,
 		traceprnt string,

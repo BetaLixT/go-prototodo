@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/trace"
+	"prototodo/pkg/domain/base/tracectx"
 	"prototodo/pkg/infra/impls/evcqrs/common"
 	"regexp"
 	"strings"
@@ -14,7 +14,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var _ trace.IRepository = (*TraceRepository)(nil)
+var _ tracectx.IRepository = (*TraceRepository)(nil)
 
 // TraceRepository repository for generating, injecting and extracting trace
 // info

@@ -6,7 +6,7 @@ import (
 	"prototodo/pkg/domain/base/acl"
 	"prototodo/pkg/domain/base/foreigns"
 	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/trace"
+	"prototodo/pkg/domain/base/tracectx"
 	"prototodo/pkg/domain/base/uids"
 	"prototodo/pkg/domain/base/uniques"
 	"prototodo/pkg/domain/domains/quotes"
@@ -18,7 +18,14 @@ import (
 	"prototodo/pkg/infra/psqldb"
 	"prototodo/pkg/infra/rdb"
 	"prototodo/pkg/infra/sf"
+	"prototodo/pkg/infra/trace"
+	"prototodo/pkg/infra/trace/appinsights"
+	"prototodo/pkg/infra/trace/jaeger"
+	"prototodo/pkg/infra/tracelib"
 
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+
+	"github.com/BetaLixT/gotred/v8"
 	"github.com/BetaLixT/tsqlx"
 	"github.com/google/wire"
 	"go.uber.org/zap"
@@ -26,6 +33,11 @@ import (
 
 // DependencySet dependencies provided by the implementation
 var DependencySet = wire.NewSet(
+	// Trace
+	NewTraceExporterList,
+	config.NewTraceOptions,
+	trace.NewTracer,
+
 	// Infra
 	lgr.NewLoggerFactory,
 	wire.Bind(
@@ -33,8 +45,16 @@ var DependencySet = wire.NewSet(
 		new(*lgr.LoggerFactory),
 	),
 	psqldb.NewDatabaseContext,
+	wire.Bind(
+		new(tsqlx.ITracer),
+		new(*tracelib.Tracer),
+	),
 	config.NewPSQLDBOptions,
 	rdb.NewRedisContext,
+	wire.Bind(
+		new(gotred.ITracer),
+		new(*tracelib.Tracer),
+	),
 	config.NewRedisOptions,
 	sf.NewSnowflake,
 	config.NewSnowflakeOptions,
@@ -58,7 +78,7 @@ var DependencySet = wire.NewSet(
 	),
 	repos.NewTraceRepository,
 	wire.Bind(
-		new(trace.IRepository),
+		new(tracectx.IRepository),
 		new(repos.TraceRepository),
 	),
 	repos.NewUIDRepository,
@@ -77,6 +97,33 @@ var DependencySet = wire.NewSet(
 		new(*repos.QuotesRepository),
 	),
 )
+
+// NewTraceExporterList provides a list of exporters for tracing
+func NewTraceExporterList(
+	insexp appinsights.TraceExporter,
+	jgrexp jaeger.TraceExporter,
+	lgrf logger.IFactory,
+) *trace.ExporterList {
+	lgr := lgrf.Create(context.Background())
+	exp := []sdktrace.SpanExporter{}
+
+	if insexp != nil {
+		exp = append(exp, insexp)
+	} else {
+		lgr.Warn("insights exporter not found")
+	}
+	if jgrexp != nil {
+		exp = append(exp, jgrexp)
+	} else {
+		lgr.Warn("jeager exporter not found")
+	}
+	if len(exp) == 0 {
+		panic("no tracing exporters found (float you <3)")
+	}
+	return &trace.ExporterList{
+		Exporters: exp,
+	}
+}
 
 // Implementation used for graceful starting and stopping of the implementation
 // layer

@@ -1,4 +1,4 @@
-package trace
+package tracectx
 
 type TxModel struct {
 	Ver string

@@ -1,3 +1,4 @@
+// Package config provides configuration for the infra layer
 package config
 
 import (
@@ -15,25 +16,24 @@ import (
 	"go.uber.org/zap"
 )
 
+// ConfigInitializer including this as your dependency ensures that configs have
+// been loaded from all sources before extracting from environment
 type ConfigInitializer struct {
 	lgrf logger.IFactory
 }
 
-// - this is very very scuffed lmao
+// NewConfigInitializer loads configs from the .env file
 func NewConfigInitializer(
 	lgrf logger.IFactory,
 ) *ConfigInitializer {
 	c := &ConfigInitializer{
 		lgrf: lgrf,
 	}
-	c.loadConfig()
+	c.LoadConfigCustom("./cfg/.env")
 	return c
 }
 
-func (c *ConfigInitializer) loadConfig() {
-	c.LoadConfigCustom("./cfg/.env")
-}
-
+// LoadConfigCustom loads config from a given file
 func (c *ConfigInitializer) LoadConfigCustom(loc string) {
 	err := godotenv.Load(loc)
 	if err != nil {

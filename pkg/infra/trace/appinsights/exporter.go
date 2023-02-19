@@ -1,3 +1,4 @@
+// Package appinsights provides an app insights exporter for tracing
 package appinsights
 
 import (
@@ -5,11 +6,13 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
-type AppInsightsTraceExporter sdktrace.SpanExporter
+// TraceExporter an application insights exporter
+type TraceExporter sdktrace.SpanExporter
 
-func NewAppInsightsTraceExporter(
+// NewTraceExporter constructs an app insights exporter
+func NewTraceExporter(
 	opts *ExporterOptions,
-) (AppInsightsTraceExporter, error) {
+) (TraceExporter, error) {
 	if opts.InstrKey == "" {
 		return nil, nil
 	}

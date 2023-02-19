@@ -4,10 +4,12 @@ package server
 
 import (
 	"context"
+	"prototodo/pkg/domain"
 	"prototodo/pkg/domain/base/impl"
 	"prototodo/pkg/domain/domains/quotes"
 	"prototodo/pkg/domain/domains/tasks"
 	"prototodo/pkg/infra/impls/evcqrs"
+	"prototodo/pkg/infra/impls/inmem"
 
 	"github.com/google/wire"
 )
@@ -35,11 +37,14 @@ func Start(impl string) {
 // cqrsDependencySet dependency set with in memory CQRS implementation
 var cqrsDependencySet = wire.NewSet(
 	evcqrs.DependencySet,
+	domain.DependencySet,
 	newApp,
 )
 
 // inMemDependencySet dependency set with in memory implementation
 var inMemDependencySet = wire.NewSet(
+	inmem.DependencySet,
+	domain.DependencySet,
 	newApp,
 )
 

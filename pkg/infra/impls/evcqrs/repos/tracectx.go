@@ -56,7 +56,7 @@ func (r *TraceRepository) ParseTraceParent(
 	}
 
 	// Generate a transaction context usin the factory
-	trc := trace.TxModel{
+	trc := tracectx.TxModel{
 		Ver: ver,
 		Tid: tid,
 		Pid: pid,
@@ -70,14 +70,14 @@ func (r *TraceRepository) ParseTraceParent(
 // ExtractTraceParent extracts injected trace information from context
 func (*TraceRepository) ExtractTraceParent(
 	ctx context.Context,
-) trace.TxModel {
+) tracectx.TxModel {
 	val := ctx.Value(common.TraceKey)
 	if val != nil {
-		if val, ok := val.(trace.TxModel); ok {
+		if val, ok := val.(tracectx.TxModel); ok {
 			return val
 		}
 	}
-	return trace.TxModel{}
+	return tracectx.TxModel{}
 }
 
 func generateRadomHexString(n int) (string, error) {

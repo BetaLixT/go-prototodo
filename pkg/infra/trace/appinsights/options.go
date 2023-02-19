@@ -1,6 +1,5 @@
 package appinsights
 
 type ExporterOptions struct {
-	InstrKey    string
-	ServiceName string
+	InstrKey string
 }

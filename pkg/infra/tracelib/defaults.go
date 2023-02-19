@@ -63,6 +63,7 @@ func (sc *DefaultSpanConstructor) NewEventSpan(
 func (sc *DefaultSpanConstructor) NewDependencySpan(
 	tid [16]byte, pid [8]byte, rid [8]byte,
 	res *resource.Resource,
+	dep *resource.Resource,
 	dependencyType string,
 	serviceName string,
 	commandName string,

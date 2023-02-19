@@ -5,17 +5,18 @@ import (
 	"context"
 	"os"
 	"prototodo/pkg/domain/base/logger"
+	"prototodo/pkg/domain/common"
 	"prototodo/pkg/infra/cdb"
 	"prototodo/pkg/infra/psqldb"
 	"prototodo/pkg/infra/rdb"
 	"prototodo/pkg/infra/sf"
+	"prototodo/pkg/infra/trace"
 	"prototodo/pkg/infra/trace/appinsights"
 	"prototodo/pkg/infra/trace/jaeger"
 	"strconv"
 	"strings"
 
 	"github.com/joho/godotenv"
-	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
@@ -169,9 +170,9 @@ func NewJaegerExporterOptions(c *Initializer) *jaeger.ExporterOptions {
 }
 
 // NewTraceOptions provides trace options
-func NewTraceOptions(_ *Initializer) (*trace.TracerOption, error) {
-	cnf := &trace.TraceOptions{
-		ServiceName: contracts.MainServiceName,
+func NewTraceOptions(_ *Initializer) (*trace.Options, error) {
+	cnf := &trace.Options{
+		ServiceName: common.ServiceName,
 	}
 	return cnf, nil
 }

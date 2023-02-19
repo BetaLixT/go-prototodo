@@ -24,12 +24,12 @@ import (
 
 // InitializeEvent creates an Event. It will error if the Event is staffed with
 // a grumpy greeter.
-func initializeAppCQRS() (*appCQRS, error) {
+func initializeAppCQRS() (*app, error) {
 	wire.Build(cqrsDependencySet)
 	return &app{}, nil
 }
 
-func initializeAppInMem() (*appInMem, error) {
+func initializeAppInMem() (*app, error) {
 	wire.Build(inMemDependencySet)
 	return &app{}, nil
 }

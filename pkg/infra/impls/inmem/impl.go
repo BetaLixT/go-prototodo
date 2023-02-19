@@ -30,6 +30,7 @@ var DependencySet = wire.NewSet(
 	),
 
 	// Infra
+	config.NewInitializer,
 	lgr.NewLoggerFactory,
 	wire.Bind(
 		new(logger.IFactory),
@@ -52,12 +53,12 @@ var DependencySet = wire.NewSet(
 	repos.NewUniquesRepository,
 	wire.Bind(
 		new(uniques.IRepository),
-		new(repos.UniquesRepository),
+		new(*repos.UniquesRepository),
 	),
 	repos.NewTraceRepository,
 	wire.Bind(
 		new(tracectx.IRepository),
-		new(repos.TraceRepository),
+		new(*repos.TraceRepository),
 	),
 	repos.NewUIDRepository,
 	wire.Bind(

@@ -16,7 +16,7 @@ import (
 
 // Start boots up the server
 func Start(impl string) {
-	var a app
+	var a *app
 	var err error
 	switch impl {
 	case "inmem":

@@ -1,3 +1,5 @@
+// Package tasks contains all business logic and validations and DTOs around the
+// tasks domain
 package tasks
 
 import (
@@ -11,14 +13,31 @@ import (
 	"go.uber.org/zap"
 )
 
-type TaskService struct {
+// Service handles business logic and use cases around the tasks domain
+type Service struct {
 	repo IRepository
 	lgrf logger.IFactory
 	aclr acl.IRepository
 	uidr uids.IRepository
 }
 
-func (s *TaskService) CreateTask(
+// NewService constructs a Service
+func NewService(
+	repo IRepository,
+	lgrf logger.IFactory,
+	aclr acl.IRepository,
+	uidr uids.IRepository,
+) *Service {
+	return &Service{
+		repo: repo,
+		lgrf: lgrf,
+		aclr: aclr,
+		uidr: uidr,
+	}
+}
+
+// CreateTask creates a task applying all business logic
+func (s *Service) CreateTask(
 	ctx context.Context,
 	cmd *contracts.CreateTaskCommand,
 ) (*contracts.TaskEvent, error) {
@@ -83,7 +102,8 @@ func (s *TaskService) CreateTask(
 	return res, err
 }
 
-func (s *TaskService) DeleteTask(
+// DeleteTask delete a task applying all business logic
+func (s *Service) DeleteTask(
 	ctx context.Context,
 	cmd *contracts.DeleteTaskCommand,
 ) (*contracts.TaskEvent, error) {
@@ -144,7 +164,8 @@ func (s *TaskService) DeleteTask(
 	return res, err
 }
 
-func (s *TaskService) UpdateTask(
+// UpdateTask updates a task applying all business logic
+func (s *Service) UpdateTask(
 	ctx context.Context,
 	cmd *contracts.UpdateTaskCommand,
 ) (*contracts.TaskEvent, error) {
@@ -198,7 +219,8 @@ func (s *TaskService) UpdateTask(
 	return res, err
 }
 
-func (s *TaskService) ProgressTask(
+// ProgressTask updates task state to in progress applying all business logic
+func (s *Service) ProgressTask(
 	ctx context.Context,
 	cmd *contracts.ProgressTaskCommand,
 ) (*contracts.TaskEvent, error) {
@@ -259,7 +281,8 @@ func (s *TaskService) ProgressTask(
 	return res, err
 }
 
-func (s *TaskService) CompleteTask(
+// CompleteTask updates task state to completed applying all business logic
+func (s *Service) CompleteTask(
 	ctx context.Context,
 	cmd *contracts.CompleteTaskCommand,
 ) (*contracts.TaskEvent, error) {
@@ -321,7 +344,8 @@ func (s *TaskService) CompleteTask(
 	return res, err
 }
 
-func (s *TaskService) QueryTask(
+// QueryTask queries for tasks and appling all business logic and validations
+func (s *Service) QueryTask(
 	ctx context.Context,
 	qry *contracts.ListTasksQuery,
 ) (*contracts.TaskEntityList, error) {

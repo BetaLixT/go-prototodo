@@ -5,6 +5,7 @@ import (
 	"context"
 	"prototodo/pkg/domain/base/acl"
 	"prototodo/pkg/domain/base/foreigns"
+	"prototodo/pkg/domain/base/impl"
 	"prototodo/pkg/domain/base/logger"
 	"prototodo/pkg/domain/base/tracectx"
 	"prototodo/pkg/domain/base/uids"
@@ -33,6 +34,11 @@ import (
 
 // DependencySet dependencies provided by the implementation
 var DependencySet = wire.NewSet(
+	NewImplementation,
+	wire.Bind(
+		new(impl.IImplementation),
+		new(*Implementation),
+	),
 	// Trace
 	NewTraceExporterList,
 	config.NewTraceOptions,
@@ -130,6 +136,17 @@ func NewTraceExporterList(
 type Implementation struct {
 	dbctx *tsqlx.TracedDB
 	lgrf  *lgr.LoggerFactory
+}
+
+// NewImplementation constructor for the evcqrs implementation
+func NewImplementation(
+	dbctx *tsqlx.TracedDB,
+	lgrf *lgr.LoggerFactory,
+) *Implementation {
+	return &Implementation{
+		dbctx: dbctx,
+		lgrf:  lgrf,
+	}
 }
 
 // Start runs any routines that are required before the implemtation layer can

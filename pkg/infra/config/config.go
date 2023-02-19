@@ -9,24 +9,27 @@ import (
 	"prototodo/pkg/infra/psqldb"
 	"prototodo/pkg/infra/rdb"
 	"prototodo/pkg/infra/sf"
+	"prototodo/pkg/infra/trace/appinsights"
+	"prototodo/pkg/infra/trace/jaeger"
 	"strconv"
 	"strings"
 
 	"github.com/joho/godotenv"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
-// ConfigInitializer including this as your dependency ensures that configs have
+// Initializer including this as your dependency ensures that configs have
 // been loaded from all sources before extracting from environment
-type ConfigInitializer struct {
+type Initializer struct {
 	lgrf logger.IFactory
 }
 
-// NewConfigInitializer loads configs from the .env file
-func NewConfigInitializer(
+// NewInitializer loads configs from the .env file
+func NewInitializer(
 	lgrf logger.IFactory,
-) *ConfigInitializer {
-	c := &ConfigInitializer{
+) *Initializer {
+	c := &Initializer{
 		lgrf: lgrf,
 	}
 	c.LoadConfigCustom("./cfg/.env")
@@ -34,7 +37,7 @@ func NewConfigInitializer(
 }
 
 // LoadConfigCustom loads config from a given file
-func (c *ConfigInitializer) LoadConfigCustom(loc string) {
+func (c *Initializer) LoadConfigCustom(loc string) {
 	err := godotenv.Load(loc)
 	if err != nil {
 		lgr := c.lgrf.Create(context.Background())
@@ -45,7 +48,8 @@ func (c *ConfigInitializer) LoadConfigCustom(loc string) {
 	}
 }
 
-func NewCassandraOptions(c *ConfigInitializer) *cdb.Options {
+// NewCassandraOptions provides cassandra options
+func NewCassandraOptions(c *Initializer) *cdb.Options {
 	ips := os.Getenv("CassandraClusterIPs")
 	opt := &cdb.Options{
 		ClusterIPs: strings.Split(ips, ","),
@@ -69,7 +73,8 @@ func NewCassandraOptions(c *ConfigInitializer) *cdb.Options {
 	return opt
 }
 
-func NewRedisOptions(c *ConfigInitializer) *rdb.Options {
+// NewRedisOptions provides redis options
+func NewRedisOptions(c *Initializer) *rdb.Options {
 	address := os.Getenv("RedisAddress")
 	if address == "" {
 		panic("missing redis address config")
@@ -97,7 +102,8 @@ func NewRedisOptions(c *ConfigInitializer) *rdb.Options {
 	}
 }
 
-func NewSnowflakeOptions(_ *ConfigInitializer) *sf.Options {
+// NewSnowflakeOptions provides snowflake options
+func NewSnowflakeOptions(_ *Initializer) *sf.Options {
 	nn := os.Getenv("SnowflakeNodeNumber")
 	if nn == "" {
 		panic("missing snowflake node number")
@@ -116,7 +122,8 @@ func NewSnowflakeOptions(_ *ConfigInitializer) *sf.Options {
 	}
 }
 
-func NewPSQLDBOptions(_ *ConfigInitializer) *psqldb.DatabaseOptions {
+// NewPSQLDBOptions provides psqldb options
+func NewPSQLDBOptions(_ *Initializer) *psqldb.DatabaseOptions {
 	cons := os.Getenv("DatabaseConnectionString")
 	if cons == "" {
 		panic("missing database connection string config")
@@ -133,4 +140,38 @@ func NewPSQLDBOptions(_ *ConfigInitializer) *psqldb.DatabaseOptions {
 		ConnectionString:    cons,
 		DatabaseServiceName: name,
 	}
+}
+
+// NewAppInsightsExporterOptions provides app insights exporter options
+func NewAppInsightsExporterOptions(
+	c *Initializer,
+) *appinsights.ExporterOptions {
+	inskey := os.Getenv("InsightsInstrumentationKey")
+	lgr := c.lgrf.Create(context.Background())
+	if inskey == "" {
+		lgr.Warn("missing insights instrumentation key")
+	}
+	return &appinsights.ExporterOptions{
+		InstrKey: inskey,
+	}
+}
+
+// NewJaegerExporterOptions provides jaeger exporter options
+func NewJaegerExporterOptions(c *Initializer) *jaeger.ExporterOptions {
+	endpoint := os.Getenv("JaegerEndpoint")
+	lgr := c.lgrf.Create(context.Background())
+	if endpoint == "" {
+		lgr.Warn("missing jaeger endpoint")
+	}
+	return &jaeger.ExporterOptions{
+		Endpoint: endpoint,
+	}
+}
+
+// NewTraceOptions provides trace options
+func NewTraceOptions(_ *Initializer) (*trace.TracerOption, error) {
+	cnf := &trace.TraceOptions{
+		ServiceName: contracts.MainServiceName,
+	}
+	return cnf, nil
 }

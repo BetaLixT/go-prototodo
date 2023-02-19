@@ -26,10 +26,10 @@ import (
 // a grumpy greeter.
 func initializeAppCQRS() (*appCQRS, error) {
 	wire.Build(cqrsDependencySet)
-	return &appCQRS{}, nil
+	return &app{}, nil
 }
 
 func initializeAppInMem() (*appInMem, error) {
 	wire.Build(inMemDependencySet)
-	return &appInMem{}, nil
+	return &app{}, nil
 }

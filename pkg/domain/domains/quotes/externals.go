@@ -2,7 +2,7 @@ package quotes
 
 import "context"
 
-// IRepository interface to repository for quote data
+// IRepository interface to repository for handling quote data
 type IRepository interface {
 	GetRandom(ctx context.Context) (*Quote, error)
 	Create(

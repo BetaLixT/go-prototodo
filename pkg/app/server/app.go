@@ -1,12 +1,18 @@
+// Package server contains server logic to handle incoming requests and command
+// query handlers
 package server
 
 import (
 	"context"
+	"prototodo/pkg/domain/base/impl"
+	"prototodo/pkg/domain/domains/quotes"
+	"prototodo/pkg/domain/domains/tasks"
 	"prototodo/pkg/infra/impls/evcqrs"
 
 	"github.com/google/wire"
 )
 
+// Start boots up the server
 func Start(impl string) {
 	var a app
 	var err error
@@ -26,50 +32,38 @@ func Start(impl string) {
 	a.start(context.Background())
 }
 
-type IInterface interface {
-	Start(context.Context) error
-	Stop(context.Context) error
-}
-
-type app interface {
-	start(context.Context)
-}
-
-// =============================================================================
-// Event sourced CQRS Implementation
-// =============================================================================
-
+// cqrsDependencySet dependency set with in memory CQRS implementation
 var cqrsDependencySet = wire.NewSet(
 	evcqrs.DependencySet,
-	newAppCQRS,
+	newApp,
 )
 
-type appCQRS struct {
-}
-
-func newAppCQRS() *appCQRS {
-	return &appCQRS{}
-}
-
-func (*appCQRS) start(ctx context.Context) {
-
-}
-
-// =============================================================================
-// In Memory Implementation
-// =============================================================================
-
+// inMemDependencySet dependency set with in memory implementation
 var inMemDependencySet = wire.NewSet(
-	newAppInMem,
+	newApp,
 )
 
-type appInMem struct {
+// =============================================================================
+// Application
+// =============================================================================
+
+type app struct {
+	impl impl.IImplementation
+	tsvc *tasks.Service
+	qsvc *quotes.Service
 }
 
-func newAppInMem() *appInMem {
-	return &appInMem{}
+func newApp(
+	impl impl.IImplementation,
+	tsvc *tasks.Service,
+	qsvc *quotes.Service,
+) *app {
+	return &app{
+		impl: impl,
+		tsvc: tsvc,
+		qsvc: qsvc,
+	}
 }
 
-func (*appInMem) start(ctx context.Context) {
-
+func (*app) start(ctx context.Context) {
 }

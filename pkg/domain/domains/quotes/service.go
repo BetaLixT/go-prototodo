@@ -1,5 +1,5 @@
-// Package quotes containing all business logic and DTO related to the quotes
-// domain
+// Package quotes contains all business logic and validations and DTOs around the
+// quotes domain
 package quotes
 
 import (
@@ -9,25 +9,28 @@ import (
 	"prototodo/pkg/domain/contracts"
 )
 
-type QuotesService struct {
+// Service encapsulates business logic and use cases around the quotes domain
+type Service struct {
 	repo  IRepository
 	lgrf  logger.IFactory
 	urepo uids.IRepository
 }
 
-func NewQuotesService(
+// NewService constructs a new quotes Service
+func NewService(
 	repo IRepository,
 	lgrf logger.IFactory,
 	urepo uids.IRepository,
-) *QuotesService {
-	return &QuotesService{
+) *Service {
+	return &Service{
 		repo:  repo,
 		lgrf:  lgrf,
 		urepo: urepo,
 	}
 }
 
-func (s *QuotesService) GetRandomQuote(
+// GetRandomQuote business logic and validations around fetching a random quote
+func (s *Service) GetRandomQuote(
 	ctx context.Context,
 	qry *contracts.GetQuoteQuery,
 ) (res *contracts.QuoteData, err error) {
@@ -38,7 +41,8 @@ func (s *QuotesService) GetRandomQuote(
 	return res, err
 }
 
-func (s *QuotesService) CreateQuote(
+// CreateQuote business logic and validations around creating a quote
+func (s *Service) CreateQuote(
 	ctx context.Context,
 	cmd *contracts.CreateQuoteCommand,
 ) (res *contracts.QuoteData, err error) {

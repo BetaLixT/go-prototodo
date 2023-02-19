@@ -4,11 +4,12 @@ import (
 	"context"
 )
 
+// IRepository repo interface for handling tasks data
 type IRepository interface {
 	Create(
 		ctx context.Context,
 		id string,
-		sagaId *string,
+		sagaID *string,
 		data TaskData,
 	) (*TaskEvent, error)
 	Get(
@@ -23,13 +24,13 @@ type IRepository interface {
 	Delete(
 		ctx context.Context,
 		id string,
-		sagaId *string,
+		sagaID *string,
 		version uint64,
 	) (*TaskEvent, error)
 	Update(
 		ctx context.Context,
 		id string,
-		sagaId *string,
+		sagaID *string,
 		version uint64,
 		data TaskData,
 	) (*TaskEvent, error)

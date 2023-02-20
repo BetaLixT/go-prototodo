@@ -5,7 +5,7 @@ import (
 	"fmt"
 	domcntxt "prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/trace"
+	"prototodo/pkg/domain/base/tracectx"
 	infrcntxt "prototodo/pkg/infra/cntxt"
 	implcntxt "prototodo/pkg/infra/impls/evcqrs/cntxt"
 	"sync"
@@ -18,13 +18,13 @@ import (
 // ContextFactory to create new contexts
 type ContextFactory struct {
 	lgrf  logger.IFactory
-	trepo trace.IRepository
+	trepo tracectx.IRepository
 }
 
 // NewContextFactory constructor for context factory
 func NewContextFactory(
 	lgrf logger.IFactory,
-	trepo trace.IRepository,
+	trepo tracectx.IRepository,
 ) *ContextFactory {
 	return &ContextFactory{
 		lgrf:  lgrf,

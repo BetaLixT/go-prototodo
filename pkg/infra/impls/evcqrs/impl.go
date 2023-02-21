@@ -8,6 +8,7 @@ import (
 	"prototodo/pkg/domain/base/foreigns"
 	"prototodo/pkg/domain/base/impl"
 	"prototodo/pkg/domain/base/logger"
+	domtrace "prototodo/pkg/domain/base/trace"
 	"prototodo/pkg/domain/base/uids"
 	"prototodo/pkg/domain/base/uniques"
 	"prototodo/pkg/domain/domains/quotes"
@@ -108,6 +109,11 @@ var DependencySet = wire.NewSet(
 	wire.Bind(
 		new(quotes.IRepository),
 		new(*repos.QuotesRepository),
+	),
+
+	wire.Bind(
+		new(domtrace.IRepository),
+		new(*tracelib.Tracer),
 	),
 )
 

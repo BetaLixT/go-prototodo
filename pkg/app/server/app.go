@@ -12,6 +12,7 @@ import (
 	"prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/impl"
 	"prototodo/pkg/domain/base/logger"
+	"prototodo/pkg/domain/base/trace"
 	"prototodo/pkg/infra/impls/evcqrs"
 	"prototodo/pkg/infra/impls/inmem"
 	"sync"
@@ -96,8 +97,10 @@ type app struct {
 	quotesGRPCHandler contracts.QuotesServer
 
 	impl impl.IImplementation
+	lgrf logger.IFactory
 	lgr  *zap.Logger
 	ctxf cntxt.IFactory
+	trc  trace.IRepository
 
 	// server closers
 	closers   []closer
@@ -112,6 +115,7 @@ func newApp(
 	impl impl.IImplementation,
 	lgrf logger.IFactory,
 	ctxf cntxt.IFactory,
+	trc trace.IRepository,
 ) *app {
 	return &app{
 		// http handler interfaces
@@ -123,8 +127,10 @@ func newApp(
 		quotesGRPCHandler: quotesGRPCHandler,
 
 		impl: impl,
+		lgrf: lgrf,
 		lgr:  lgrf.Create(context.Background()),
 		ctxf: ctxf,
+		trc:  trc,
 	}
 }
 

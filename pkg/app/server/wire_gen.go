@@ -84,7 +84,7 @@ func initializeAppCQRS() (*app, error) {
 	quotesHandler := handlers.NewQuotesHandler(loggerFactory, quotesService)
 	implementation := evcqrs.NewImplementation(tracedDB, loggerFactory)
 	contextFactory := repos.NewContextFactory(loggerFactory)
-	serverApp := newApp(tasksHandler, quotesHandler, tasksHandler, quotesHandler, implementation, loggerFactory, contextFactory)
+	serverApp := newApp(tasksHandler, quotesHandler, tasksHandler, quotesHandler, implementation, loggerFactory, contextFactory, tracer)
 	return serverApp, nil
 }
 
@@ -109,6 +109,7 @@ func initializeAppInMem() (*app, error) {
 	quotesHandler := handlers.NewQuotesHandler(loggerFactory, quotesService)
 	implementation := inmem.NewImplementation()
 	contextFactory := repos2.NewContextFactory()
-	serverApp := newApp(tasksHandler, quotesHandler, tasksHandler, quotesHandler, implementation, loggerFactory, contextFactory)
+	badTracer := inmem.NewBadTracer()
+	serverApp := newApp(tasksHandler, quotesHandler, tasksHandler, quotesHandler, implementation, loggerFactory, contextFactory, badTracer)
 	return serverApp, nil
 }

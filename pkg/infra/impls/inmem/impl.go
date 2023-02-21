@@ -8,6 +8,7 @@ import (
 	"prototodo/pkg/domain/base/foreigns"
 	"prototodo/pkg/domain/base/impl"
 	"prototodo/pkg/domain/base/logger"
+	"prototodo/pkg/domain/base/trace"
 	"prototodo/pkg/domain/base/uids"
 	"prototodo/pkg/domain/base/uniques"
 	"prototodo/pkg/domain/domains/quotes"
@@ -16,6 +17,7 @@ import (
 	"prototodo/pkg/infra/impls/inmem/repos"
 	"prototodo/pkg/infra/lgr"
 	"prototodo/pkg/infra/sf"
+	"time"
 
 	"github.com/betalixt/gorr"
 	"github.com/google/wire"
@@ -75,7 +77,34 @@ var DependencySet = wire.NewSet(
 		new(quotes.IRepository),
 		new(*repos.QuotesRepository),
 	),
+
+	NewBadTracer,
+	wire.Bind(
+		new(trace.IRepository),
+		new(*badTracer),
+	),
 )
+
+func NewBadTracer() *badTracer {
+	return &badTracer{}
+}
+
+type badTracer struct{}
+
+func (_ *badTracer) TraceRequest(
+	ctx context.Context,
+	method string,
+	path string,
+	query string,
+	statusCode int,
+	bodySize int,
+	ip string,
+	userAgent string,
+	startTimestamp time.Time,
+	eventTimestamp time.Time,
+	fields map[string]string,
+) {
+}
 
 // Implementation used for graceful starting and stopping of the implementation
 // layer

@@ -1,12 +1,14 @@
 package server
 
 import (
+	"context"
 	"embed"
 	"net/http"
 	"net/http/pprof"
 	"prototodo/pkg/app/server/common"
 	"prototodo/pkg/app/server/contracts"
 	"strconv"
+	"time"
 
 	"github.com/betalixt/gorr"
 	"github.com/gin-gonic/gin"
@@ -64,10 +66,18 @@ func (a *app) startHTTP(portStr string) {
 	// Application setup
 	application := router.Group("")
 	application.Use(func(ctx *gin.Context) {
+		method := ctx.Request.Method
+		path := ctx.Request.URL.Path
+		query := ctx.Request.URL.RawQuery
+		agent := ctx.Request.UserAgent()
+		ip := ctx.ClientIP()
+
+		start := time.Now()
 		traceparent := ctx.GetHeader("traceparent")
 		c := a.ctxf.Create(traceparent)
 		ctx.Set(contracts.InternalContextKey, c)
 		ctx.Next()
+		end := time.Now()
 
 		er := ctx.Errors.Last()
 		if er != nil {
@@ -77,6 +87,22 @@ func (a *app) startHTTP(portStr string) {
 				ctx.JSON(500, gorr.NewUnexpectedError(er))
 			}
 		}
+
+		status := ctx.Writer.Status()
+		size := ctx.Writer.Size()
+
+		a.traceRequest(
+			c,
+			method,
+			path,
+			query,
+			agent,
+			ip,
+			status,
+			size,
+			start,
+			end,
+		)
 	})
 
 	port, err := strconv.Atoi(portStr)
@@ -114,4 +140,47 @@ func (a *app) startHTTP(portStr string) {
 			zap.Error(err),
 		)
 	}
+}
+
+func (a *app) traceRequest(
+	context context.Context,
+	method,
+	path,
+	query,
+	agent,
+	ip string,
+	status,
+	bytes int,
+	start,
+	end time.Time,
+) {
+	latency := end.Sub(start)
+
+	lgr := a.lgrf.Create(context)
+	a.trc.TraceRequest(
+		context,
+		method,
+		path,
+		query,
+		status,
+		bytes,
+		ip,
+		agent,
+		start,
+		end,
+		map[string]string{},
+	)
+	lgr.Info(
+		"Request",
+		zap.Int("status", status),
+		zap.String("method", method),
+		zap.String("path", path),
+		zap.String("query", query),
+		zap.String("ip", ip),
+		zap.String("userAgent", agent),
+		zap.Time("mvts", end),
+		zap.String("pmvts", end.Format("2006-01-02T15:04:05-0700")),
+		zap.Duration("latency", latency),
+		zap.String("pLatency", latency.String()),
+	)
 }

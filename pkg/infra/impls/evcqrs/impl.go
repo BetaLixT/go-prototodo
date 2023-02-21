@@ -22,6 +22,7 @@ import (
 	"prototodo/pkg/infra/trace"
 	"prototodo/pkg/infra/trace/appinsights"
 	"prototodo/pkg/infra/trace/jaeger"
+	"prototodo/pkg/infra/trace/promex"
 	"prototodo/pkg/infra/tracelib"
 
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
@@ -47,6 +48,7 @@ var DependencySet = wire.NewSet(
 	config.NewJaegerExporterOptions,
 	appinsights.NewTraceExporter,
 	config.NewAppInsightsExporterOptions,
+	promex.NewTraceExporter,
 
 	// Infra
 	config.NewInitializer,
@@ -113,6 +115,7 @@ var DependencySet = wire.NewSet(
 func NewTraceExporterList(
 	insexp appinsights.TraceExporter,
 	jgrexp jaeger.TraceExporter,
+	prmex promex.TraceExporter,
 	lgrf logger.IFactory,
 ) *trace.ExporterList {
 	lgr := lgrf.Create(context.Background())
@@ -131,6 +134,7 @@ func NewTraceExporterList(
 	if len(exp) == 0 {
 		panic("no tracing exporters found (float you <3)")
 	}
+	exp = append(exp, prmex)
 	return &trace.ExporterList{
 		Exporters: exp,
 	}

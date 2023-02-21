@@ -3,12 +3,14 @@ package server
 import (
 	"embed"
 	"net/http"
+	"net/http/pprof"
 	"prototodo/pkg/app/server/common"
 	"prototodo/pkg/app/server/contracts"
 	"strconv"
 
 	"github.com/betalixt/gorr"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 )
 
@@ -26,6 +28,7 @@ func (a *app) startHTTP(portStr string) {
 		})
 	})
 
+	// Swagger setup
 	fileServer := http.FileServer(http.FS(swaggerFiles))
 	swaggerGroup := router.Group("/swagger")
 	swaggerGroup.Any("/*all", func(ctx *gin.Context) {
@@ -37,6 +40,28 @@ func (a *app) startHTTP(portStr string) {
 		fileServer.ServeHTTP(ctx.Writer, ctx.Request)
 	})
 
+	// Prometheus
+	metricsGroup := router.Group("/metrics")
+	metricsGroup.GET("", func(ctx *gin.Context) {
+		promhttp.Handler().ServeHTTP(ctx.Writer, ctx.Request)
+	})
+
+	// PProf setup
+	pprofGroup := router.Group("pprof")
+	pprofGroup.GET("/", gin.WrapF(pprof.Index))
+	pprofGroup.GET("/cmdline", gin.WrapF(pprof.Cmdline))
+	pprofGroup.GET("/profile", gin.WrapF(pprof.Profile))
+	pprofGroup.POST("/symbol", gin.WrapF(pprof.Symbol))
+	pprofGroup.GET("/symbol", gin.WrapF(pprof.Symbol))
+	pprofGroup.GET("/trace", gin.WrapF(pprof.Trace))
+	pprofGroup.GET("/allocs", gin.WrapH(pprof.Handler("allocs")))
+	pprofGroup.GET("/block", gin.WrapH(pprof.Handler("block")))
+	pprofGroup.GET("/goroutine", gin.WrapH(pprof.Handler("goroutine")))
+	pprofGroup.GET("/heap", gin.WrapH(pprof.Handler("heap")))
+	pprofGroup.GET("/mutex", gin.WrapH(pprof.Handler("mutex")))
+	pprofGroup.GET("/threadcreate", gin.WrapH(pprof.Handler("threadcreate")))
+
+	// Application setup
 	application := router.Group("")
 	application.Use(func(ctx *gin.Context) {
 		traceparent := ctx.GetHeader("traceparent")

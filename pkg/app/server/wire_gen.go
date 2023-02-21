@@ -22,6 +22,7 @@ import (
 	"prototodo/pkg/infra/trace"
 	"prototodo/pkg/infra/trace/appinsights"
 	"prototodo/pkg/infra/trace/jaeger"
+	"prototodo/pkg/infra/trace/promex"
 )
 
 // Injectors from wire.go:
@@ -44,7 +45,11 @@ func initializeAppCQRS() (*app, error) {
 	if err != nil {
 		return nil, err
 	}
-	exporterList := evcqrs.NewTraceExporterList(traceExporter, jaegerTraceExporter, loggerFactory)
+	promexTraceExporter, err := promex.NewTraceExporter()
+	if err != nil {
+		return nil, err
+	}
+	exporterList := evcqrs.NewTraceExporterList(traceExporter, jaegerTraceExporter, promexTraceExporter, loggerFactory)
 	options, err := config.NewTraceOptions(initializer)
 	if err != nil {
 		return nil, err

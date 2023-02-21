@@ -20,7 +20,19 @@ type TasksHandler struct {
 	appcontr.UnimplementedTasksServer
 	ctxf cntxt.IFactory
 	lgrf logger.IFactory
-	tsrv tasks.TaskService
+	tsrv tasks.Service
+}
+
+func NewTasksHandler(
+	ctxf cntxt.IFactory,
+	lgrf logger.IFactory,
+	tsrv tasks.Service,
+) *TasksHandler {
+	return &TasksHandler{
+		ctxf: ctxf,
+		lgrf: lgrf,
+		tsrv: tsrv,
+	}
 }
 
 func (h *TasksHandler) Create(
@@ -85,6 +97,7 @@ func (h *TasksHandler) Create(
 	ctx.Cancel()
 	return
 }
+
 func (h *TasksHandler) Delete(
 	c context.Context,
 	cmd *contracts.DeleteTaskCommand,
@@ -147,6 +160,7 @@ func (h *TasksHandler) Delete(
 	ctx.Cancel()
 	return
 }
+
 func (h *TasksHandler) Update(
 	c context.Context,
 	cmd *contracts.UpdateTaskCommand,
@@ -209,6 +223,7 @@ func (h *TasksHandler) Update(
 	ctx.Cancel()
 	return
 }
+
 func (h *TasksHandler) Progress(
 	c context.Context,
 	cmd *contracts.ProgressTaskCommand,
@@ -271,6 +286,7 @@ func (h *TasksHandler) Progress(
 	ctx.Cancel()
 	return
 }
+
 func (h *TasksHandler) Complete(
 	c context.Context,
 	cmd *contracts.CompleteTaskCommand,
@@ -333,6 +349,7 @@ func (h *TasksHandler) Complete(
 	ctx.Cancel()
 	return
 }
+
 func (h *TasksHandler) ListQuery(
 	c context.Context,
 	qry *contracts.ListTasksQuery,

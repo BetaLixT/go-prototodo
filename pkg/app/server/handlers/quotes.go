@@ -18,7 +18,7 @@ type QuotesHandler struct {
 	srvcontracts.UnimplementedQuotesServer
 	ctxf cntxt.IFactory
 	lgrf logger.IFactory
-	svc  *quotes.QuotesService
+	svc  *quotes.Service
 }
 
 var _ srvcontracts.QuotesServer = (*QuotesHandler)(nil)
@@ -26,7 +26,7 @@ var _ srvcontracts.QuotesServer = (*QuotesHandler)(nil)
 func NewQuotesHandler(
 	ctxf cntxt.IFactory,
 	lgrf logger.IFactory,
-	svc *quotes.QuotesService,
+	svc *quotes.Service,
 ) *QuotesHandler {
 	return &QuotesHandler{
 		ctxf: ctxf,
@@ -34,6 +34,7 @@ func NewQuotesHandler(
 		svc:  svc,
 	}
 }
+
 func (h *QuotesHandler) Get(
 	c context.Context,
 	qry *contracts.GetQuoteQuery,
@@ -96,6 +97,7 @@ func (h *QuotesHandler) Get(
 	ctx.Cancel()
 	return
 }
+
 func (h *QuotesHandler) Create(
 	c context.Context,
 	cmd *contracts.CreateQuoteCommand,

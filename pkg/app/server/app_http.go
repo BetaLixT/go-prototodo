@@ -3,8 +3,10 @@ package server
 import (
 	"net/http"
 	"prototodo/pkg/app/server/common"
+	"prototodo/pkg/app/server/contracts"
 	"strconv"
 
+	"github.com/betalixt/gorr"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -18,6 +20,21 @@ func (a *app) startHTTP(portStr string) {
 		ctx.JSON(200, gin.H{
 			"status": "alive",
 		})
+	})
+	router.Use(func(ctx *gin.Context) {
+		traceparent := ctx.GetHeader("traceparent")
+		c := a.ctxf.Create(traceparent)
+		ctx.Set(contracts.InternalContextKey, c)
+		ctx.Next()
+
+		er := ctx.Errors.Last()
+		if er != nil {
+			if err, ok := er.Err.(*gorr.Error); ok {
+				ctx.JSON(err.StatusCode, err)
+			} else {
+				ctx.JSON(500, gorr.NewUnexpectedError(er))
+			}
+		}
 	})
 
 	port, err := strconv.Atoi(portStr)

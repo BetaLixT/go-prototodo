@@ -1,3 +1,4 @@
+// Package handlers handles incoming quote requets
 package handlers
 
 import (
@@ -15,6 +16,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// QuotesHandler encapsulates handlers related to the Quote Server
 type QuotesHandler struct {
 	srvcontracts.UnimplementedQuotesServer
 	lgrf logger.IFactory
@@ -23,6 +25,7 @@ type QuotesHandler struct {
 
 var _ srvcontracts.QuotesServer = (*QuotesHandler)(nil)
 
+// NewQuotesHandler Constructs a new QuoteHandler
 func NewQuotesHandler(
 	lgrf logger.IFactory,
 	svc *quotes.Service,
@@ -37,6 +40,9 @@ func (h *QuotesHandler) Get(
 	c context.Context,
 	qry *contracts.GetQuoteQuery,
 ) (res *contracts.QuoteData, err error) {
+	if qry.UserContext == nil {
+		return nil, common.NewUserContextMissingError()
+	}
 	ctx, ok := c.(cntxt.IContext)
 	if !ok {
 		return nil, common.NewInvalidContextProvidedToHandlerError()
@@ -68,8 +74,10 @@ func (h *QuotesHandler) Get(
 			ctx.RollbackTransaction()
 			ctx.Cancel()
 		}
-		if _, ok := err.(*gorr.Error); !ok {
-			err = gorr.NewUnexpectedError(err)
+		if err != nil {
+			if _, ok := err.(*gorr.Error); !ok {
+				err = gorr.NewUnexpectedError(err)
+			}
 		}
 		return
 	}()
@@ -101,6 +109,9 @@ func (h *QuotesHandler) Create(
 	c context.Context,
 	cmd *contracts.CreateQuoteCommand,
 ) (res *contracts.QuoteData, err error) {
+	if cmd.UserContext == nil {
+		return nil, common.NewUserContextMissingError()
+	}
 	ctx, ok := c.(cntxt.IContext)
 	if !ok {
 		return nil, common.NewInvalidContextProvidedToHandlerError()
@@ -132,8 +143,10 @@ func (h *QuotesHandler) Create(
 			ctx.RollbackTransaction()
 			ctx.Cancel()
 		}
-		if _, ok := err.(*gorr.Error); !ok {
-			err = gorr.NewUnexpectedError(err)
+		if err != nil {
+			if _, ok := err.(*gorr.Error); !ok {
+				err = gorr.NewUnexpectedError(err)
+			}
 		}
 		return
 	}()

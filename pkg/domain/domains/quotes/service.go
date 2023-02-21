@@ -7,6 +7,8 @@ import (
 	"prototodo/pkg/domain/base/logger"
 	"prototodo/pkg/domain/base/uids"
 	"prototodo/pkg/domain/contracts"
+
+	"go.uber.org/zap"
 )
 
 // Service encapsulates business logic and use cases around the quotes domain
@@ -34,11 +36,14 @@ func (s *Service) GetRandomQuote(
 	ctx context.Context,
 	qry *contracts.GetQuoteQuery,
 ) (res *contracts.QuoteData, err error) {
+	lgr := s.lgrf.Create(ctx)
 	q, err := s.repo.GetRandom(ctx)
 	if err == nil {
-		res = q.ToContract()
+		lgr.Error("failed to create quote", zap.Error(err))
+		return nil, err
 	}
-	return res, err
+	res = q.ToContract()
+	return
 }
 
 // CreateQuote business logic and validations around creating a quote
@@ -59,7 +64,9 @@ func (s *Service) CreateQuote(
 		cmd.Quote,
 	)
 	if err != nil {
-		res = q.Data.ToContract()
+		lgr.Error("failed to create quote", zap.Error(err))
+		return nil, err
 	}
+	res = q.Data.ToContract()
 	return
 }

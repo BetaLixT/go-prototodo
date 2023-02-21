@@ -66,7 +66,7 @@ func (r *QuotesRepository) Create(
 		id,
 		0,
 		domcom.EventCreated,
-		entities.QuoteData{
+		&entities.QuoteData{
 			Quote: &quote,
 		},
 	)

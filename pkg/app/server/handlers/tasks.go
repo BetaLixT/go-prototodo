@@ -37,6 +37,9 @@ func (h *TasksHandler) Create(
 	c context.Context,
 	cmd *contracts.CreateTaskCommand,
 ) (res *contracts.TaskEvent, err error) {
+	if cmd.UserContext == nil {
+		return nil, common.NewUserContextMissingError()
+	}
 	ctx, ok := c.(cntxt.IContext)
 	if !ok {
 		return nil, common.NewInvalidContextProvidedToHandlerError()
@@ -68,8 +71,10 @@ func (h *TasksHandler) Create(
 			ctx.RollbackTransaction()
 			ctx.Cancel()
 		}
-		if _, ok := err.(*gorr.Error); !ok {
-			err = gorr.NewUnexpectedError(err)
+		if err != nil {
+			if _, ok := err.(*gorr.Error); !ok {
+				err = gorr.NewUnexpectedError(err)
+			}
 		}
 		return
 	}()
@@ -101,6 +106,9 @@ func (h *TasksHandler) Delete(
 	c context.Context,
 	cmd *contracts.DeleteTaskCommand,
 ) (res *contracts.TaskEvent, err error) {
+	if cmd.UserContext == nil {
+		return nil, common.NewUserContextMissingError()
+	}
 	ctx, ok := c.(cntxt.IContext)
 	if !ok {
 		return nil, common.NewInvalidContextProvidedToHandlerError()
@@ -132,8 +140,10 @@ func (h *TasksHandler) Delete(
 			ctx.RollbackTransaction()
 			ctx.Cancel()
 		}
-		if _, ok := err.(*gorr.Error); !ok {
-			err = gorr.NewUnexpectedError(err)
+		if err != nil {
+			if _, ok := err.(*gorr.Error); !ok {
+				err = gorr.NewUnexpectedError(err)
+			}
 		}
 		return
 	}()
@@ -165,6 +175,9 @@ func (h *TasksHandler) Update(
 	c context.Context,
 	cmd *contracts.UpdateTaskCommand,
 ) (res *contracts.TaskEvent, err error) {
+	if cmd.UserContext == nil {
+		return nil, common.NewUserContextMissingError()
+	}
 	ctx, ok := c.(cntxt.IContext)
 	if !ok {
 		return nil, common.NewInvalidContextProvidedToHandlerError()
@@ -196,8 +209,10 @@ func (h *TasksHandler) Update(
 			ctx.RollbackTransaction()
 			ctx.Cancel()
 		}
-		if _, ok := err.(*gorr.Error); !ok {
-			err = gorr.NewUnexpectedError(err)
+		if err != nil {
+			if _, ok := err.(*gorr.Error); !ok {
+				err = gorr.NewUnexpectedError(err)
+			}
 		}
 		return
 	}()
@@ -229,6 +244,9 @@ func (h *TasksHandler) Progress(
 	c context.Context,
 	cmd *contracts.ProgressTaskCommand,
 ) (res *contracts.TaskEvent, err error) {
+	if cmd.UserContext == nil {
+		return nil, common.NewUserContextMissingError()
+	}
 	ctx, ok := c.(cntxt.IContext)
 	if !ok {
 		return nil, common.NewInvalidContextProvidedToHandlerError()
@@ -260,8 +278,10 @@ func (h *TasksHandler) Progress(
 			ctx.RollbackTransaction()
 			ctx.Cancel()
 		}
-		if _, ok := err.(*gorr.Error); !ok {
-			err = gorr.NewUnexpectedError(err)
+		if err != nil {
+			if _, ok := err.(*gorr.Error); !ok {
+				err = gorr.NewUnexpectedError(err)
+			}
 		}
 		return
 	}()
@@ -293,6 +313,9 @@ func (h *TasksHandler) Complete(
 	c context.Context,
 	cmd *contracts.CompleteTaskCommand,
 ) (res *contracts.TaskEvent, err error) {
+	if cmd.UserContext == nil {
+		return nil, common.NewUserContextMissingError()
+	}
 	ctx, ok := c.(cntxt.IContext)
 	if !ok {
 		return nil, common.NewInvalidContextProvidedToHandlerError()
@@ -324,8 +347,10 @@ func (h *TasksHandler) Complete(
 			ctx.RollbackTransaction()
 			ctx.Cancel()
 		}
-		if _, ok := err.(*gorr.Error); !ok {
-			err = gorr.NewUnexpectedError(err)
+		if err != nil {
+			if _, ok := err.(*gorr.Error); !ok {
+				err = gorr.NewUnexpectedError(err)
+			}
 		}
 		return
 	}()
@@ -357,6 +382,9 @@ func (h *TasksHandler) ListQuery(
 	c context.Context,
 	qry *contracts.ListTasksQuery,
 ) (res *contracts.TaskEntityList, err error) {
+	if qry.UserContext == nil {
+		return nil, common.NewUserContextMissingError()
+	}
 	ctx, ok := c.(cntxt.IContext)
 	if !ok {
 		return nil, common.NewInvalidContextProvidedToHandlerError()
@@ -388,8 +416,10 @@ func (h *TasksHandler) ListQuery(
 			ctx.RollbackTransaction()
 			ctx.Cancel()
 		}
-		if _, ok := err.(*gorr.Error); !ok {
-			err = gorr.NewUnexpectedError(err)
+		if err != nil {
+			if _, ok := err.(*gorr.Error); !ok {
+				err = gorr.NewUnexpectedError(err)
+			}
 		}
 		return
 	}()

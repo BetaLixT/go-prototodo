@@ -37,14 +37,7 @@ func (a *app) startGRPC(portStr string) {
 				traceparent = temp[0]
 			}
 
-			ctx, err := a.trepo.ParseTraceParent(
-				context.Background(),
-				traceparent,
-			)
-			if err != nil {
-				return nil, err
-			}
-
+			ctx := a.ctxf.Create(traceparent)
 			resp, err = handler(ctx, req)
 			return
 		}),

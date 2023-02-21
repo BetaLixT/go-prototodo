@@ -20,6 +20,14 @@ func (a *app) startHTTP(portStr string) {
 		})
 	})
 
+	srv := http.Server{
+    Addr: ":" + strconv.Itoa(port),
+    Handler: router,
+  }
+
+	a.registerHTTPHandlers(&router.RouterGroup)
+	a.registerCloser(router.)
+
 	port, err := strconv.Atoi(portStr)
 	if err != nil {
 		a.lgr.Warn(
@@ -35,21 +43,9 @@ func (a *app) startHTTP(portStr string) {
 		port = common.HTTPDefaultPort
 	}
 
-	srv := http.Server{
-		Addr:    ":" + strconv.Itoa(port),
-		Handler: router,
-	}
+	a.lgr.Info("grpc listening", zap.Int("port", port))
 
-	a.registerHTTPHandlers(&router.RouterGroup)
-	a.registerCloser(func() {
-		if err := srv.Close(); err != nil {
-			a.lgr.Error("failed while closing http server", zap.Error(err))
-		}
-	})
-
-	a.lgr.Info("http listening", zap.Int("port", port))
-
-	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	if err := srv.lListenAndServe() err != nil && err != http.ErrServerClosed {
 		a.lgr.Error(
 			"failed running router",
 			zap.Error(err),

@@ -11,6 +11,8 @@ import (
 	contracts "prototodo/pkg/domain/contracts"
 )
 
+const InternalContextKey = "inCxt"
+
 // Tasks
 type TasksHTTPServer interface {
 	// - Commands
@@ -37,8 +39,15 @@ func (p *tasks) create(ctx *gin.Context) {
 		return
 	}
 	protojson.Unmarshal(raw, &body)
+	var c context.Context
+	if v, ok := ctx.Get(InternalContextKey); ok {
+		c, _ = v.(context.Context)
+	}
+	if c == nil {
+		c = ctx
+	}
 	res, err := p.app.Create(
-		ctx,
+		c,
 		&body,
 	)
 	if err != nil {
@@ -68,8 +77,15 @@ func (p *tasks) delete(ctx *gin.Context) {
 		return
 	}
 	protojson.Unmarshal(raw, &body)
+	var c context.Context
+	if v, ok := ctx.Get(InternalContextKey); ok {
+		c, _ = v.(context.Context)
+	}
+	if c == nil {
+		c = ctx
+	}
 	res, err := p.app.Delete(
-		ctx,
+		c,
 		&body,
 	)
 	if err != nil {
@@ -99,8 +115,15 @@ func (p *tasks) update(ctx *gin.Context) {
 		return
 	}
 	protojson.Unmarshal(raw, &body)
+	var c context.Context
+	if v, ok := ctx.Get(InternalContextKey); ok {
+		c, _ = v.(context.Context)
+	}
+	if c == nil {
+		c = ctx
+	}
 	res, err := p.app.Update(
-		ctx,
+		c,
 		&body,
 	)
 	if err != nil {
@@ -130,8 +153,15 @@ func (p *tasks) progress(ctx *gin.Context) {
 		return
 	}
 	protojson.Unmarshal(raw, &body)
+	var c context.Context
+	if v, ok := ctx.Get(InternalContextKey); ok {
+		c, _ = v.(context.Context)
+	}
+	if c == nil {
+		c = ctx
+	}
 	res, err := p.app.Progress(
-		ctx,
+		c,
 		&body,
 	)
 	if err != nil {
@@ -161,8 +191,15 @@ func (p *tasks) complete(ctx *gin.Context) {
 		return
 	}
 	protojson.Unmarshal(raw, &body)
+	var c context.Context
+	if v, ok := ctx.Get(InternalContextKey); ok {
+		c, _ = v.(context.Context)
+	}
+	if c == nil {
+		c = ctx
+	}
 	res, err := p.app.Complete(
-		ctx,
+		c,
 		&body,
 	)
 	if err != nil {
@@ -192,8 +229,15 @@ func (p *tasks) listQuery(ctx *gin.Context) {
 		return
 	}
 	protojson.Unmarshal(raw, &body)
+	var c context.Context
+	if v, ok := ctx.Get(InternalContextKey); ok {
+		c, _ = v.(context.Context)
+	}
+	if c == nil {
+		c = ctx
+	}
 	res, err := p.app.ListQuery(
-		ctx,
+		c,
 		&body,
 	)
 	if err != nil {
@@ -245,8 +289,15 @@ func (p *quotes) get(ctx *gin.Context) {
 		return
 	}
 	protojson.Unmarshal(raw, &body)
+	var c context.Context
+	if v, ok := ctx.Get(InternalContextKey); ok {
+		c, _ = v.(context.Context)
+	}
+	if c == nil {
+		c = ctx
+	}
 	res, err := p.app.Get(
-		ctx,
+		c,
 		&body,
 	)
 	if err != nil {
@@ -276,8 +327,15 @@ func (p *quotes) create(ctx *gin.Context) {
 		return
 	}
 	protojson.Unmarshal(raw, &body)
+	var c context.Context
+	if v, ok := ctx.Get(InternalContextKey); ok {
+		c, _ = v.(context.Context)
+	}
+	if c == nil {
+		c = ctx
+	}
 	res, err := p.app.Create(
-		ctx,
+		c,
 		&body,
 	)
 	if err != nil {

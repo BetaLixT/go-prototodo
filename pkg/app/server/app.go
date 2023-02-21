@@ -9,9 +9,9 @@ import (
 	"prototodo/pkg/app/server/contracts"
 	"prototodo/pkg/app/server/handlers"
 	"prototodo/pkg/domain"
+	"prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/impl"
 	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/tracectx"
 	"prototodo/pkg/infra/impls/evcqrs"
 	"prototodo/pkg/infra/impls/inmem"
 	"sync"
@@ -95,9 +95,9 @@ type app struct {
 	tasksGRPCHandler  contracts.TasksServer
 	quotesGRPCHandler contracts.QuotesServer
 
-	impl  impl.IImplementation
-	lgr   *zap.Logger
-	trepo tracectx.IRepository
+	impl impl.IImplementation
+	lgr  *zap.Logger
+	ctxf cntxt.IFactory
 
 	// server closers
 	closers   []closer
@@ -111,7 +111,7 @@ func newApp(
 	quotesGRPCHandler contracts.QuotesServer,
 	impl impl.IImplementation,
 	lgrf logger.IFactory,
-	trepo tracectx.IRepository,
+	ctxf cntxt.IFactory,
 ) *app {
 	return &app{
 		// http handler interfaces
@@ -122,9 +122,9 @@ func newApp(
 		tasksGRPCHandler:  tasksGRPCHandler,
 		quotesGRPCHandler: quotesGRPCHandler,
 
-		impl:  impl,
-		lgr:   lgrf.Create(context.Background()),
-		trepo: trepo,
+		impl: impl,
+		lgr:  lgrf.Create(context.Background()),
+		ctxf: ctxf,
 	}
 }
 

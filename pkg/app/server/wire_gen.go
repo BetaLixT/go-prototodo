@@ -7,6 +7,7 @@
 package server
 
 import (
+	"prototodo/pkg/app/server/handlers"
 	"prototodo/pkg/domain/domains/quotes"
 	"prototodo/pkg/domain/domains/tasks"
 	"prototodo/pkg/infra/config"
@@ -57,7 +58,6 @@ func initializeAppCQRS() (*app, error) {
 	if err != nil {
 		return nil, err
 	}
-	implementation := evcqrs.NewImplementation(tracedDB, loggerFactory)
 	baseDataRepository := repos.NewBaseDataRepository(tracedDB)
 	tasksRepository := repos.NewTasksRepository(baseDataRepository, loggerFactory)
 	rdbOptions := config.NewRedisOptions(initializer)
@@ -73,19 +73,22 @@ func initializeAppCQRS() (*app, error) {
 	}
 	uidRepository := repos.NewUIDRepository(node)
 	service := tasks.NewService(tasksRepository, loggerFactory, aclRepository, uidRepository)
+	tasksHandler := handlers.NewTasksHandler(loggerFactory, service)
 	quotesRepository := repos.NewQuotesRepository(tracedDB, loggerFactory)
 	quotesService := quotes.NewService(quotesRepository, loggerFactory, uidRepository)
-	serverApp := newApp(implementation, service, quotesService)
+	quotesHandler := handlers.NewQuotesHandler(loggerFactory, quotesService)
+	implementation := evcqrs.NewImplementation(tracedDB, loggerFactory)
+	contextFactory := repos.NewContextFactory(loggerFactory)
+	serverApp := newApp(tasksHandler, quotesHandler, tasksHandler, quotesHandler, implementation, loggerFactory, contextFactory)
 	return serverApp, nil
 }
 
 func initializeAppInMem() (*app, error) {
-	implementation := inmem.NewImplementation()
-	tasksRepository := repos2.NewTasksRepository()
 	loggerFactory, err := lgr.NewLoggerFactory()
 	if err != nil {
 		return nil, err
 	}
+	tasksRepository := repos2.NewTasksRepository()
 	aclRepository := repos2.NewACLRepository()
 	initializer := config.NewInitializer(loggerFactory)
 	options := config.NewSnowflakeOptions(initializer)
@@ -95,8 +98,12 @@ func initializeAppInMem() (*app, error) {
 	}
 	uidRepository := repos2.NewUIDRepository(node)
 	service := tasks.NewService(tasksRepository, loggerFactory, aclRepository, uidRepository)
+	tasksHandler := handlers.NewTasksHandler(loggerFactory, service)
 	quotesRepository := repos2.NewQuotesRepository()
 	quotesService := quotes.NewService(quotesRepository, loggerFactory, uidRepository)
-	serverApp := newApp(implementation, service, quotesService)
+	quotesHandler := handlers.NewQuotesHandler(loggerFactory, quotesService)
+	implementation := inmem.NewImplementation()
+	contextFactory := repos2.NewContextFactory()
+	serverApp := newApp(tasksHandler, quotesHandler, tasksHandler, quotesHandler, implementation, loggerFactory, contextFactory)
 	return serverApp, nil
 }

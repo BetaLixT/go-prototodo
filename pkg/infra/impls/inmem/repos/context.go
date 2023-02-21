@@ -20,8 +20,7 @@ func NewContextFactory() *ContextFactory {
 
 // Create creates a new context with timeout, transactions and trace info
 func (f *ContextFactory) Create(
-	ctx context.Context,
-	timeout time.Duration,
+	string,
 ) domcntxt.IContext {
 	c := &internalContext{}
 	return c

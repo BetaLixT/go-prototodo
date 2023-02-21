@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"prototodo/pkg/domain/base/cntxt"
 	domcntxt "prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/logger"
 	implcntxt "prototodo/pkg/infra/impls/evcqrs/cntxt"
@@ -21,6 +22,8 @@ import (
 // =============================================================================
 // Context factory and trace parsing logic
 // =============================================================================
+
+var _ cntxt.IFactory = (*ContextFactory)(nil)
 
 // ContextFactory to create new contexts
 type ContextFactory struct {

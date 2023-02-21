@@ -126,7 +126,7 @@ func (r *TasksRepository) List(
 	err := r.dbctx.Select(
 		ctx,
 		&tasks,
-		SelectTaskByIdQuery,
+		ListTasksQuery,
 		countPerPage,
 		pageNumber*countPerPage,
 	)
@@ -211,7 +211,7 @@ func (r *TasksRepository) Update(
 	var data entities.TaskData
 	data.FromDTO(&dat)
 
-	set, vals, _ := data.GeneratePSQLReadModelSet(3)
+	set, vals, _ := data.GeneratePSQLReadModelSet(4)
 	if set == "" {
 		lgr.Error("no values updated")
 		return nil, domcom.NewNoTaskUpdatesError()
@@ -240,7 +240,7 @@ func (r *TasksRepository) Update(
 		return nil, err
 	}
 
-	allvals := append([]interface{}{id, version - 1}, vals...)
+	allvals := append([]interface{}{id, version - 1, version}, vals...)
 	dest := entities.TaskReadModel{}
 	err = dbtx.Get(
 		ctx,
@@ -287,6 +287,6 @@ const (
 	`
 
 	UpdateTaskQuery = `
-	UPDATE tasks SET %s WHERE id = $1 AND version = $2 RETURNING *
+	UPDATE tasks SET %s, version = $3 WHERE id = $1 AND version = $2 RETURNING *
 	`
 )

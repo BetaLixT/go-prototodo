@@ -13,6 +13,8 @@ import (
 
 const InternalContextKey = "inCxt"
 
+var protomarsh = protojson.MarshalOptions{EmitUnpopulated: true}
+
 // Tasks
 type TasksHTTPServer interface {
 	// - Commands
@@ -54,7 +56,7 @@ func (p *tasks) create(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	resraw, err := protojson.Marshal(res)
+	resraw, err := protomarsh.Marshal(res)
 	if err != nil {
 		ctx.Error(err)
 		return
@@ -92,7 +94,7 @@ func (p *tasks) delete(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	resraw, err := protojson.Marshal(res)
+	resraw, err := protomarsh.Marshal(res)
 	if err != nil {
 		ctx.Error(err)
 		return
@@ -130,7 +132,7 @@ func (p *tasks) update(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	resraw, err := protojson.Marshal(res)
+	resraw, err := protomarsh.Marshal(res)
 	if err != nil {
 		ctx.Error(err)
 		return
@@ -168,7 +170,7 @@ func (p *tasks) progress(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	resraw, err := protojson.Marshal(res)
+	resraw, err := protomarsh.Marshal(res)
 	if err != nil {
 		ctx.Error(err)
 		return
@@ -206,7 +208,7 @@ func (p *tasks) complete(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	resraw, err := protojson.Marshal(res)
+	resraw, err := protomarsh.Marshal(res)
 	if err != nil {
 		ctx.Error(err)
 		return
@@ -244,7 +246,7 @@ func (p *tasks) listQuery(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	resraw, err := protojson.Marshal(res)
+	resraw, err := protomarsh.Marshal(res)
 	if err != nil {
 		ctx.Error(err)
 		return
@@ -304,7 +306,7 @@ func (p *quotes) get(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	resraw, err := protojson.Marshal(res)
+	resraw, err := protomarsh.Marshal(res)
 	if err != nil {
 		ctx.Error(err)
 		return
@@ -342,7 +344,7 @@ func (p *quotes) create(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	resraw, err := protojson.Marshal(res)
+	resraw, err := protomarsh.Marshal(res)
 	if err != nil {
 		ctx.Error(err)
 		return

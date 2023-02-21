@@ -352,6 +352,10 @@ func (s *Service) QueryTask(
 	lgr := s.lgrf.Create(ctx)
 	lgr.Info("query tasks")
 
+	if qry.CountPerPage == 0 {
+		qry.CountPerPage = 100
+	}
+
 	tasks, err := s.repo.List(ctx, int(qry.CountPerPage), int(qry.PageNumber))
 	if err != nil {
 		lgr.Error(

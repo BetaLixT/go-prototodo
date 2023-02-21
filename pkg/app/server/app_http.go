@@ -1,6 +1,7 @@
 package server
 
 import (
+	"embed"
 	"net/http"
 	"prototodo/pkg/app/server/common"
 	"prototodo/pkg/app/server/contracts"
@@ -10,6 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
+
+//go:embed static/swagger/*
+var swaggerFiles embed.FS
 
 func (a *app) startHTTP(portStr string) {
 	router := gin.New()
@@ -21,7 +25,20 @@ func (a *app) startHTTP(portStr string) {
 			"status": "alive",
 		})
 	})
-	router.Use(func(ctx *gin.Context) {
+
+	fileServer := http.FileServer(http.FS(swaggerFiles))
+	swaggerGroup := router.Group("/swagger")
+	swaggerGroup.Any("/*all", func(ctx *gin.Context) {
+		defer func(old string) {
+			ctx.Request.URL.Path = old
+		}(ctx.Request.URL.Path)
+
+		ctx.Request.URL.Path = "/static" + ctx.Request.URL.Path
+		fileServer.ServeHTTP(ctx.Writer, ctx.Request)
+	})
+
+	application := router.Group("")
+	application.Use(func(ctx *gin.Context) {
 		traceparent := ctx.GetHeader("traceparent")
 		c := a.ctxf.Create(traceparent)
 		ctx.Set(contracts.InternalContextKey, c)
@@ -57,7 +74,7 @@ func (a *app) startHTTP(portStr string) {
 		Handler: router,
 	}
 
-	a.registerHTTPHandlers(&router.RouterGroup)
+	a.registerHTTPHandlers(application)
 	a.registerCloser(func() {
 		if err := srv.Close(); err != nil {
 			a.lgr.Error("failed while closing http server", zap.Error(err))

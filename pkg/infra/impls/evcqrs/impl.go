@@ -4,10 +4,10 @@ package evcqrs
 import (
 	"context"
 	"prototodo/pkg/domain/base/acl"
+	"prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/foreigns"
 	"prototodo/pkg/domain/base/impl"
 	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/tracectx"
 	"prototodo/pkg/domain/base/uids"
 	"prototodo/pkg/domain/base/uniques"
 	"prototodo/pkg/domain/domains/quotes"
@@ -77,6 +77,11 @@ var DependencySet = wire.NewSet(
 		new(acl.IRepository),
 		new(*repos.ACLRepository),
 	),
+	repos.NewContextFactory,
+	wire.Bind(
+		new(cntxt.IFactory),
+		new(*repos.ContextFactory),
+	),
 	repos.NewForeignsRepository,
 	wire.Bind(
 		new(foreigns.IRepository),
@@ -86,11 +91,6 @@ var DependencySet = wire.NewSet(
 	wire.Bind(
 		new(uniques.IRepository),
 		new(*repos.UniquesRepository),
-	),
-	repos.NewTraceRepository,
-	wire.Bind(
-		new(tracectx.IRepository),
-		new(*repos.TraceRepository),
 	),
 	repos.NewUIDRepository,
 	wire.Bind(

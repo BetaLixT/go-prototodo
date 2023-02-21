@@ -60,6 +60,9 @@ func (c *internalContext) Value(key any) any {
 }
 
 // - Transaction functions
+func (c *internalContext) SetTimeout(time.Duration) {
+}
+
 func (c *internalContext) CommitTransaction() error {
 	return gorr.NewNotImplemented()
 }

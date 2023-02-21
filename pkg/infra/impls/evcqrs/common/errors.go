@@ -1,4 +1,4 @@
-// All of the domain level errors (errors used by and known to the domain)
+// All of the implementation level errors
 // first digit identifies the layer (3 = infra)
 // the first two digit identify the domain the error
 // was created for 99 refers to a non domain specific error

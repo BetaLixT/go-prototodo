@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"prototodo/pkg/app/server/common"
 	srvcontracts "prototodo/pkg/app/server/contracts"
 	"prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/logger"
@@ -16,7 +17,6 @@ import (
 
 type QuotesHandler struct {
 	srvcontracts.UnimplementedQuotesServer
-	ctxf cntxt.IFactory
 	lgrf logger.IFactory
 	svc  *quotes.Service
 }
@@ -24,12 +24,10 @@ type QuotesHandler struct {
 var _ srvcontracts.QuotesServer = (*QuotesHandler)(nil)
 
 func NewQuotesHandler(
-	ctxf cntxt.IFactory,
 	lgrf logger.IFactory,
 	svc *quotes.Service,
 ) *QuotesHandler {
 	return &QuotesHandler{
-		ctxf: ctxf,
 		lgrf: lgrf,
 		svc:  svc,
 	}
@@ -39,10 +37,11 @@ func (h *QuotesHandler) Get(
 	c context.Context,
 	qry *contracts.GetQuoteQuery,
 ) (res *contracts.QuoteData, err error) {
-	ctx := h.ctxf.Create(
-		c,
-		time.Second*5,
-	)
+	ctx, ok := c.(cntxt.IContext)
+	if !ok {
+		return nil, common.NewInvalidContextProvidedToHandlerError()
+	}
+	ctx.SetTimeout(2 * time.Minute)
 	lgr := h.lgrf.Create(ctx)
 	lgr.Info(
 		"handling",
@@ -102,10 +101,11 @@ func (h *QuotesHandler) Create(
 	c context.Context,
 	cmd *contracts.CreateQuoteCommand,
 ) (res *contracts.QuoteData, err error) {
-	ctx := h.ctxf.Create(
-		c,
-		time.Second*5,
-	)
+	ctx, ok := c.(cntxt.IContext)
+	if !ok {
+		return nil, common.NewInvalidContextProvidedToHandlerError()
+	}
+	ctx.SetTimeout(2 * time.Minute)
 	lgr := h.lgrf.Create(ctx)
 	lgr.Info(
 		"handling",

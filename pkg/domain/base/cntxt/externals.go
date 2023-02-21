@@ -9,9 +9,8 @@ import (
 // incoming request
 type IFactory interface {
 	Create(
-		ctx context.Context,
-		timeout time.Duration,
-	) (IContext)
+		traceparent string,
+	) IContext
 }
 
 // An interface to the internally used context that only exposes functionality
@@ -20,5 +19,6 @@ type IContext interface {
 	context.Context
 	CommitTransaction() error
 	RollbackTransaction()
+	SetTimeout(time.Duration)
 	Cancel()
 }

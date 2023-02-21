@@ -5,9 +5,9 @@ import (
 	"fmt"
 	domcntxt "prototodo/pkg/domain/base/cntxt"
 	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/tracectx"
 	infrcntxt "prototodo/pkg/infra/cntxt"
 	implcntxt "prototodo/pkg/infra/impls/evcqrs/cntxt"
+	"prototodo/pkg/infra/impls/evcqrs/common"
 	"sync"
 	"time"
 
@@ -15,66 +15,9 @@ import (
 	"go.uber.org/zap"
 )
 
-// ContextFactory to create new contexts
-type ContextFactory struct {
-	lgrf  logger.IFactory
-	trepo tracectx.IRepository
-}
-
-// NewContextFactory constructor for context factory
-func NewContextFactory(
-	lgrf logger.IFactory,
-	trepo tracectx.IRepository,
-) *ContextFactory {
-	return &ContextFactory{
-		lgrf:  lgrf,
-		trepo: trepo,
-	}
-}
-
-// Create creates a new context with timeout, transactions and trace info
-func (f *ContextFactory) Create(
-	ctx context.Context,
-	timeout time.Duration,
-) domcntxt.IContext {
-	tx := f.trepo.ExtractTraceParent(ctx)
-	c := &internalContext{
-		lgrf: f.lgrf,
-
-		cancelmtx: &sync.Mutex{},
-		err:       nil,
-		done:      make(chan struct{}, 1),
-		duration:  time.Now().Add(timeout),
-
-		rtr: *retrier.New(retrier.ExponentialBackoff(
-			5,
-			500*time.Millisecond,
-		),
-			retrier.DefaultClassifier{},
-		),
-		compensatoryActions: []implcntxt.Action{},
-		commitActions:       []implcntxt.Action{},
-		events:              []dispatchableEvent{},
-		txObjs:              map[string]interface{}{},
-		isCommited:          false,
-		isRolledback:        false,
-		txmtx:               &sync.Mutex{},
-		ver:                 tx.Ver,
-		tid:                 tx.Tid,
-		pid:                 tx.Pid,
-		rid:                 tx.Rid,
-		flg:                 tx.Flg,
-	}
-
-	// TODO: tracing values
-	time.AfterFunc(
-		time.Until(c.duration),
-		func() {
-			c.cancel(context.DeadlineExceeded)
-		},
-	)
-	return c
-}
+// =============================================================================
+// Internal context implementation
+// =============================================================================
 
 var (
 	_ context.Context    = (*internalContext)(nil)
@@ -89,7 +32,7 @@ type internalContext struct {
 	cancelmtx *sync.Mutex
 	err       error
 	done      chan struct{}
-	duration  time.Time
+	dur       time.Time
 
 	// - transaction
 	rtr                 retrier.Retrier
@@ -142,6 +85,16 @@ func (c *internalContext) Value(key any) any {
 }
 
 // - Transaction functions
+func (c *internalContext) SetTimeout(timeout time.Duration) {
+	c.dur = time.Now().Add(timeout)
+	time.AfterFunc(
+		time.Until(c.dur),
+		func() {
+			c.cancel(context.DeadlineExceeded)
+		},
+	)
+}
+
 func (c *internalContext) CommitTransaction() error {
 	c.txmtx.Lock()
 	defer c.txmtx.Unlock()
@@ -266,59 +219,3 @@ func (c *internalContext) GetTraceInfo() (ver, tid, pid, rid, flg string) {
 }
 
 // - Minimal context
-
-var (
-	_ context.Context    = (*minimalContext)(nil)
-	_ infrcntxt.IContext = (*minimalContext)(nil)
-)
-
-func newMinimalContext(ctx *internalContext) *minimalContext {
-	return &minimalContext{
-		done: make(chan struct{}, 1),
-		ver:  ctx.ver,
-		tid:  ctx.tid,
-		pid:  ctx.pid,
-		rid:  ctx.rid,
-		flg:  ctx.flg,
-	}
-}
-
-type minimalContext struct {
-	done chan struct{}
-	ver  string
-	tid  string
-	pid  string
-	rid  string
-	flg  string
-}
-
-// - Base context functions
-func (c *minimalContext) Deadline() (time.Time, bool) {
-	return time.Now(), false
-}
-
-func (c *minimalContext) Done() <-chan struct{} {
-	return c.done
-}
-
-func (c *minimalContext) Err() error {
-	return nil
-}
-
-func (c *minimalContext) Value(key any) any {
-	return nil
-}
-
-func (c *minimalContext) GetTraceInfo() (ver, tid, pid, rid, flg string) {
-	return c.ver, c.tid, c.pid, c.rid, c.flg
-}
-
-type dispatchableEvent struct {
-	stream    string
-	streamID  string
-	sagaID    *string
-	version   int
-	event     string
-	eventTime time.Time
-	data      interface{}
-}

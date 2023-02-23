@@ -10,8 +10,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type DefaultTraceExtractor struct {
-}
+type DefaultTraceExtractor struct{}
 
 func (*DefaultTraceExtractor) ExtractTraceInfo(
 	_ context.Context,
@@ -19,9 +18,9 @@ func (*DefaultTraceExtractor) ExtractTraceInfo(
 	return "", "", "", "", ""
 }
 
-type DefaultSpanConstructor struct {
-}
+type DefaultSpanConstructor struct{}
 
+// NewRequestSpan create a new request span
 func (sc *DefaultSpanConstructor) NewRequestSpan(
 	tid [16]byte, pid [8]byte, rid [8]byte,
 	res *resource.Resource,
@@ -42,6 +41,7 @@ func (sc *DefaultSpanConstructor) NewRequestSpan(
 	return span
 }
 
+// NewEventSpan create new event span
 func (sc *DefaultSpanConstructor) NewEventSpan(
 	tid [16]byte, pid [8]byte, rid [8]byte,
 	res *resource.Resource,
@@ -60,6 +60,7 @@ func (sc *DefaultSpanConstructor) NewEventSpan(
 	return span
 }
 
+// NewDependencySpan creates a new dependency span
 func (sc *DefaultSpanConstructor) NewDependencySpan(
 	tid [16]byte, pid [8]byte, rid [8]byte,
 	res *resource.Resource,

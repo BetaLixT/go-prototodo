@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"embed"
 	"net/http"
 	"net/http/pprof"
@@ -123,6 +122,7 @@ func (a *app) startHTTP(portStr string) {
 			size,
 			start,
 			end,
+			common.HTTPLable,
 		)
 	})
 
@@ -161,47 +161,4 @@ func (a *app) startHTTP(portStr string) {
 			zap.Error(err),
 		)
 	}
-}
-
-func (a *app) traceRequest(
-	context context.Context,
-	method,
-	path,
-	query,
-	agent,
-	ip string,
-	status,
-	bytes int,
-	start,
-	end time.Time,
-) {
-	latency := end.Sub(start)
-
-	lgr := a.lgrf.Create(context)
-	a.trc.TraceRequest(
-		context,
-		method,
-		path,
-		query,
-		status,
-		bytes,
-		ip,
-		agent,
-		start,
-		end,
-		map[string]string{},
-	)
-	lgr.Info(
-		"Request",
-		zap.Int("status", status),
-		zap.String("method", method),
-		zap.String("path", path),
-		zap.String("query", query),
-		zap.String("ip", ip),
-		zap.String("userAgent", agent),
-		zap.Time("mvts", end),
-		zap.String("pmvts", end.Format("2006-01-02T15:04:05-0700")),
-		zap.Duration("latency", latency),
-		zap.String("pLatency", latency.String()),
-	)
 }

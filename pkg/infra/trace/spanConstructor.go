@@ -12,8 +12,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type spanConstructor struct {
-}
+type spanConstructor struct{}
 
 func (sc *spanConstructor) NewRequestSpan(
 	tid [16]byte,
@@ -42,8 +41,13 @@ func (sc *spanConstructor) NewRequestSpan(
 		"responseCode",
 		attribute.StringValue(strconv.Itoa(statusCode)),
 	)
+	if ingress, ok := fields["ingress"]; ok {
+		span.WithAttribute("ingress", attribute.StringValue(ingress))
+	}
+
+	span.WithAttribute("method", attribute.StringValue(method))
 	span.WithAttribute("url", attribute.StringValue(path+query))
-	span.WithAttribute("bodySize", attribute.StringValue(strconv.Itoa(bodySize)))
+	span.WithAttribute("bodySize", attribute.IntValue(bodySize))
 	span.WithAttribute("ip", attribute.StringValue(ip))
 	span.WithAttribute("userAgent", attribute.StringValue(userAgent))
 	return span

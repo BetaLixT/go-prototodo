@@ -17,6 +17,7 @@ import (
 	"prototodo/pkg/infra/impls/inmem"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -196,4 +197,50 @@ func (a *app) closeServers() {
 		a.closers[idx]()
 	}
 	a.closeLock.Unlock()
+}
+
+func (a *app) traceRequest(
+	context context.Context,
+	method,
+	path,
+	query,
+	agent,
+	ip string,
+	status,
+	bytes int,
+	start,
+	end time.Time,
+	ingress string,
+) {
+	latency := end.Sub(start)
+
+	lgr := a.lgrf.Create(context)
+	a.trc.TraceRequest(
+		context,
+		method,
+		path,
+		query,
+		status,
+		bytes,
+		ip,
+		agent,
+		start,
+		end,
+		map[string]string{
+			"ingress": ingress,
+		},
+	)
+	lgr.Info(
+		"Request",
+		zap.Int("status", status),
+		zap.String("method", method),
+		zap.String("path", path),
+		zap.String("query", query),
+		zap.String("ip", ip),
+		zap.String("userAgent", agent),
+		zap.Time("mvts", end),
+		zap.String("pmvts", end.Format("2006-01-02T15:04:05-0700")),
+		zap.Duration("latency", latency),
+		zap.String("pLatency", latency.String()),
+	)
 }

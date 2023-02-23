@@ -141,7 +141,7 @@ func NewTracer(
 		return nil, errors.New("failed to create resource")
 	}
 
-	sc := motel.NewSpanCollector(exporters, 0, 0)
+	sc := motel.NewSpanCollector(exporters, -1, 0)
 	return &Tracer{
 		collector:   sc,
 		constructor: constructor,

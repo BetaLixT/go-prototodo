@@ -16,22 +16,43 @@ import (
 	"go.uber.org/zap"
 )
 
-//go:embed static/swagger/*
-var swaggerFiles embed.FS
+//go:embed static/*
+var staticFiles embed.FS
 
 func (a *app) startHTTP(portStr string) {
 	router := gin.New()
 	gin.SetMode(gin.ReleaseMode)
 	router.SetTrustedProxies(nil)
 
-	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"status": "alive",
-		})
+	fileServer := http.FileServer(http.FS(staticFiles))
+	indexGroup := router.Group("/")
+	indexGroup.GET("", func(ctx *gin.Context) {
+		defer func(old string) {
+			ctx.Request.URL.Path = old
+		}(ctx.Request.URL.Path)
+
+		ctx.Request.URL.Path = "/static/index" + ctx.Request.URL.Path
+		fileServer.ServeHTTP(ctx.Writer, ctx.Request)
+	})
+	indexGroup.GET("/index.css", func(ctx *gin.Context) {
+		defer func(old string) {
+			ctx.Request.URL.Path = old
+		}(ctx.Request.URL.Path)
+
+		ctx.Request.URL.Path = "/static/index" + ctx.Request.URL.Path
+		fileServer.ServeHTTP(ctx.Writer, ctx.Request)
+	})
+	indexGroup.GET("/favicon.ico", func(ctx *gin.Context) {
+		defer func(old string) {
+			ctx.Request.URL.Path = old
+		}(ctx.Request.URL.Path)
+
+		ctx.Request.URL.Path = "/static/index" + ctx.Request.URL.Path
+		fileServer.ServeHTTP(ctx.Writer, ctx.Request)
 	})
 
 	// Swagger setup
-	fileServer := http.FileServer(http.FS(swaggerFiles))
+
 	swaggerGroup := router.Group("/swagger")
 	swaggerGroup.Any("/*all", func(ctx *gin.Context) {
 		defer func(old string) {

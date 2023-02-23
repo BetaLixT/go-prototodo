@@ -118,8 +118,8 @@ func (exp *Exporter) processRequest(
 
 	if val, ok := properties["url"]; ok {
 		delete(properties, "url")
-		exp.responseTime.WithLabelValues(val).
-			Observe(sp.EndTime().Sub(sp.StartTime()).Seconds())
+		latency := sp.EndTime().Sub(sp.StartTime()).Seconds()
+		exp.responseTime.WithLabelValues(val).Observe(latency)
 	}
 	if val, ok := properties["responseCode"]; ok {
 		delete(properties, "responseCode")

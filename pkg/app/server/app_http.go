@@ -86,18 +86,17 @@ func (a *app) startHTTP(portStr string) {
 	// Application setup
 	application := router.Group("")
 	application.Use(func(ctx *gin.Context) {
+		start := time.Now()
 		method := ctx.Request.Method
 		path := ctx.Request.URL.Path
 		query := ctx.Request.URL.RawQuery
 		agent := ctx.Request.UserAgent()
 		ip := ctx.ClientIP()
 
-		start := time.Now()
 		traceparent := ctx.GetHeader("traceparent")
 		c := a.ctxf.Create(traceparent)
 		ctx.Set(contracts.InternalContextKey, c)
 		ctx.Next()
-		end := time.Now()
 
 		er := ctx.Errors.Last()
 		if er != nil {
@@ -110,6 +109,7 @@ func (a *app) startHTTP(portStr string) {
 
 		status := ctx.Writer.Status()
 		size := ctx.Writer.Size()
+		end := time.Now()
 
 		a.traceRequest(
 			c,

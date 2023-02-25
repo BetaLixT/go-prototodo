@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v4.22.0
-// source: contracts/service.proto
+// source: proto/contracts/service.proto
 
 package contracts
 
@@ -290,7 +290,7 @@ var Tasks_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "contracts/service.proto",
+	Metadata: "proto/contracts/service.proto",
 }
 
 // QuotesClient is the client API for Quotes service.
@@ -414,5 +414,5 @@ var Quotes_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "contracts/service.proto",
+	Metadata: "proto/contracts/service.proto",
 }

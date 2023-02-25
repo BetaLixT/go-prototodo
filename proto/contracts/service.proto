@@ -2,8 +2,8 @@
 syntax = 'proto3';
 package tasks;
 
-import "contracts/models.proto";
-import "custom/annotations.proto";
+import "proto/contracts/models.proto";
+import "proto/custom/annotations.proto";
 
 option go_package = "pkg/app/server/contracts";
 

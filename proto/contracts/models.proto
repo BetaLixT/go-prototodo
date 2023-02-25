@@ -4,7 +4,7 @@ package tasks;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
-import "custom/annotations.proto";
+import "proto/custom/annotations.proto";
 
 option go_package = "prototodo/pkg/domain/contracts";
 

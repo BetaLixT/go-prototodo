@@ -1,15 +1,19 @@
-package cdb
+// Package cassdb contains constructors, options and tracing plugins for gocql,
+// a Cassandra Database client library
+package cassdb
 
 import (
 	"context"
-	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
 	"strconv"
+
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
 
 	trace "github.com/BetaLixT/appInsightsTrace"
 	"github.com/gocql/gocql"
 	"go.uber.org/zap"
 )
 
+// NewCassandraSession constructs a new cassandra db client session
 func NewCassandraSession(
 	optn *Options,
 	lgrf logger.IFactory,
@@ -26,7 +30,7 @@ func NewCassandraSession(
 	cls := gocql.NewCluster(optn.ClusterIPs...)
 	cls.Authenticator = auth
 	cls.Keyspace = optn.Keyspace
-	cls.QueryObserver = &TraceObserver{
+	cls.QueryObserver = &traceObserver{
 		ins: isn,
 	}
 	sess, err := cls.CreateSession()
@@ -37,11 +41,11 @@ func NewCassandraSession(
 	return sess, nil
 }
 
-type TraceObserver struct {
+type traceObserver struct {
 	ins *trace.AppInsightsCore
 }
 
-func (o *TraceObserver) ObserveQuery(ctx context.Context, qry gocql.ObservedQuery) {
+func (o *traceObserver) ObserveQuery(ctx context.Context, qry gocql.ObservedQuery) {
 	o.ins.TraceDependency(
 		ctx,
 		"",
@@ -57,12 +61,3 @@ func (o *TraceObserver) ObserveQuery(ctx context.Context, qry gocql.ObservedQuer
 		},
 	)
 }
-
-const (
-	CreateKeyspace = `
-  CREATE KEYSPACE IF NOT EXISTS %s WITH REPLICATION = {
-  	'class' : 'SimpleStrategy',
-  	'replication_factor' : '1'
-  };
-  `
-)

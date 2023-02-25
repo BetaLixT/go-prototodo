@@ -1,4 +1,6 @@
-package rdb
+// Package redisdb contains constructors, options and sets up the tracing plugin
+// for the redis client library
+package redisdb
 
 import (
 	"context"
@@ -8,6 +10,7 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
+// NewRedisContext constructs a new redis database client
 func NewRedisContext(
 	optn *Options,
 	tracer gotred.ITracer,

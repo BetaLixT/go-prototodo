@@ -1,4 +1,6 @@
-package sf
+// Package snowflake provides constructors and options for the snowflake library
+// the library is utilized for generating unique ids
+package snowflake
 
 import (
 	"github.com/bwmarrin/snowflake"

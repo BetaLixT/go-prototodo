@@ -17,8 +17,8 @@ import (
 	repos2 "techunicorn.com/udc-core/prototodo/pkg/infra/impls/inmem/repos"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/lgr"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/psqldb"
-	"techunicorn.com/udc-core/prototodo/pkg/infra/rdb"
-	"techunicorn.com/udc-core/prototodo/pkg/infra/sf"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/redisdb"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/snowflake"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/trace"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/trace/appinsights"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/trace/jaeger"
@@ -65,14 +65,14 @@ func initializeAppCQRS() (*app, error) {
 	}
 	baseDataRepository := repos.NewBaseDataRepository(tracedDB)
 	tasksRepository := repos.NewTasksRepository(baseDataRepository, loggerFactory)
-	rdbOptions := config.NewRedisOptions(initializer)
-	client, err := rdb.NewRedisContext(rdbOptions, tracer)
+	redisdbOptions := config.NewRedisOptions(initializer)
+	client, err := redisdb.NewRedisContext(redisdbOptions, tracer)
 	if err != nil {
 		return nil, err
 	}
 	aclRepository := repos.NewACLRepository(baseDataRepository, client, loggerFactory)
-	sfOptions := config.NewSnowflakeOptions(initializer)
-	node, err := sf.NewSnowflake(sfOptions)
+	snowflakeOptions := config.NewSnowflakeOptions(initializer)
+	node, err := snowflake.NewSnowflake(snowflakeOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func initializeAppInMem() (*app, error) {
 	aclRepository := repos2.NewACLRepository()
 	initializer := config.NewInitializer(loggerFactory)
 	options := config.NewSnowflakeOptions(initializer)
-	node, err := sf.NewSnowflake(options)
+	node, err := snowflake.NewSnowflake(options)
 	if err != nil {
 		return nil, err
 	}

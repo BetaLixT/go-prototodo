@@ -1,4 +1,4 @@
-package cdb
+package cassdb
 
 type Options struct {
 	ClusterIPs []string

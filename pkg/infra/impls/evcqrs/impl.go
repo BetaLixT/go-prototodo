@@ -3,6 +3,7 @@ package evcqrs
 
 import (
 	"context"
+
 	"techunicorn.com/udc-core/prototodo/pkg/domain/base/acl"
 	"techunicorn.com/udc-core/prototodo/pkg/domain/base/cntxt"
 	"techunicorn.com/udc-core/prototodo/pkg/domain/base/foreigns"
@@ -18,8 +19,8 @@ import (
 	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/repos"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/lgr"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/psqldb"
-	"techunicorn.com/udc-core/prototodo/pkg/infra/rdb"
-	"techunicorn.com/udc-core/prototodo/pkg/infra/sf"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/redisdb"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/snowflake"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/trace"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/trace/appinsights"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/trace/jaeger"
@@ -64,13 +65,13 @@ var DependencySet = wire.NewSet(
 		new(*tracelib.Tracer),
 	),
 	config.NewPSQLDBOptions,
-	rdb.NewRedisContext,
+	redisdb.NewRedisContext,
 	wire.Bind(
 		new(gotred.ITracer),
 		new(*tracelib.Tracer),
 	),
 	config.NewRedisOptions,
-	sf.NewSnowflake,
+	snowflake.NewSnowflake,
 	config.NewSnowflakeOptions,
 
 	// Repos

@@ -1,8 +1,9 @@
-package cdb
+package cassdb
 
 import (
 	"context"
 	"fmt"
+
 	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
 
 	"github.com/gocql/gocql"

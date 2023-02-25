@@ -4,17 +4,18 @@ package config
 import (
 	"context"
 	"os"
+	"strconv"
+	"strings"
+
 	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
 	"techunicorn.com/udc-core/prototodo/pkg/domain/common"
-	"techunicorn.com/udc-core/prototodo/pkg/infra/cdb"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/cassdb"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/psqldb"
-	"techunicorn.com/udc-core/prototodo/pkg/infra/rdb"
-	"techunicorn.com/udc-core/prototodo/pkg/infra/sf"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/redisdb"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/snowflake"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/trace"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/trace/appinsights"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/trace/jaeger"
-	"strconv"
-	"strings"
 
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
@@ -50,9 +51,9 @@ func (c *Initializer) LoadConfigCustom(loc string) {
 }
 
 // NewCassandraOptions provides cassandra options
-func NewCassandraOptions(c *Initializer) *cdb.Options {
+func NewCassandraOptions(c *Initializer) *cassdb.Options {
 	ips := os.Getenv("CassandraClusterIPs")
-	opt := &cdb.Options{
+	opt := &cassdb.Options{
 		ClusterIPs: strings.Split(ips, ","),
 		Username:   os.Getenv("CassandraUsername"),
 		Password:   os.Getenv("CassandraPassword"),
@@ -75,7 +76,7 @@ func NewCassandraOptions(c *Initializer) *cdb.Options {
 }
 
 // NewRedisOptions provides redis options
-func NewRedisOptions(c *Initializer) *rdb.Options {
+func NewRedisOptions(c *Initializer) *redisdb.Options {
 	address := os.Getenv("RedisAddress")
 	if address == "" {
 		panic("missing redis address config")
@@ -94,7 +95,7 @@ func NewRedisOptions(c *Initializer) *rdb.Options {
 		lgr.Warn("no database number was provided for redis, using default")
 	}
 
-	return &rdb.Options{
+	return &redisdb.Options{
 		Address:     address,
 		Password:    password,
 		ServiceName: address,
@@ -104,7 +105,7 @@ func NewRedisOptions(c *Initializer) *rdb.Options {
 }
 
 // NewSnowflakeOptions provides snowflake options
-func NewSnowflakeOptions(_ *Initializer) *sf.Options {
+func NewSnowflakeOptions(_ *Initializer) *snowflake.Options {
 	nn := os.Getenv("SnowflakeNodeNumber")
 	if nn == "" {
 		panic("missing snowflake node number")
@@ -118,7 +119,7 @@ func NewSnowflakeOptions(_ *Initializer) *sf.Options {
 		panic("failed to parse node number")
 	}
 
-	return &sf.Options{
+	return &snowflake.Options{
 		NodeNumber: nni,
 	}
 }

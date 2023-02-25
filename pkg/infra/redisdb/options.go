@@ -1,5 +1,6 @@
-package rdb
+package redisdb
 
+// Options provide options for the redis client
 type Options struct {
 	Address     string
 	Password    string

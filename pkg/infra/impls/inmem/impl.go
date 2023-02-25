@@ -3,6 +3,8 @@ package inmem
 
 import (
 	"context"
+	"time"
+
 	"techunicorn.com/udc-core/prototodo/pkg/domain/base/acl"
 	"techunicorn.com/udc-core/prototodo/pkg/domain/base/cntxt"
 	"techunicorn.com/udc-core/prototodo/pkg/domain/base/foreigns"
@@ -16,8 +18,7 @@ import (
 	"techunicorn.com/udc-core/prototodo/pkg/infra/config"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/inmem/repos"
 	"techunicorn.com/udc-core/prototodo/pkg/infra/lgr"
-	"techunicorn.com/udc-core/prototodo/pkg/infra/sf"
-	"time"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/snowflake"
 
 	"github.com/betalixt/gorr"
 	"github.com/google/wire"
@@ -38,7 +39,7 @@ var DependencySet = wire.NewSet(
 		new(logger.IFactory),
 		new(*lgr.LoggerFactory),
 	),
-	sf.NewSnowflake,
+	snowflake.NewSnowflake,
 	config.NewSnowflakeOptions,
 
 	// Repos

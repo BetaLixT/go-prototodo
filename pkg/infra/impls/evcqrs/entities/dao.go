@@ -32,6 +32,16 @@ type BaseEvent struct {
 	RequestID string    `db:"request_id"`
 }
 
+// GetID getter for ID
+func (dao *BaseEvent) GetID() uint64 {
+	return dao.ID
+}
+
+// GetEventTime getter for event time
+func (dao *BaseEvent) GetEventTime() time.Time {
+	return dao.EventTime
+}
+
 // ToDTO getting dto from dao structure
 func (dao *BaseEvent) ToDTO() *events.EventEntity {
 	return &events.EventEntity{
@@ -43,6 +53,19 @@ func (dao *BaseEvent) ToDTO() *events.EventEntity {
 		Version:   dao.Version,
 		EventTime: dao.EventTime,
 	}
+}
+
+// IBaseEvent interface base base entity
+type IBaseEvent interface {
+	GetID() uint64
+	// GetSagaID() *string
+	// GetStream() string
+	// GetStreamID() string
+	// GetEvent() string
+	// GetVersion() uint64
+	GetEventTime() time.Time
+	// GetTraceID() string
+	// GetRequestID() string
 }
 
 // =============================================================================

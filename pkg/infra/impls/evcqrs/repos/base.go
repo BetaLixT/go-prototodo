@@ -5,6 +5,7 @@ import (
 	"context"
 	"prototodo/pkg/infra/impls/evcqrs/cntxt"
 	"prototodo/pkg/infra/impls/evcqrs/common"
+	"prototodo/pkg/infra/impls/evcqrs/entities"
 
 	"github.com/BetaLixT/tsqlx"
 )
@@ -16,6 +17,7 @@ type BaseDataRepository struct {
 	dbctx *tsqlx.TracedDB
 }
 
+// NewBaseDataRepository Constructs a new base data repository
 func NewBaseDataRepository(
 	dbctx *tsqlx.TracedDB,
 ) *BaseDataRepository {
@@ -27,7 +29,7 @@ func NewBaseDataRepository(
 func (r *BaseDataRepository) insertEvent(
 	ctx cntxt.IContext,
 	trctx *tsqlx.TracedTx,
-	out interface{},
+	out entities.IBaseEvent,
 	sagaID *string,
 	stream string,
 	id string,
@@ -36,7 +38,7 @@ func (r *BaseDataRepository) insertEvent(
 	data interface{},
 ) error {
 	_, tid, _, rid, _ := ctx.GetTraceInfo()
-	return trctx.Get(
+	err := trctx.Get(
 		ctx,
 		out,
 		insertEventQuery,
@@ -49,6 +51,19 @@ func (r *BaseDataRepository) insertEvent(
 		rid,
 		data,
 	)
+	if err == nil {
+		ctx.RegisterEvent(
+			out.GetID(),
+			sagaID,
+			stream,
+			id,
+			event,
+			version,
+			out.GetEventTime(),
+			data,
+		)
+	}
+	return err
 }
 
 func (r *BaseDataRepository) getDBTx(

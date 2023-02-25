@@ -4,9 +4,9 @@ package quotes
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/uids"
-	"prototodo/pkg/domain/contracts"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/uids"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/contracts"
 
 	"go.uber.org/zap"
 )

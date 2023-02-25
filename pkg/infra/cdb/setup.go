@@ -3,7 +3,7 @@ package cdb
 import (
 	"context"
 	"fmt"
-	"prototodo/pkg/domain/base/logger"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
 
 	"github.com/gocql/gocql"
 	"go.uber.org/zap"

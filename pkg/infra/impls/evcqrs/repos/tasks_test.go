@@ -2,11 +2,11 @@ package repos
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/cntxt"
-	"prototodo/pkg/domain/common"
-	"prototodo/pkg/domain/domains/tasks"
-	"prototodo/pkg/infra/impls/evcqrs/entities"
-	"prototodo/pkg/infra/psqldb"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/cntxt"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/common"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/tasks"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/entities"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/psqldb"
 	"testing"
 	"time"
 

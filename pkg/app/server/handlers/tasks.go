@@ -3,12 +3,12 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"prototodo/pkg/app/server/common"
-	appcontr "prototodo/pkg/app/server/contracts"
-	"prototodo/pkg/domain/base/cntxt"
-	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/contracts"
-	"prototodo/pkg/domain/domains/tasks"
+	"techunicorn.com/udc-core/prototodo/pkg/app/server/common"
+	appcontr "techunicorn.com/udc-core/prototodo/pkg/app/server/contracts"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/cntxt"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/contracts"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/tasks"
 	"time"
 
 	"github.com/betalixt/gorr"

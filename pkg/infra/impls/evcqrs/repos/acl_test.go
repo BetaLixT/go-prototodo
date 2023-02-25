@@ -2,7 +2,7 @@ package repos
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/acl"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/acl"
 	"testing"
 	"time"
 

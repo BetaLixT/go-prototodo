@@ -1,8 +1,8 @@
 package quotes
 
 import (
-	"prototodo/pkg/domain/base/events"
-	"prototodo/pkg/domain/contracts"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/events"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/contracts"
 	"time"
 )
 

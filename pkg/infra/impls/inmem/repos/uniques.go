@@ -2,7 +2,7 @@ package repos
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/uniques"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/uniques"
 
 	"github.com/betalixt/gorr"
 )

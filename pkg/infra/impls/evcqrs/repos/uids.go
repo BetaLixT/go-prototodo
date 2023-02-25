@@ -2,7 +2,7 @@ package repos
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/uids"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/uids"
 
 	"github.com/bwmarrin/snowflake"
 )

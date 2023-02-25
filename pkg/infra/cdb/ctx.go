@@ -2,7 +2,7 @@ package cdb
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/logger"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
 	"strconv"
 
 	trace "github.com/BetaLixT/appInsightsTrace"

@@ -2,7 +2,7 @@ package repos
 
 import (
 	"context"
-	"prototodo/pkg/domain/domains/quotes"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/quotes"
 
 	"github.com/betalixt/gorr"
 )

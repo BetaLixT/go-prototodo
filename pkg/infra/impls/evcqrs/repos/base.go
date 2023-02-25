@@ -3,9 +3,9 @@ package repos
 
 import (
 	"context"
-	"prototodo/pkg/infra/impls/evcqrs/cntxt"
-	"prototodo/pkg/infra/impls/evcqrs/common"
-	"prototodo/pkg/infra/impls/evcqrs/entities"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/cntxt"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/common"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/entities"
 
 	"github.com/BetaLixT/tsqlx"
 )

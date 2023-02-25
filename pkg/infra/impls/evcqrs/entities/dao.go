@@ -6,9 +6,9 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
-	"prototodo/pkg/domain/base/events"
-	"prototodo/pkg/domain/base/foreigns"
-	"prototodo/pkg/infra/psqldb"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/events"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/foreigns"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/psqldb"
 	"time"
 
 	// blank import to load postgresql drivers

@@ -2,8 +2,8 @@ package trace
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/infra/tracelib"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/tracelib"
 
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )

@@ -1,9 +1,9 @@
 package tasks
 
 import (
-	"prototodo/pkg/domain/base/events"
-	"prototodo/pkg/domain/common"
-	"prototodo/pkg/domain/contracts"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/events"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/common"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/contracts"
 	"time"
 
 	"google.golang.org/protobuf/types/known/structpb"

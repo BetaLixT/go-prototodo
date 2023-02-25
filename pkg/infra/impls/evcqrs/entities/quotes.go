@@ -3,7 +3,7 @@ package entities
 import (
 	"database/sql/driver"
 	"errors"
-	"prototodo/pkg/domain/domains/quotes"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/quotes"
 	"time"
 
 	"github.com/golang/protobuf/proto"

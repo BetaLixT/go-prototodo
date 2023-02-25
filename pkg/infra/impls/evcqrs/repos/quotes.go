@@ -2,12 +2,12 @@ package repos
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/logger"
-	domcom "prototodo/pkg/domain/common"
-	"prototodo/pkg/domain/domains/quotes"
-	"prototodo/pkg/infra/impls/evcqrs/cntxt"
-	"prototodo/pkg/infra/impls/evcqrs/common"
-	"prototodo/pkg/infra/impls/evcqrs/entities"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
+	domcom "techunicorn.com/udc-core/prototodo/pkg/domain/common"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/quotes"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/cntxt"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/common"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/entities"
 
 	"github.com/BetaLixT/tsqlx"
 	"github.com/betalixt/gorr"

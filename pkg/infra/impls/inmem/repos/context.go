@@ -2,9 +2,9 @@ package repos
 
 import (
 	"context"
-	domcntxt "prototodo/pkg/domain/base/cntxt"
-	infrcntxt "prototodo/pkg/infra/cntxt"
-	implcntxt "prototodo/pkg/infra/impls/evcqrs/cntxt"
+	domcntxt "techunicorn.com/udc-core/prototodo/pkg/domain/base/cntxt"
+	infrcntxt "techunicorn.com/udc-core/prototodo/pkg/infra/cntxt"
+	implcntxt "techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/cntxt"
 	"time"
 
 	"github.com/betalixt/gorr"

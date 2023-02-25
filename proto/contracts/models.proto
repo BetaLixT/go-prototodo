@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 import "proto/custom/annotations.proto";
 
-option go_package = "prototodo/pkg/domain/contracts";
+option go_package = "techunicorn.com/udc-core/prototodo/pkg/domain/contracts";
 
 // [START common]
 message UserContext {

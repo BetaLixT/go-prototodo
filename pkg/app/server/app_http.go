@@ -4,8 +4,8 @@ import (
 	"embed"
 	"net/http"
 	"net/http/pprof"
-	"prototodo/pkg/app/server/common"
-	"prototodo/pkg/app/server/contracts"
+	"techunicorn.com/udc-core/prototodo/pkg/app/server/common"
+	"techunicorn.com/udc-core/prototodo/pkg/app/server/contracts"
 	"strconv"
 	"time"
 

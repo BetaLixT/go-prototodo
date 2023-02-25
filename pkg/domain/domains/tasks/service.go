@@ -4,11 +4,11 @@ package tasks
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/acl"
-	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/uids"
-	"prototodo/pkg/domain/common"
-	"prototodo/pkg/domain/contracts"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/acl"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/uids"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/common"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/contracts"
 
 	"go.uber.org/zap"
 )

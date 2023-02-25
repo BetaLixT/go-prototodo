@@ -2,7 +2,7 @@ package entities
 
 import (
 	"context"
-	"prototodo/pkg/infra/psqldb"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/psqldb"
 	"testing"
 	"time"
 

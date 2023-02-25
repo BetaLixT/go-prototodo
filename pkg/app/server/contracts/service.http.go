@@ -8,7 +8,7 @@ import (
 	gin "github.com/gin-gonic/gin"
 	protojson "google.golang.org/protobuf/encoding/protojson"
 	ioutil "io/ioutil"
-	contracts "prototodo/pkg/domain/contracts"
+	contracts "techunicorn.com/udc-core/prototodo/pkg/domain/contracts"
 )
 
 const InternalContextKey = "inCxt"

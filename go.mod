@@ -1,4 +1,4 @@
-module prototodo
+module techunicorn.com/udc-core/prototodo
 
 go 1.19
 

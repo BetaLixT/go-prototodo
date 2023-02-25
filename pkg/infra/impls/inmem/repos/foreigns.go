@@ -2,7 +2,7 @@ package repos
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/foreigns"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/foreigns"
 
 	"github.com/betalixt/gorr"
 )

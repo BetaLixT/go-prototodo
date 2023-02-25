@@ -4,12 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"prototodo/pkg/domain/base/logger"
-	domcom "prototodo/pkg/domain/common"
-	"prototodo/pkg/domain/domains/tasks"
-	"prototodo/pkg/infra/impls/evcqrs/cntxt"
-	"prototodo/pkg/infra/impls/evcqrs/common"
-	"prototodo/pkg/infra/impls/evcqrs/entities"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
+	domcom "techunicorn.com/udc-core/prototodo/pkg/domain/common"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/tasks"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/cntxt"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/common"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/entities"
 
 	"go.uber.org/zap"
 )

@@ -3,7 +3,7 @@ package entities
 import (
 	"database/sql/driver"
 	"errors"
-	"prototodo/pkg/domain/domains/tasks"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/tasks"
 	"strconv"
 	"strings"
 	"time"

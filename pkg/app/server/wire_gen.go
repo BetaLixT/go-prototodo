@@ -7,22 +7,22 @@
 package server
 
 import (
-	"prototodo/pkg/app/server/handlers"
-	"prototodo/pkg/domain/domains/quotes"
-	"prototodo/pkg/domain/domains/tasks"
-	"prototodo/pkg/infra/config"
-	"prototodo/pkg/infra/impls/evcqrs"
-	"prototodo/pkg/infra/impls/evcqrs/repos"
-	"prototodo/pkg/infra/impls/inmem"
-	repos2 "prototodo/pkg/infra/impls/inmem/repos"
-	"prototodo/pkg/infra/lgr"
-	"prototodo/pkg/infra/psqldb"
-	"prototodo/pkg/infra/rdb"
-	"prototodo/pkg/infra/sf"
-	"prototodo/pkg/infra/trace"
-	"prototodo/pkg/infra/trace/appinsights"
-	"prototodo/pkg/infra/trace/jaeger"
-	"prototodo/pkg/infra/trace/promex"
+	"techunicorn.com/udc-core/prototodo/pkg/app/server/handlers"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/quotes"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/tasks"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/config"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/repos"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/inmem"
+	repos2 "techunicorn.com/udc-core/prototodo/pkg/infra/impls/inmem/repos"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/lgr"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/psqldb"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/rdb"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/sf"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/trace"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/trace/appinsights"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/trace/jaeger"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/trace/promex"
 )
 
 // Injectors from wire.go:

@@ -2,11 +2,11 @@ package repos
 
 import (
 	"context"
-	"prototodo/pkg/domain/base/logger"
-	"prototodo/pkg/domain/base/uniques"
-	"prototodo/pkg/infra/impls/evcqrs/cntxt"
-	"prototodo/pkg/infra/impls/evcqrs/common"
-	"prototodo/pkg/infra/impls/evcqrs/entities"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/uniques"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/cntxt"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/common"
+	"techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/entities"
 
 	"go.uber.org/zap"
 )

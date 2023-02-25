@@ -2,8 +2,8 @@
 package domain
 
 import (
-	"prototodo/pkg/domain/domains/quotes"
-	"prototodo/pkg/domain/domains/tasks"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/quotes"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/domains/tasks"
 
 	"github.com/google/wire"
 )

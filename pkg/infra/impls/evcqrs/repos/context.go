@@ -3,10 +3,10 @@ package repos
 import (
 	"context"
 	"fmt"
-	domcntxt "prototodo/pkg/domain/base/cntxt"
-	"prototodo/pkg/domain/base/logger"
-	infrcntxt "prototodo/pkg/infra/cntxt"
-	implcntxt "prototodo/pkg/infra/impls/evcqrs/cntxt"
+	domcntxt "techunicorn.com/udc-core/prototodo/pkg/domain/base/cntxt"
+	"techunicorn.com/udc-core/prototodo/pkg/domain/base/logger"
+	infrcntxt "techunicorn.com/udc-core/prototodo/pkg/infra/cntxt"
+	implcntxt "techunicorn.com/udc-core/prototodo/pkg/infra/impls/evcqrs/cntxt"
 	"sync"
 	"time"
 

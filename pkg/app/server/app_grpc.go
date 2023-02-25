@@ -2,8 +2,10 @@ package server
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"net"
+	"os"
 	"prototodo/pkg/app/server/common"
 	"strconv"
 	"time"
@@ -11,19 +13,16 @@ import (
 	"github.com/betalixt/gorr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/reflection"
 )
 
 func (a *app) startGRPC(portStr string) {
-	s := grpc.NewServer(
-
-		// interceptor that
-		// - handles panics
-		// - extracts trace info from request
-		// and replaces the grpc context with a golang context
-		// that has traceinfo
+	opts := []grpc.ServerOption{}
+	opts = append(
+		opts,
 		grpc.UnaryInterceptor(func(
 			c context.Context,
 			req interface{},
@@ -83,6 +82,23 @@ func (a *app) startGRPC(portStr string) {
 		}),
 	)
 
+	_, err := os.Stat(common.CertKeyLocation)
+	if err == nil {
+		_, err = os.Stat(common.CertPEMLocation)
+	}
+
+	if err == nil {
+		a.lgr.Info("found certificates for grpc server")
+		creds, err := loadTLSCredentials()
+		if err != nil {
+			a.lgr.Error("failed to load tls credentials", zap.Error(err))
+			return
+		}
+		opts = append(opts, grpc.Creds(creds))
+	}
+
+	s := grpc.NewServer(opts...)
+
 	a.registerGRPCHandlers(s)
 	a.registerCloser(s.GracefulStop)
 	reflection.Register(s)
@@ -111,4 +127,20 @@ func (a *app) startGRPC(portStr string) {
 	if err := s.Serve(lis); err != nil {
 		panic(err)
 	}
+}
+
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	// Load server's certificate and private key
+	serverCert, err := tls.LoadX509KeyPair(common.CertPEMLocation, common.CertKeyLocation)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create the credentials and return it
+	config := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+
+	return credentials.NewTLS(config), nil
 }

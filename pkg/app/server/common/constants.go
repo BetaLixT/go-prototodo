@@ -1,3 +1,4 @@
+// Package common containing errors and constants
 package common
 
 const (
@@ -5,4 +6,6 @@ const (
 	HTTPDefaultPort = 8080
 	HTTPLable       = "http"
 	GRPCLable       = "grpc"
+	CertKeyLocation = "cert/server.key"
+	CertPEMLocation = "cert/server.pem"
 )

@@ -106,6 +106,8 @@ type app struct {
 	// server closers
 	closers   []closer
 	closeLock sync.Mutex
+	closed    bool
+	quit      chan os.Signal
 }
 
 func newApp(
@@ -132,6 +134,8 @@ func newApp(
 		lgr:  lgrf.Create(context.Background()),
 		ctxf: ctxf,
 		trc:  trc,
+
+		quit: make(chan os.Signal, 1),
 	}
 }
 
@@ -158,22 +162,24 @@ func (a *app) start(ctx context.Context) {
 		defer wg.Done()
 		a.startGRPC(os.Getenv("PORT_GRPC"))
 		a.lgr.Info("grpc server closing...")
+		a.closeServers()
 	}()
 
 	go func() {
 		defer wg.Done()
 		a.startHTTP(os.Getenv("PORT_HTTP"))
 		a.lgr.Info("http server closing...")
+		a.closeServers()
 	}()
 
 	// Wait for interrupt signal to gracefully shutdown the server with
 	// a timeout of 5 seconds.
-	quit := make(chan os.Signal, 1)
+	a.quit = make(chan os.Signal, 1)
 	// kill (no param) default send syscall.SIGTERM
 	// kill -2 is syscall.SIGINT
 	// kill -9 is syscall.SIGKILL but can't be catch, so don't need add it
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
+	signal.Notify(a.quit, syscall.SIGINT, syscall.SIGTERM)
+	<-a.quit
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling
 
@@ -193,8 +199,12 @@ func (a *app) registerCloser(c closer) {
 
 func (a *app) closeServers() {
 	a.closeLock.Lock()
-	for idx := range a.closers {
-		a.closers[idx]()
+	if !a.closed {
+		a.closed = true
+		for idx := range a.closers {
+			a.closers[idx]()
+		}
+		a.quit <- os.Kill
 	}
 	a.closeLock.Unlock()
 }
